@@ -1,0 +1,6 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^ResearchGroupTools\.pdf$
+^README\.Rmd$
+^README-.*\.png$
+^\.travis\.yml$
