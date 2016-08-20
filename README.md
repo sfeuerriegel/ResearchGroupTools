@@ -42,6 +42,27 @@ Numerical functions
 
 -   `ceil` computes the largest integer less or equal given a numerical value. It is a wrapper for `ceiling` with a more consistent naming.
 
+``` r
+ceil(3.4)
+#> [1] 4
+```
+
+Visualization
+-------------
+
+-   `scientific_labels`
+
+``` r
+library(ggplot2)
+df <- data.frame(x=rnorm(100), y=rnorm(100))
+ggplot(df, aes(x=x, y=y)) +
+  geom_point() +
+  scale_x_continuous(labels=scientific_labels) +
+  scale_y_continuous(labels=scientific_labels)
+```
+
+![](README-scientific_labels-1.png)
+
 License
 -------
 

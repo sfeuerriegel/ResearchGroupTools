@@ -19,7 +19,8 @@ Imports:
 Suggests:
     testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    ggplot2
 LazyData: true
 RoxygenNote: 5.0.1
 VignetteBuilder: knitr
