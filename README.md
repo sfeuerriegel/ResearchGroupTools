@@ -40,7 +40,7 @@ library(ResearchGroupTools)
 Numerical functions
 -------------------
 
--   `ceil` computes the largest integer less or equal given a numerical value. It is a wrapper for `ceiling` with a more consistent naming.
+-   `ceil()` computes the largest integer less or equal given a numerical value. It is a wrapper for `ceiling` with a more consistent naming.
 
 ``` r
 ceil(3.4)
@@ -50,7 +50,7 @@ ceil(3.4)
 Visualization
 -------------
 
--   `scientific_labels`
+-   `scientific_labels()` enables a nice exponential notation in **ggplot2** plots.
 
 ``` r
 library(ggplot2)
