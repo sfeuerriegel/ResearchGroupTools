@@ -112,24 +112,30 @@ logReturns(c(1, 2, 4, 8, 16, 32), base = 2)
 Matrix functions (or data.frame)
 --------------------------------
 
--   `findRowsNA()` and `showRowsNA()` help find `NA` values within a dataset.
+-   `findRowsNA()` and `showRowsNA()`, as well as `findColsNA()` and `showColsNA()`, help find `NA` values within a dataset.
 
 ``` r
-m <- matrix(letters[c(1,2,NA,3,NA,4,5,6,7,8)], ncol = 2, byrow = FALSE)
+m <- matrix(letters[c(1, 2, NA, 3, NA, 4, 5, 6, 7, 8)], ncol = 2, byrow = FALSE)
+colnames(m) <- c("x", "y")
 m
-#>      [,1] [,2]
-#> [1,] "a"  "d" 
-#> [2,] "b"  "e" 
-#> [3,] NA   "f" 
-#> [4,] "c"  "g" 
-#> [5,] NA   "h"
+#>      x   y  
+#> [1,] "a" "d"
+#> [2,] "b" "e"
+#> [3,] NA  "f"
+#> [4,] "c" "g"
+#> [5,] NA  "h"
 
 findRowsNA(m) # returns indices of that rows
 #> [1] 3 5
 showRowsNA(m) # prints rows with NA values
-#>      [,1] [,2]
-#> [1,] NA   "f" 
-#> [2,] NA   "h"
+#>      x  y  
+#> [1,] NA "f"
+#> [2,] NA "h"
+
+findColsNA(m) # returns name of that columns
+#> [1] "x"
+showColsNA(m) # print columns with NA values
+#> [1] "a" "b" NA  "c" NA
 ```
 
 Visualization
