@@ -47,6 +47,8 @@ This section shows the basic functionality of how to perform a sentiment analysi
 library(ResearchGroupTools)
 ```
 
+By default, the seed for the random number generator is initialized to 0.
+
 Functionality
 =============
 
@@ -90,7 +92,7 @@ returns(c(1, 2, 4, 8, 16, 32), na_padding = FALSE) # remove trailing NA's
 
 ``` r
 logReturns(c(1, 2, 4, 8, 16, 32), base = 2)
-#> [1] NA  0  0  0  0  0
+#> [1] NA  1  1  1  1  1
 ```
 
 Visualization

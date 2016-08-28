@@ -29,14 +29,14 @@ test_that("returns are computed correctly", {
 
 test_that("log-returns are computed correctly", {
   r <- logReturns(1:10)
-  expect_equal(r, log(c(NA, (1/(1:9)))))
+  expect_equal(r, log(1 + c(NA, (1/(1:9)))))
 
   r <- logReturns(1:10, na_padding = FALSE)
-  expect_equal(r, log((1/(1:9))))
+  expect_equal(r, log(1 + (1/(1:9))))
 
   r <- logReturns(c(1, 2, 4, 8, 16, 32), base = 2)
-  expect_equal(r, c(NA, 0, 0, 0, 0, 0))
+  expect_equal(r, c(NA, 1, 1, 1, 1, 1))
 
   r <- logReturns(c(1, 2, 4, 8, 16, 32), base = 2, na_padding = FALSE)
-  expect_equal(r, c( 0, 0, 0, 0, 0))
+  expect_equal(r, c(1, 1, 1, 1, 1))
 })

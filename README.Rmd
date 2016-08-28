@@ -51,6 +51,8 @@ This section shows the basic functionality of how to perform a sentiment analysi
 library(ResearchGroupTools)
 ```
 
+By default, the seed for the random number generator is initialized to 0. 
+
 # Functionality
 
 ## Library handling

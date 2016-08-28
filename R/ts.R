@@ -44,5 +44,11 @@ returns <- function(x, lag = 1, na_padding = TRUE) {
 #' @seealso \code{\link{diff}}, \code{\link{returns}}
 #' @export
 logReturns <- function(x, lag = 1, na_padding = TRUE, base = exp(1)) {
-  log(returns(x, lag = lag, na_padding = na_padding), base = base)
+  r <- returns(x, lag = lag, na_padding = na_padding)
+
+  if (any(na.omit(r) <= 0)) {
+    stop("Log-returns not defined if returns are <= 0.")
+  }
+
+  log(1 + r, base = base)
 }
