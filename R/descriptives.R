@@ -55,13 +55,12 @@ descriptiveStatistics <- function(x, digits = 3,
 #' # alternatively, with table exported into a LaTeX file
 #' correlationMatrix(USArrests, filename = "table_cor.tex")
 #' unlink("table_cor.tex")
+#' @source Idea: \url{http://www.sthda.com/english/wiki/elegant-correlation-table-using-xtable-r-package}
 #' @export
 correlationMatrix <- function(x, y = NULL,
                               method = c("pearson", "spearman"),
-                              removeTriangle = c("upper", "lower", "none"),
-                              diagonale = FALSE,
-                              digits = 3,
-                              filename = NULL) {
+                              removeTriangle = c("upper", "lower", "none"), diagonale = FALSE,
+                              digits = 3, filename = NULL) {
   x <- as.matrix(x)
   if (!is.null(y)) {
     y <- as.matrix(y)
@@ -73,42 +72,60 @@ correlationMatrix <- function(x, y = NULL,
   cor_coef <- cor_mat$r    # Matrix of correlation coefficients
   cor_Pvalues <- cor_mat$P # Matrix of P-values
 
-  # round to desired digits
-  cor_coef <- round(cor_coef, digits)
+  # round to desired digits (incl. workaround for R-functions)
+  cor_coef <- format(round(cbind(pi, cor_coef), digits))[, -1]
 
   # matrix with stars
-  cor_stars <- apply(cor_Pvalues, 1:2, function(p) {
-    s <- signifianceToStars(p)
-    return(ifelse(s == "", "", paste0("^{", s, "}")))
-    })
+  cor_stars_screen <- apply(cor_Pvalues, 1:2, signifianceToStars)
+  cor_stars_file <- apply(cor_Pvalues, 1:2, function(s) ifelse(s == "   ", "      ", paste0("^{", s, "}")))
 
-  output <- matrix(paste0(format(cor_coef), cor_stars), ncol = ncol(x))
+  output_screen <- matrix(paste0(cor_coef, cor_stars_screen),
+                          ncol = ifelse(is.null(y), ncol(x), ncol(x) + ncol(y)))
+  output_file <- matrix(paste0(cor_coef, cor_stars_file),
+                        ncol = ifelse(is.null(y), ncol(x), ncol(x) + ncol(y)))
 
-  if (diagonale) {
-    diag(output) <- paste0(format(round(1, digits)) , "^{***}")
+  if (!is.null(y)) {
+    # Hmisc:rcorr concatenates x and y; so extract submatrix
+    output_screen <- output_screen[1:ncol(x), (ncol(x) + 1) : (ncol(x) + ncol(y))]
+    output_file <- output_file[1:ncol(x), (ncol(x) + 1) : (ncol(x) + ncol(y))]
   } else {
-    diag(output) <- ""
+    # remove diagonale
+
+    if (diagonale) {
+      # incl. dirty workaround for rounding in R
+      diag(output_screen) <- paste0(format(round(c(pi, 1), digits))[2] , "***")
+      diag(output_file) <- paste0(format(round(c(pi, 1), digits))[2], "^{***}")
+    } else {
+      diag(output_screen) <- ""
+      diag(output_file) <- ""
+    }
+
+    if (removeTriangle[1] == "upper") {
+      output_screen[upper.tri(output_screen)] <- ""
+      output_file[upper.tri(output_file)] <- ""
+    } else if (removeTriangle[1] == "lower") {
+      output_screen[lower.tri(output_screen)] <- ""
+      output_file[lower.tri(output_file)] <- ""
+    }
   }
 
-  rownames(output) <- colnames(x)
+  rownames(output_screen) <- colnames(x)
+  rownames(output_file) <- colnames(x)
   if (is.null(y)) {
-    colnames(output) <- colnames(x)
+    colnames(output_screen) <- colnames(x)
+    colnames(output_file) <- colnames(x)
   } else {
-    colnames(output) <- colnames(y)
-  }
-
-  if (removeTriangle[1] == "upper") {
-    output[upper.tri(output)] <- ""
-  } else if (removeTriangle[1] == "lower") {
-    output[lower.tri(output)] <- ""
+    colnames(output_screen) <- colnames(y)
+    colnames(output_file) <- colnames(y)
   }
 
   if (!is.null(filename)) {
-    print(xtable::xtable(output, digits = digits),
+    print(xtable::xtable(output_file, digits = digits),
           only.contents = TRUE, booktabs = TRUE,
           file = filename, type = "latex")
   }
 
-  return(cor_coef)
+  # Hmisc:rcorr concatenates x and y; so extract submatrix
+  return(as.data.frame(output_screen))
 }
 

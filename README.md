@@ -162,17 +162,17 @@ unlink("table_descriptives.tex")
 
 ``` r
 correlationMatrix(USArrests)
-#>          Murder Assault UrbanPop  Rape
-#> Murder    1.000   0.802    0.070 0.564
-#> Assault   0.802   1.000    0.259 0.665
-#> UrbanPop  0.070   0.259    1.000 0.411
-#> Rape      0.564   0.665    0.411 1.000
+#>            Murder  Assault UrbanPop Rape
+#> Murder                                  
+#> Assault  0.802***                       
+#> UrbanPop 0.070    0.259                 
+#> Rape     0.564*** 0.665*** 0.411**
 correlationMatrix(USArrests, filename = "table_cor.tex") # stores output in LaTeX file
-#>          Murder Assault UrbanPop  Rape
-#> Murder    1.000   0.802    0.070 0.564
-#> Assault   0.802   1.000    0.259 0.665
-#> UrbanPop  0.070   0.259    1.000 0.411
-#> Rape      0.564   0.665    0.411 1.000
+#>            Murder  Assault UrbanPop Rape
+#> Murder                                  
+#> Assault  0.802***                       
+#> UrbanPop 0.070    0.259                 
+#> Rape     0.564*** 0.665*** 0.411**
 unlink("table_cor.tex")
 ```
 

@@ -4,12 +4,12 @@ signifianceToStars <- function(p) {
   } else if (p < .001) {
     return("***")
   } else if (p < .01) {
-    return("**")
+    return("** ")
   } else if (p < .05) {
-    return("*")
+    return("*  ")
   }
 
-  return("")
+  return("   ")
 }
 
 

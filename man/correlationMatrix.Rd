@@ -3,6 +3,9 @@
 \name{correlationMatrix}
 \alias{correlationMatrix}
 \title{Pretty correlation matrix}
+\source{
+Idea: \url{http://www.sthda.com/english/wiki/elegant-correlation-table-using-xtable-r-package}
+}
 \usage{
 correlationMatrix(x, y = NULL, method = c("pearson", "spearman"),
   removeTriangle = c("upper", "lower", "none"), diagonale = FALSE,
