@@ -18,7 +18,8 @@ Depends:
 Imports:
     ggplot2,
     psych,
-    xtable
+    xtable,
+    Hmisc
 Suggests:
     testthat,
     knitr,

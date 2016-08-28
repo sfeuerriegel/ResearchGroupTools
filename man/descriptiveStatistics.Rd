@@ -5,7 +5,7 @@
 \title{Pretty summary statistics}
 \usage{
 descriptiveStatistics(x, digits = 3, subset = c("mean", "median", "min",
-  "max", "sd", "skew", "kurtosis"))
+  "max", "sd", "skew", "kurtosis"), filename = "table_descriptives.tex")
 }
 \arguments{
 \item{x}{Dataset in the form of a matrix or a \code{data.frame}.}
@@ -13,19 +13,20 @@ descriptiveStatistics(x, digits = 3, subset = c("mean", "median", "min",
 \item{digits}{Number of digits to be printed (default: 3).}
 
 \item{subset}{Variables to be selected.}
+
+\item{filename}{Path to which a LaTeX copy is exported (default is
+\code{table_descriptives.tex}). If \code{NULL}, no file is generated.}
 }
 \value{
 Matrix with pretty output.
 }
 \description{
-Calculates summary statistics for dataset and display key variables in a nice format.
-}
-\note{
-Class \code{RGT_descriptives} is added to recognize this value inside
-\code{\link{export}}.
+Calculates summary statistics for dataset and display key variables in a nice
+format. It also writes the table into a LaTeX file if desired.
 }
 \examples{
 data(USArrests)
 descriptiveStatistics(USArrests)
+unlink("table_descriptives.tex")
 }
 

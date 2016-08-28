@@ -117,13 +117,20 @@ showColsNA(m) # print columns with NA values
 
 ## Descriptive statistics
 
-* `descriptiveStatistics()` produces **pretty** summary statistics. Afterwards, `export()` allows for direct export to a LaTeX file. In this case, an optional parameter `filename` can be used to change the filename for the export. 
+* `descriptiveStatistics()` produces **pretty** summary statistics. By default, it exports the statistics into a LaTeX file. An optional parameter `filename` can be used to change the filename for the export. 
 
-```{r descriptives, eval=-4}
+```{r descriptives, include=-3}
 data(USArrests)
-d <- descriptiveStatistics(USArrests)
-d
-export(d)
+descriptiveStatistics(USArrests)
+unlink("table_descriptives.tex")
+```
+
+* `correlationMatrix()` computes a **pretty** correlation matrix. An optional parameter `filename` can be used to specify a LaTeX file to which the result is exported with significance stars. 
+
+```{r correlation_matrix, include=-3}
+correlationMatrix(USArrests)
+correlationMatrix(USArrests, filename = "table_cor.tex") # stores output in LaTeX file
+unlink("table_cor.tex")
 ```
 
 

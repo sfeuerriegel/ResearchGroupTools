@@ -2,9 +2,9 @@
 
 export(Library)
 export(ceil)
+export(correlationMatrix)
 export(descriptiveStatistics)
 export(differences)
-export(export)
 export(findColsNA)
 export(findRowsNA)
 export(linePlot)

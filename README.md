@@ -145,18 +145,35 @@ showColsNA(m) # print columns with NA values
 Descriptive statistics
 ----------------------
 
--   `descriptiveStatistics()` produces **pretty** summary statistics. Afterwards, `export()` allows for direct export to a LaTeX file. In this case, an optional parameter `filename` can be used to change the filename for the export.
+-   `descriptiveStatistics()` produces **pretty** summary statistics. By default, it exports the statistics into a LaTeX file. An optional parameter `filename` can be used to change the filename for the export.
 
 ``` r
 data(USArrests)
-d <- descriptiveStatistics(USArrests)
-d
+descriptiveStatistics(USArrests)
 #>             mean median  min   max     sd   skew kurtosis
 #> Murder     7.788   7.25  0.8  17.4  4.356  0.371   -0.949
 #> Assault  170.760 159.00 45.0 337.0 83.338  0.221   -1.145
 #> UrbanPop  65.540  66.00 32.0  91.0 14.475 -0.213   -0.872
 #> Rape      21.232  20.10  7.3  46.0  9.366  0.754    0.075
-## export(d)
+unlink("table_descriptives.tex")
+```
+
+-   `correlationMatrix()` computes a **pretty** correlation matrix. An optional parameter `filename` can be used to specify a LaTeX file to which the result is exported with significance stars.
+
+``` r
+correlationMatrix(USArrests)
+#>          Murder Assault UrbanPop  Rape
+#> Murder    1.000   0.802    0.070 0.564
+#> Assault   0.802   1.000    0.259 0.665
+#> UrbanPop  0.070   0.259    1.000 0.411
+#> Rape      0.564   0.665    0.411 1.000
+correlationMatrix(USArrests, filename = "table_cor.tex") # stores output in LaTeX file
+#>          Murder Assault UrbanPop  Rape
+#> Murder    1.000   0.802    0.070 0.564
+#> Assault   0.802   1.000    0.259 0.665
+#> UrbanPop  0.070   0.259    1.000 0.411
+#> Rape      0.564   0.665    0.411 1.000
+unlink("table_cor.tex")
 ```
 
 Visualization
