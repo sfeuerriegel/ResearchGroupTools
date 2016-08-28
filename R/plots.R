@@ -1,3 +1,4 @@
+#' @export
 linePlot <- function(x, y = NULL, ...) {
   if (is.data.frame(x) && ncol(x) == 2) {
     df <- x
@@ -5,15 +6,17 @@ linePlot <- function(x, y = NULL, ...) {
     df <- cbind(x, y)
   }
 
-  p <- ggplot(df) +
-    geom_line(aes(x = colnames(df)[1], y = colnames(df)[2])) +
-    theme_bw()
+  p <- ggplot2::ggplot(df) +
+    ggplot2::geom_line(ggplot2::aes(x = colnames(df)[1], y = colnames(df)[2])) +
+    ggplot2::theme_bw()
 
   return(p)
 }
 
+#' @importFrom stats cor.test
+#' @export
 corPlot <- function(x, y = NULL, verbose = TRUE, ...) {
-
+  df <- cbind(x, y)
 
   if (verbose) {
     print(cor.test(df[, 1], df[, 2]))
