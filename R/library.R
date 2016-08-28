@@ -12,6 +12,13 @@
 #' @importFrom utils install.packages installed.packages
 #' @export
 Library <- function(packages, ...) {
+  if (!is.character(packages)) {
+    stop("Argument 'packages' expects string or vector of strings.")
+  }
+  if (!missing(...) && !is.character(packages)) {
+    stop("Optional arguments in '...' must be of string or vector of strings.")
+  }
+
   for (p in c(packages, ...)) {
     cat(paste0(p, "\n"))
     if (!(p %in% rownames(installed.packages()))) {
