@@ -4,7 +4,10 @@
 \alias{remakePackage}
 \title{Builds, loads and checks package}
 \usage{
-remakePackage()
+remakePackage(updateReadme = FALSE)
+}
+\arguments{
+\item{updateReadme}{Flag whether to update the README.Rmd (default: FALSE).}
 }
 \description{
 Simple wrapper to rebuild, load and check package. This function specifically

@@ -89,6 +89,7 @@ Package development
 
 ``` r
 remakePackage()
+remakePackage(TRUE) # also runs README.Rmd
 ```
 
 License
