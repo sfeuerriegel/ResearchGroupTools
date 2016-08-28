@@ -57,7 +57,7 @@ library(ResearchGroupTools)
 
 * `Library()` (note the capital "L") loads packages. If not available, these are automatically installed. 
 
-```{r Library}
+```{r Library, message=FALSE}
 Library("ggplot2", "dplyr")
 ```
 
@@ -94,7 +94,7 @@ remakePackage(TRUE) # also runs README.Rmd
 ```
 
 
-## License
+### License
 
 **ResearchGroupTools** is released under the [MIT License](https://opensource.org/licenses/MIT)
 

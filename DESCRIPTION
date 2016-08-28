@@ -16,12 +16,12 @@ BugReports: https://github.com/sfeuerriegel/ResearchGroupTools/issues
 Depends:
     R (>= 2.10)
 Imports:
-    ggplot2,
-    devtools
+    ggplot2
 Suggests:
     testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    devtools
 LazyData: true
 RoxygenNote: 5.0.1
 VignetteBuilder: knitr
