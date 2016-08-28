@@ -23,6 +23,20 @@ test_that("returns are computed correctly", {
   expect_equal(r, c(3, 3, 3, 3))
 
   r <- returns(c(32, 16, 8, 4, 2, 1))
-  expect_equal(r, c(NA, NA, -0.5, -0.5, -0.5, -0.5))
+  expect_equal(r, c(NA, -0.5, -0.5, -0.5, -0.5, -0.5))
 
+})
+
+test_that("log-returns are computed correctly", {
+  r <- logReturns(1:10)
+  expect_equal(r, log(c(NA, (1/(1:9)))))
+
+  r <- logReturns(1:10, na_padding = FALSE)
+  expect_equal(r, log((1/(1:9))))
+
+  r <- logReturns(c(1, 2, 4, 8, 16, 32), base = 2)
+  expect_equal(r, c(NA, 0, 0, 0, 0, 0))
+
+  r <- logReturns(c(1, 2, 4, 8, 16, 32), base = 2, na_padding = FALSE)
+  expect_equal(r, c( 0, 0, 0, 0, 0))
 })

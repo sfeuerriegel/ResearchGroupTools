@@ -74,14 +74,23 @@ ceil(3.4)
 Time series
 -----------
 
--   `returns()` calculates rolling returns (similar to `diff()` for differenes).
+-   `returns()` calculates returns of a time series (similar to `diff()` for differenes).
 
 ``` r
 returns(1:10)
-#>  [1]         NA -1.0000000 -0.5000000 -0.3333333 -0.2500000 -0.2000000
-#>  [7] -0.1666667 -0.1428571 -0.1250000 -0.1111111
+#>  [1]        NA 1.0000000 0.5000000 0.3333333 0.2500000 0.2000000 0.1666667
+#>  [8] 0.1428571 0.1250000 0.1111111
 returns(c(1, 2, 4, 8, 16, 32))
-#> [1] NA -1 -1 -1 -1 -1
+#> [1] NA  1  1  1  1  1
+returns(c(1, 2, 4, 8, 16, 32), na_padding = FALSE) # remove trailing NA's
+#> [1] 1 1 1 1 1
+```
+
+-   `logReturns()` computes log-returns (by default, with base `exp(1)`).
+
+``` r
+logReturns(c(1, 2, 4, 8, 16, 32), base = 2)
+#> [1] NA  0  0  0  0  0
 ```
 
 Visualization
