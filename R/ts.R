@@ -34,7 +34,7 @@ returns <- function(x, lag = 1, na_padding = TRUE) {
 #' @param na_padding Flag whether to pad truncated values with NA's (default: TRUE).
 #' @param base A positive number giving the base with respect to which the logarithm is
 #' computed. Default is e, i.e. \code{exp(1)}.
-#' @return Numeric vector with returns of specified lag.
+#' @return Numeric vector with log-returns of specified lag.
 #' @note Parameter \code{na_padding} behaves slightly different from \code{\link{diff}}
 #' in order to achieve consistency with \code{\link[dplyr]{lead}} and \code{\link[dplyr]{lag}}.
 #' @examples
@@ -51,4 +51,31 @@ logReturns <- function(x, lag = 1, na_padding = TRUE, base = exp(1)) {
   }
 
   log(1 + r, base = base)
+}
+
+#' Lagged differences
+#'
+#' Calculates differences between values with specified lag.
+#' @param x A numeric vector containing the values for which returns are calculated.
+#' @param lag Integer indicating which lag to use (default: 1).
+#' @param order Order of differences (default: 1).
+#' @param na_padding Flag whether to pad truncated values with NA's (default: TRUE).
+#' @return Numeric vector with differences of specified lag and order.
+#' @note Parameter \code{na_padding} behaves slightly different from \code{\link{diff}}
+#' in order to achieve consistency with \code{\link[dplyr]{lead}} and \code{\link[dplyr]{lag}}.
+#' @examples
+#' differences(1:10)
+#' differences(c(1, 2, 4, 8, 16, 32))
+#' differences(c(1, 2, 4, 8, 16, 32), order = 2)
+#' differences(c(1, 2, 4, 8, 16, 32), na_padding = FALSE)
+#' @seealso \code{\link{diff}}, \code{\link{returns}}
+#' @export
+differences <- function(x, lag = 1, order = 1, na_padding = TRUE) {
+  d <- diff(x, lag = lag, differences = order)
+
+  if (na_padding) {
+    d <- c(rep(NA, length(x) - length(d)), d)
+  }
+
+  return(d)
 }

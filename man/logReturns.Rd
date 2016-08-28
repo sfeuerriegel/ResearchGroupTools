@@ -17,7 +17,7 @@ logReturns(x, lag = 1, na_padding = TRUE, base = exp(1))
 computed. Default is e, i.e. \code{exp(1)}.}
 }
 \value{
-Numeric vector with returns of specified lag.
+Numeric vector with log-returns of specified lag.
 }
 \description{
 Calculates log-returns between values with specified lag.

@@ -40,3 +40,17 @@ test_that("log-returns are computed correctly", {
   r <- logReturns(c(1, 2, 4, 8, 16, 32), base = 2, na_padding = FALSE)
   expect_equal(r, c(1, 1, 1, 1, 1))
 })
+
+test_that("differences are computed correctly", {
+  d <- differences(1:10)
+  expect_equal(d, c(NA, rep(1, 9)))
+
+  d <- differences(c(1, 2, 4, 8, 16, 32))
+  expect_equal(d, c(NA, 1, 2, 4, 8, 16))
+
+  d <- differences(c(1, 2, 4, 8, 16, 32), order = 2)
+  expect_equal(d, c(NA, NA, 1, 2, 4, 8))
+
+  d <- differences(c(1, 2, 4, 8, 16, 32), na_padding = FALSE)
+  expect_equal(d, c(1, 2, 4, 8, 16))
+})

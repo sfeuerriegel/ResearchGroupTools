@@ -76,6 +76,19 @@ ceil(3.4)
 Time series
 -----------
 
+-   `differences()` calculates lagged differences of a given order. It is more convenient thant `diff()` as it adds leading `NA` values.
+
+``` r
+differences(1:10)
+#>  [1] NA  1  1  1  1  1  1  1  1  1
+differences(c(1, 2, 4, 8, 16, 32))
+#> [1] NA  1  2  4  8 16
+differences(c(1, 2, 4, 8, 16, 32), order = 2)
+#> [1] NA NA  1  2  4  8
+differences(c(1, 2, 4, 8, 16, 32), na_padding = FALSE)
+#> [1]  1  2  4  8 16
+```
+
 -   `returns()` calculates returns of a time series (similar to `diff()` for differenes).
 
 ``` r

@@ -3,6 +3,7 @@
 export(Library)
 export(ceil)
 export(corPlot)
+export(differences)
 export(linePlot)
 export(logReturns)
 export(remakePackage)
