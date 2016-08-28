@@ -11,12 +11,18 @@
 #' linePlot(x, sin(x))
 #' @export
 linePlot <- function(x, y = NULL) {
- if (is.data.frame(x) && ncol(x) == 2) {
-   df <- x
+ if (is.data.frame(x)) {
+   if (ncol(x) == 2) {
+     df <- x
+   } else if (ncol(x) == 1 && !is.null(y)) {
+     df <- cbind(x, y = y)
+   } else {
+     stop("Argument 'x' has invalid dimensions.")
+   }
  } else if (is.null(y)) {
-   df <- as.data.frame(cbind(x = 1:length(x), y = x))
+   df <- data.frame(x = 1:length(x), y = x)
  } else {
-   df <- as.data.frame(cbind(x = x, y = y))
+   df <- data.frame(x = x, y = y)
  }
 
  p <- ggplot2::ggplot(df) +
