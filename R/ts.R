@@ -46,8 +46,8 @@ returns <- function(x, lag = 1, na_padding = TRUE) {
 logReturns <- function(x, lag = 1, na_padding = TRUE, base = exp(1)) {
   r <- returns(x, lag = lag, na_padding = na_padding)
 
-  if (any(na.omit(r) <= 0)) {
-    stop("Log-returns not defined if returns are <= 0.")
+  if (any(na.omit(1 + r) <= 0)) {
+    stop("Log-returns not defined if any value in (1 + returns) is <= 0.")
   }
 
   log(1 + r, base = base)
