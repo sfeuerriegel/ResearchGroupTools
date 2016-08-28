@@ -162,6 +162,22 @@ d
 Visualization
 -------------
 
+-   `linePlot()` is a simple wrapper to **ggplot2**.
+
+``` r
+linePlot(1:10)
+```
+
+![](README-linePlot-1.png)
+
+``` r
+
+x <- seq(0, 4, length.out = 100)
+linePlot(x, sin(x))
+```
+
+![](README-linePlot-2.png)
+
 -   `scientific_labels()` enables a nice exponential notation in **ggplot2** plots.
 
 ``` r
