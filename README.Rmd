@@ -85,6 +85,7 @@ ggplot(df, aes(x=x, y=y)) +
 
 ```{r remakePackage, eval=FALSE}
 remakePackage()
+remakePackage(TRUE) # also runs README.Rmd
 ```
 
 

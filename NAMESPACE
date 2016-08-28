@@ -2,6 +2,10 @@
 
 export(Library)
 export(ceil)
+export(corPlot)
+export(linePlot)
+export(remakePackage)
 export(scientific_labels)
+importFrom(stats,cor.test)
 importFrom(utils,install.packages)
 importFrom(utils,installed.packages)
