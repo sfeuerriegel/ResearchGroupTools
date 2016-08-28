@@ -7,6 +7,7 @@
     -   [Numerical functions](#numerical-functions)
     -   [Time series](#time-series)
     -   [Matrix functions (or data.frame)](#matrix-functions-or-data.frame)
+    -   [Descriptive statistics](#descriptive-statistics)
     -   [Visualization](#visualization)
     -   [Package development](#package-development)
 
@@ -136,6 +137,21 @@ findColsNA(m) # returns name of that columns
 #> [1] "x"
 showColsNA(m) # print columns with NA values
 #> [1] "a" "b" NA  "c" NA
+```
+
+Descriptive statistics
+----------------------
+
+-   `descriptiveStatistics()` produces **pretty** summary statistics.
+
+``` r
+data(USArrests)
+descriptiveStatistics(USArrests)
+#>             mean median  min   max     sd   skew kurtosis
+#> Murder     7.788   7.25  0.8  17.4  4.356  0.371   -0.949
+#> Assault  170.760 159.00 45.0 337.0 83.338  0.221   -1.145
+#> UrbanPop  65.540  66.00 32.0  91.0 14.475 -0.213   -0.872
+#> Rape      21.232  20.10  7.3  46.0  9.366  0.754    0.075
 ```
 
 Visualization

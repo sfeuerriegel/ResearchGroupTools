@@ -3,6 +3,7 @@
 export(Library)
 export(ceil)
 export(corPlot)
+export(descriptiveStatistics)
 export(differences)
 export(findColsNA)
 export(findRowsNA)
