@@ -16,7 +16,7 @@
 #' @seealso \code{\link{diff}}
 #' @export
 returns <- function(x, lag = 1, na_padding = TRUE) {
-  r <- (x[-seq(length(x), by = -1, length.out = lag)] - x[-(1:lag)]) / x[-seq(length(x), by = -1, length.out = lag)]
+  r <- (x[-(1:lag)] - x[-seq(length(x), by = -1, length.out = lag)] ) / x[-seq(length(x), by = -1, length.out = lag)]
 
   if (na_padding) {
     r <- c(rep(NA, lag), r)
