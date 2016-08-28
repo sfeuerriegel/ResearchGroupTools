@@ -9,10 +9,10 @@
 #' @export
 export <- function(object, filename = NULL, digits = attr(object, "digits")) {
   if (inherits(object, "RGT_descriptives")) {
-    print(xtable(d, digits = digits),
-          only.contents = TRUE, include.colnames = FALSE, booktabs = TRUE,
-          file = ifelse(is.null(filename), "descriptives.teX", filename),
-          type = "latex")
+    print(xtable::xtable(d, digits = digits),
+                         only.contents = TRUE, include.colnames = FALSE, booktabs = TRUE,
+                         file = ifelse(is.null(filename), "descriptives.teX", filename),
+                         type = "latex")
   } else {
     stop("Class type of argument 'object' not recognized.")
   }
