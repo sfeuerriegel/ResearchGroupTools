@@ -97,6 +97,18 @@ returns(c(1, 2, 4, 8, 16, 32), na_padding = FALSE) # remove trailing NA's
 logReturns(c(1, 2, 4, 8, 16, 32), base = 2)
 ```
 
+## Matrix functions (or data.frame)
+
+* `findRowsNA()` and `showRowsNA()` help find `NA` values within a dataset.
+
+```{r}
+m <- matrix(letters[c(1,2,NA,3,NA,4,5,6,7,8)], ncol = 2, byrow = FALSE)
+m
+
+findRowsNA(m) # returns indices of that rows
+showRowsNA(m) # prints rows with NA values
+```
+
 ## Visualization
 
 * `scientific_labels()` enables a nice exponential notation in **ggplot2** plots.

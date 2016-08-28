@@ -42,6 +42,7 @@ returns <- function(x, lag = 1, na_padding = TRUE) {
 #' logReturns(c(1, 2, 4, 8, 16, 32), base = 2)
 #' logReturns(c(1, 2, 4, 8, 16, 32), base = 2, na_padding = FALSE)
 #' @seealso \code{\link{diff}}, \code{\link{returns}}
+#' @importFrom stats na.omit
 #' @export
 logReturns <- function(x, lag = 1, na_padding = TRUE, base = exp(1)) {
   r <- returns(x, lag = lag, na_padding = na_padding)
