@@ -126,6 +126,9 @@ m
 #> [4,] "c" "g"
 #> [5,] NA  "h"
 
+anyNA(m)      # use built-in routine to test for NA values
+#> [1] TRUE
+
 findRowsNA(m) # returns indices of that rows
 #> [1] 3 5
 showRowsNA(m) # prints rows with NA values
@@ -142,16 +145,18 @@ showColsNA(m) # print columns with NA values
 Descriptive statistics
 ----------------------
 
--   `descriptiveStatistics()` produces **pretty** summary statistics.
+-   `descriptiveStatistics()` produces **pretty** summary statistics. Afterwards, `export()` allows for direct export to a LaTeX file. In this case, an optional parameter `filename` can be used to change the filename for the export.
 
 ``` r
 data(USArrests)
-descriptiveStatistics(USArrests)
+d <- descriptiveStatistics(USArrests)
+d
 #>             mean median  min   max     sd   skew kurtosis
 #> Murder     7.788   7.25  0.8  17.4  4.356  0.371   -0.949
 #> Assault  170.760 159.00 45.0 337.0 83.338  0.221   -1.145
 #> UrbanPop  65.540  66.00 32.0  91.0 14.475 -0.213   -0.872
 #> Rape      21.232  20.10  7.3  46.0  9.366  0.754    0.075
+## export(d)
 ```
 
 Visualization

@@ -20,6 +20,10 @@ Matrix with pretty output.
 \description{
 Calculates summary statistics for dataset and display key variables in a nice format.
 }
+\note{
+Class \code{RGT_descriptives} is added to recognize this value inside
+\code{\link{export}}.
+}
 \examples{
 data(USArrests)
 descriptiveStatistics(USArrests)
