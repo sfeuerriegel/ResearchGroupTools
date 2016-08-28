@@ -16,7 +16,8 @@ BugReports: https://github.com/sfeuerriegel/ResearchGroupTools/issues
 Depends:
     R (>= 2.10)
 Imports:
-    ggplot2
+    ggplot2,
+    curl
 Suggests:
     testthat,
     knitr,

@@ -5,9 +5,9 @@
 -   [Functionality](#functionality)
     -   [Library handling](#library-handling)
     -   [Numerical functions](#numerical-functions)
+    -   [Time series](#time-series)
     -   [Visualization](#visualization)
     -   [Package development](#package-development)
-    -   [License](#license)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 ResearchGroupTools
@@ -59,14 +59,6 @@ Library handling
 Library("ggplot2", "dplyr")
 #> ggplot2
 #> dplyr
-#> 
-#> Attaching package: 'dplyr'
-#> The following objects are masked from 'package:stats':
-#> 
-#>     filter, lag
-#> The following objects are masked from 'package:base':
-#> 
-#>     intersect, setdiff, setequal, union
 ```
 
 Numerical functions
@@ -77,6 +69,19 @@ Numerical functions
 ``` r
 ceil(3.4)
 #> [1] 4
+```
+
+Time series
+-----------
+
+-   `returns()` calculates rolling returns (similar to `diff()` for differenes).
+
+``` r
+returns(1:10)
+#>  [1]         NA -1.0000000 -0.5000000 -0.3333333 -0.2500000 -0.2000000
+#>  [7] -0.1666667 -0.1428571 -0.1250000 -0.1111111
+returns(c(1, 2, 4, 8, 16, 32))
+#> [1] NA -1 -1 -1 -1 -1
 ```
 
 Visualization
@@ -105,8 +110,7 @@ remakePackage()
 remakePackage(TRUE) # also runs README.Rmd
 ```
 
-License
--------
+### License
 
 **ResearchGroupTools** is released under the [MIT License](https://opensource.org/licenses/MIT)
 

@@ -70,6 +70,14 @@ Library("ggplot2", "dplyr")
 ceil(3.4)
 ```
 
+## Time series
+
+* `returns()` calculates rolling returns (similar to `diff()` for differenes).
+
+```{r returns}
+returns(1:10)
+returns(c(1, 2, 4, 8, 16, 32))
+```
 
 ## Visualization
 
