@@ -1,4 +1,14 @@
 
+-   [ResearchGroupTools](#researchgrouptools)
+    -   [Installation](#installation)
+    -   [Usage](#usage)
+-   [Functionality](#functionality)
+    -   [Library handling](#library-handling)
+    -   [Numerical functions](#numerical-functions)
+    -   [Visualization](#visualization)
+    -   [Package development](#package-development)
+    -   [License](#license)
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 ResearchGroupTools
 ==================
@@ -36,6 +46,9 @@ This section shows the basic functionality of how to perform a sentiment analysi
 ``` r
 library(ResearchGroupTools)
 ```
+
+Functionality
+=============
 
 Library handling
 ----------------
