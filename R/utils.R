@@ -11,6 +11,3 @@ signifianceToStars <- function(p) {
 
   return("   ")
 }
-
-
-

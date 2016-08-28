@@ -19,7 +19,8 @@ Imports:
     ggplot2,
     psych,
     xtable,
-    Hmisc
+    Hmisc,
+    dplyr
 Suggests:
     testthat,
     knitr,

@@ -8,11 +8,11 @@
 #' df <- data.frame(x=rnorm(100), y=rnorm(100))
 #' ggplot(df, aes(x=x, y=y)) +
 #'   geom_point() +
-#'   scale_x_continuous(labels=scientific_labels) +
-#'   scale_y_continuous(labels=scientific_labels)
+#'   scale_x_continuous(labels=scientificLabels) +
+#'   scale_y_continuous(labels=scientificLabels)
 #' @source Brian Diggs \url{https://groups.google.com/forum/#!topic/ggplot2/a_xhMoQyxZ4}
 #' @export
-scientific_labels <- function(l) {
+scientificLabels <- function(l) {
   # turn in to character string in scientific notation
   l <- format(l, scientific = TRUE)
   # quote the part before the exponent to keep all the digits

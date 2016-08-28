@@ -5,10 +5,10 @@
 #' @param  updateReadme Flag whether to update the README.Rmd (default: FALSE).
 #' @examples
 #' \dontrun{
-#'   remakePackage()
+#'   rebuildPackage()
 #' }
 #' @export
-remakePackage <- function(updateReadme = FALSE) {
+rebuildPackage <- function(updateReadme = FALSE) {
   devtools::build()
   devtools::load_all()
   devtools::check()
