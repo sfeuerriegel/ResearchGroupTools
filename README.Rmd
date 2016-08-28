@@ -48,11 +48,20 @@ This section shows the basic functionality of how to perform a sentiment analysi
 library(ResearchGroupTools)
 ```
 
+## Library handling
+
+* `Library()` (note the capital "L") loads packages. If not available, these are automatically installed. 
+
+```{r Library}
+Library("ggplot2", "dplyr")
+```
+
+
 ## Numerical functions
 
 * `ceil()` computes the largest integer less or equal given a numerical value. It is a wrapper for `ceiling` with a more consistent naming.
 
-```{r}
+```{r ceil}
 ceil(3.4)
 ```
 
@@ -68,6 +77,14 @@ ggplot(df, aes(x=x, y=y)) +
   geom_point() +
   scale_x_continuous(labels=scientific_labels) +
   scale_y_continuous(labels=scientific_labels)
+```
+
+## Package development
+
+* `remakePackage()` builds, loads and checks package during the development process all at once. In particular, the manual is updated. 
+
+```{r remakePackage, eval=FALSE}
+remakePackage()
 ```
 
 

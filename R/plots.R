@@ -24,3 +24,5 @@ corPlot <- function(x, y = NULL, verbose = TRUE, ...) {
 
 
 }
+
+# TODO: barplot with melt

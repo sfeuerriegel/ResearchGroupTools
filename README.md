@@ -37,6 +37,25 @@ This section shows the basic functionality of how to perform a sentiment analysi
 library(ResearchGroupTools)
 ```
 
+Library handling
+----------------
+
+-   `Library()` (note the capital "L") loads packages. If not available, these are automatically installed.
+
+``` r
+Library("ggplot2", "dplyr")
+#> ggplot2
+#> dplyr
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
+```
+
 Numerical functions
 -------------------
 
@@ -62,6 +81,15 @@ ggplot(df, aes(x=x, y=y)) +
 ```
 
 ![](README-scientific_labels-1.png)
+
+Package development
+-------------------
+
+-   `remakePackage()` builds, loads and checks package during the development process all at once. In particular, the manual is updated.
+
+``` r
+remakePackage()
+```
 
 License
 -------
