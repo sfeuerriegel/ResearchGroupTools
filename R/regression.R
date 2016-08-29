@@ -1,4 +1,29 @@
-# TODO: better summary
+#' Hides variables in coefficient test
+#'
+#' Excludes variables -- usually dummies variables -- following a certain naming scheme.
+#' @param model Object of type \code{lm}.
+#' @param vcov. A specification of the covariance matrix as used by
+#' \code{\link[lmtest]{coeftest}}.
+#' @param hide A string. All variables starting with that name are excluded.
+#' @examples
+#' x1 <- 1:100
+#' x2 <- rep(c(1, 2), 50)
+#' y <- x1 + x2 + rnorm(100)
+#'
+#' m <- lm(y ~ x1 + x2)
+#'
+#' showCoeftest(m, hide = "x") # leaves only the intercept
+#' @export
+showCoeftest <- function(model, vcov. = NULL, hide = NULL) {
+  if (is.null(hide)) {
+    idx <- 1:length(coef(model))
+  } else {
+    # Note: "-" to invert selection
+    idx <- -grep(paste0("^", hide), names(coef(model)))
+  }
+
+  lmtest::coeftest(model, vcov. = vcov.)[idx, ]
+}
 
 #' Create formula from strings
 #'
@@ -85,3 +110,19 @@ getRowsOutlierRemoval <- function(model, cutoff = 0.5) {
 
   return(idx_remove)
 }
+
+regression <- function(formula, data = NULL, subset = NULL, dummies = NULL, cutoff = NULL, rmCoefNA = TRUE) {
+  # Select subset
+  if (!is.null(subset)) {
+    if (is.null(data)) {
+      stop("Argument 'subset' chooses a subset of observation, but no data is given to choose from.")
+    } else {
+      data <- data[subset, ]
+    }
+
+    if (!is.null(dummies)) {
+      #TODO: dummies
+    }
+  }
+}
+

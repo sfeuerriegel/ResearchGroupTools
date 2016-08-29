@@ -20,7 +20,8 @@ Imports:
     psych,
     xtable,
     Hmisc,
-    dplyr
+    dplyr,
+    lmtest
 Suggests:
     testthat,
     knitr,
