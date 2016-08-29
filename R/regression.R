@@ -1,5 +1,26 @@
 # TODO: better summary
 
+#' Create formula from strings
+#'
+#' @param dependent Name of dependent variable.
+#' @param independent String or vector of strings with independent variables.
+#' @param dummies Optional name for dummies. If \code{NULL} (default), then dummies are omitted.
+#' @examples
+#' makeFormula("y", "x")
+#' makeFormula("y", c("x1", "x2", "x3"))
+#' makeFormula("y", c("x1", "x2", "x3"), "dummies")
+#' @export
+makeFormula <- function(dependent, independent, dummies = NULL) {
+  f <- paste0(dependent, " ~ ", paste0(independent, collapse = " + "))
+
+  if (!is.null(dummies)) {
+    f <- paste0(f, " + dummies")
+  }
+
+  return(as.formula(f))
+}
+
+#' @importFrom stats AIC BIC as.formula pf quantile resid
 #' @export
 extractRegressionStatistics <- function(model) {
   s <- summary(model)
