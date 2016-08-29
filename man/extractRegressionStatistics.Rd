@@ -10,7 +10,7 @@ extractRegressionStatistics(model)
 \item{model}{Object of type \code{lm}.}
 }
 \value{
-Returns \code{data.frame} with named columns.
+Returns data frame with named columns.
 }
 \description{
 Function extracts various parameter from an \code{lm} object, including the (adjuste) R-squared,

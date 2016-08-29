@@ -2,7 +2,7 @@
 #'
 #' Calculates summary statistics for dataset and display key variables in a nice
 #' format. It also writes the table into a LaTeX file if desired.
-#' @param x Dataset in the form of a matrix or a \code{data.frame}.
+#' @param x Dataset in the form of a matrix or a data frame.
 #' @param digits Number of digits to be printed (default: 3).
 #' @param subset Variables to be selected.
 #' @param filename Path to which a LaTeX copy is exported (default is

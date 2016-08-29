@@ -201,7 +201,7 @@ summary(m)
 ```
 
 
-* `showCoeftest()` show coefficient tests, but hides (dummy) variables starting with a certain string.
+* `showCoeftest()` shows coefficient tests, but hides (dummy) variables starting with a certain string.
 
 ```{r showCoeftest}
 x1 <- 1:100

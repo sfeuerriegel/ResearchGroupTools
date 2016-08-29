@@ -1,7 +1,7 @@
 #' Names of columns with \code{NA} values
 #'
 #' Identifies columns that contain an \code{NA} value
-#' @param d A matrix or \code{data.frame}.
+#' @param d A matrix or data frame.
 #' @return Vector with column identifiers
 #' @examples
 #' m <- matrix(letters[c(1, 2, NA, 3, NA, 4, 5, 6, 7, 8)],
@@ -57,7 +57,7 @@ showColsNA <- function(d) {
 #' Indices of rows with \code{NA} values
 #'
 #' Identifies rows that contain an \code{NA} value
-#' @param d A matrix or \code{data.frame}.
+#' @param d A matrix or data frame.
 #' @return Vector with indices
 #' @examples
 #' m <- matrix(letters[c(1, 2, NA, 3, NA, 4, 5, 6, 7, 8)],

@@ -7,7 +7,7 @@
 findColsNA(d)
 }
 \arguments{
-\item{d}{A matrix or \code{data.frame}.}
+\item{d}{A matrix or data frame.}
 }
 \value{
 Vector with column identifiers

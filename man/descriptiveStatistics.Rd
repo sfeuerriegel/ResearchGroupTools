@@ -8,7 +8,7 @@ descriptiveStatistics(x, digits = 3, subset = c("mean", "median", "min",
   "max", "sd", "skew", "kurtosis"), filename = "table_descriptives.tex")
 }
 \arguments{
-\item{x}{Dataset in the form of a matrix or a \code{data.frame}.}
+\item{x}{Dataset in the form of a matrix or a data frame.}
 
 \item{digits}{Number of digits to be printed (default: 3).}
 

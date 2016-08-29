@@ -64,7 +64,7 @@ makeFormula <- function(dependent, independent, dummies = NULL) {
 #' Function extracts various parameter from an \code{lm} object, including the (adjuste) R-squared,
 #' AIC, BIC and the outcome of the F-test.
 #' @param model Object of type \code{lm}.
-#' @return Returns \code{data.frame} with named columns.
+#' @return Returns data frame with named columns.
 #' @examples
 #' x <- 1:10
 #' y <- 1 + x + rnorm(10)
