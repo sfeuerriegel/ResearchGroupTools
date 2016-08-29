@@ -17,7 +17,12 @@ makeFormula <- function(dependent, independent, dummies = NULL) {
     f <- paste0(f, " + dummies")
   }
 
-  return(as.formula(f))
+  f <- formula(f)
+
+  # formula is associated to an environment; change to parent
+  environment(f) <- globalenv()
+
+  return(f)
 }
 
 #' Extracts key statistics of regression
