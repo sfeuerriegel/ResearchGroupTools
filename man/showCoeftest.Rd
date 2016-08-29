@@ -15,7 +15,7 @@ showCoeftest(model, vcov. = NULL, hide = NULL)
 \item{hide}{A string. All variables starting with that name are excluded.}
 }
 \description{
-Excludes variables -- usually dummies variables -- following a certain naming scheme.
+Excludes variables -- usually dummies variables -- following a certain naming scheme. It also appends significance stars.
 }
 \examples{
 x1 <- 1:100

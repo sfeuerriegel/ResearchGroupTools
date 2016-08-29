@@ -1,6 +1,6 @@
 #' Hides variables in coefficient test
 #'
-#' Excludes variables -- usually dummies variables -- following a certain naming scheme.
+#' Excludes variables -- usually dummies variables -- following a certain naming scheme. It also appends significance stars.
 #' @param model Object of type \code{lm}.
 #' @param vcov. A specification of the covariance matrix as used by
 #' \code{\link[lmtest]{coeftest}}.
@@ -13,6 +13,7 @@
 #' m <- lm(y ~ x1 + x2)
 #'
 #' showCoeftest(m, hide = "x") # leaves only the intercept
+#' @importFrom stats coef
 #' @export
 showCoeftest <- function(model, vcov. = NULL, hide = NULL) {
   if (is.null(hide)) {
@@ -22,7 +23,14 @@ showCoeftest <- function(model, vcov. = NULL, hide = NULL) {
     idx <- -grep(paste0("^", hide), names(coef(model)))
   }
 
-  lmtest::coeftest(model, vcov. = vcov.)[idx, ]
+  ct <- lmtest::coeftest(model, vcov. = vcov.)[idx, ]
+  if (is.null(dim(ct))) {
+    # only one variable left; change layout
+    ct <- as.data.frame(t(ct))
+    rownames(ct) <- names(coef(model))[idx]
+  }
+
+  return(data.frame(ct, Stars = as.vector(unlist(lapply(ct[, 4], signifianceToStars)))))
 }
 
 #' Create formula from strings
@@ -34,6 +42,7 @@ showCoeftest <- function(model, vcov. = NULL, hide = NULL) {
 #' makeFormula("y", "x")
 #' makeFormula("y", c("x1", "x2", "x3"))
 #' makeFormula("y", c("x1", "x2", "x3"), "dummies")
+#' @importFrom stats formula
 #' @export
 makeFormula <- function(dependent, independent, dummies = NULL) {
   f <- paste0(dependent, " ~ ", paste0(independent, collapse = " + "))
@@ -111,7 +120,42 @@ getRowsOutlierRemoval <- function(model, cutoff = 0.5) {
   return(idx_remove)
 }
 
-regression <- function(formula, data = NULL, subset = NULL, dummies = NULL, cutoff = NULL, rmCoefNA = TRUE) {
+#' Customized all-in-one regression function
+#'
+#' Function performs default regression via ordinary least squares. It also supports dummy
+#' variables which are not included in the dataset \code{data}, but in a global variable
+#' attached to a formula. With this input, this function can filter for a subset, remove
+#' outliers at a certain cutoff and remove dummies that are NA.
+#' @param formula of type \code{formula}.
+#' @param data An optional data frame contain the variables in the model (excluding the
+#' dummy variables).
+#' @param subset Vector of integers or booleans defining the subset of observations to be
+#' used.
+#' @param dummies String denoting the name of the variable (i.e. matrix or data frame)
+#' containing all dummy variables.
+#' @param cutoff Relative cutoff on each side in percent (default: \code{NULL}). Values
+#' are given in percient, e.g. \code{0.5} represents 0.5\%
+#' at each end).
+#' @param rmDummyNA Boolean indicating whether to remove dummy variables with NA
+#' coefficient (default: removal).
+#' @examples
+#' x <- 1:100
+#' clusters <- rep(c(1, 2), 50)
+#' dummies <- model.matrix(~ clusters)
+#' y <- x + clusters + rnorm(100)
+#' d <- data.frame(x = x, y = y)
+#'
+#' m <- regression(formula("y ~ x + dummies"), data = d, subset = 1:90,
+#'                 dummies = "dummies", cutoff = 0.5)
+#' summary(m)
+#' @importFrom stats coef lm
+#' @export
+regression <- function(formula, data = NULL, subset = NULL, dummies = NULL, cutoff = NULL, rmDummyNA = TRUE) {
+  dummies_copy <- NULL
+  if (!is.null(dummies)) {
+    dummies_copy <- get(dummies, envir = attr(formula, ".Environment"))
+  }
+
   # Select subset
   if (!is.null(subset)) {
     if (is.null(data)) {
@@ -121,8 +165,47 @@ regression <- function(formula, data = NULL, subset = NULL, dummies = NULL, cuto
     }
 
     if (!is.null(dummies)) {
-      #TODO: dummies
+      dummies_copy <- get(dummies, envir = attr(formula, ".Environment"))
+      assign(dummies, dummies_copy[subset, ], envir = attr(formula, ".Environment"))
     }
   }
+
+  if (!is.null(cutoff)) {
+    m <- lm(formula, data)
+    idx_rm <- getRowsOutlierRemoval(m, cutoff)
+
+    cat("Removing", length(idx_rm), "observations; i.e.", length(idx_rm) / nrow(d), "percent.\n")
+
+    if (!is.null(data)) {
+      data <- data[-idx_rm, ]
+    }
+    if (!is.null(dummies)) {
+      dummies_local <- get(dummies, envir = attr(formula, ".Environment"))
+      assign(dummies, dummies_local[-idx_rm, ], envir = attr(formula, ".Environment"))
+    }
+  }
+
+  m <- lm(formula, data)
+
+  if (rmDummyNA && any(is.na(coef(m)))) {
+    if (is.null(dummies)) {
+      stop("Argument 'rmDummyNA' specifies to remove NA dummies but no dummies are present. Instead, at least one coefficient is NA.")
+    }
+
+    cat("Dropping", sum(is.na(coef(m))), "coefficients:", paste(names(coef(m))[is.na(coef(m))]), "\n")
+
+    dummies_local <- get(dummies, envir = attr(formula, ".Environment"))
+    dummies_local <- dummies_local[, -which(colnames(dummies_local) %in% gsub(dummies, "", names(coef(m))[is.na(coef(m))]))]
+    assign(dummies, dummies_local, envir = attr(formula, ".Environment"))
+
+    m <- lm(formula, data)
+  }
+
+  if (!is.null(dummies_copy)) {
+    # restore dummy object
+    assign(dummies, dummies_copy, envir = attr(formula, ".Environment"))
+  }
+
+  return(m)
 }
 
