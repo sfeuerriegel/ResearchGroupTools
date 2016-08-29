@@ -58,10 +58,10 @@ extractRegressionStatistics <- function(model) {
 #'
 #' Function removes outliers at a relative percentage at both ends.
 #' @param model Object of type \code{lm}.
-#' @param cutoff Relative cutoff on each side in percent (default: \code{0.5}, i.e. 0.5% at each end).
+#' @param cutoff Relative cutoff on each side in percent (default: \code{0.5}, i.e. 0.5\% at each end).
 #' @return Returns vector with indices of the observations to be removed.
 #' @examples
-#' d <- data.frame(x = 1:200, y = 1 + x + rnorm(200))
+#' d <- data.frame(x = 1:200, y = 1:200 + rnorm(200))
 #' m <- lm(y ~ x, d)
 #'
 #' idx_rm <- getRowsOutlierRemoval(m)
@@ -70,7 +70,6 @@ extractRegressionStatistics <- function(model) {
 #' @importFrom stats as.formula pf quantile resid
 #' @export
 getRowsOutlierRemoval <- function(model, cutoff = 0.5) {
-  # Finally, we give justice to extreme stock price effects and remove outliers at the 0.5 % level at both ends.
   if (cutoff <= 0 || cutoff >= 100) {
     stop("Argument 'cutoff' must be in the range 0 .. 100 (in %).")
   }
