@@ -20,7 +20,19 @@ makeFormula <- function(dependent, independent, dummies = NULL) {
   return(as.formula(f))
 }
 
-#' @importFrom stats AIC BIC as.formula pf quantile resid
+#' Extracts key statistics of regression
+#'
+#' Function extracts various parameter from an \code{lm} object, including the (adjuste) R-squared,
+#' AIC, BIC and the outcome of the F-test.
+#' @param model Object of type \code{lm}.
+#' @return Returns \code{data.frame} with named columns.
+#' @examples
+#' x <- 1:10
+#' y <- 1 + x + rnorm(10)
+#' m <- lm(y ~ x)
+#'
+#' extractRegressionStatistics(m)
+#' @importFrom stats AIC BIC
 #' @export
 extractRegressionStatistics <- function(model) {
   s <- summary(model)
@@ -42,8 +54,20 @@ extractRegressionStatistics <- function(model) {
                     Fstars = signifianceToStars(p)))
 }
 
-
-
+#' Identify row numbers for outlier removal
+#'
+#' Function removes outliers at a relative percentage at both ends.
+#' @param model Object of type \code{lm}.
+#' @param cutoff Relative cutoff on each side in percent (default: \code{0.5}, i.e. 0.5% at each end).
+#' @return Returns vector with indices of the observations to be removed.
+#' @examples
+#' d <- data.frame(x = 1:200, y = 1 + x + rnorm(200))
+#' m <- lm(y ~ x, d)
+#'
+#' idx_rm <- getRowsOutlierRemoval(m)
+#'
+#' m <- lm(y ~ x, d[-idx_rm, ])
+#' @importFrom stats as.formula pf quantile resid
 #' @export
 getRowsOutlierRemoval <- function(model, cutoff = 0.5) {
   # Finally, we give justice to extreme stock price effects and remove outliers at the 0.5 % level at both ends.
