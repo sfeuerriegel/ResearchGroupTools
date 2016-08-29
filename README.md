@@ -5,10 +5,12 @@
 -   [Functionality](#functionality)
     -   [Library handling](#library-handling)
     -   [Numerical functions](#numerical-functions)
+    -   [Data handling](#data-handling)
     -   [Time series](#time-series)
     -   [Matrix functions (or data.frame)](#matrix-functions-or-data.frame)
     -   [Descriptive statistics](#descriptive-statistics)
     -   [Visualization](#visualization)
+    -   [Regressions](#regressions)
     -   [Package development](#package-development)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -73,6 +75,29 @@ Numerical functions
 ``` r
 ceil(3.4)
 #> [1] 4
+```
+
+Data handling
+-------------
+
+-   `pull()`, `pull_string()` and `pull_ith()` extract single columns from a **dplyr** `tbl` object and return them as a vector.
+
+``` r
+library(dplyr)
+
+d <- data_frame(x = 1:10,
+               y = rnorm(10))
+d %>% pull(x)
+#>  [1]  1  2  3  4  5  6  7  8  9 10
+d %>% pull("x")
+#>  [1]  1  2  3  4  5  6  7  8  9 10
+
+v <- "x"
+d %>% pull_string(v)
+#>  [1]  1  2  3  4  5  6  7  8  9 10
+
+d %>% pull_ith(1)
+#>  [1]  1  2  3  4  5  6  7  8  9 10
 ```
 
 Time series
@@ -195,27 +220,68 @@ linePlot(x, sin(x))
 
 ![](README-linePlot-2.png)
 
--   `scientific_labels()` enables a nice exponential notation in **ggplot2** plots.
+-   `scientificLabels()` enables a nice exponential notation in **ggplot2** plots.
 
 ``` r
 library(ggplot2)
 df <- data.frame(x=rnorm(100), y=rnorm(100))
 ggplot(df, aes(x=x, y=y)) +
   geom_point() +
-  scale_x_continuous(labels=scientific_labels) +
-  scale_y_continuous(labels=scientific_labels)
+  scale_x_continuous(labels=scientificLabels) +
+  scale_y_continuous(labels=scientificLabels)
 ```
 
 ![](README-scientific_labels-1.png)
 
+Regressions
+-----------
+
+-   `makeFormula()` lets one build formulae based on strings to identify the individual variables.
+
+``` r
+makeFormula("y", "x")
+#> y ~ x
+#> <environment: 0x000000000d295ee8>
+makeFormula("y", c("x1", "x2", "x3"))
+#> y ~ x1 + x2 + x3
+#> <environment: 0x000000000d1bba60>
+makeFormula("y", c("x1", "x2", "x3"), "dummies")
+#> y ~ x1 + x2 + x3 + dummies
+#> <environment: 0x000000000cf46328>
+```
+
+-   `extractRegressionStatistics()` extracts key statistics of regression and returns them as a `data.frame` (so that it can later be stacked via row-wise binding).
+
+``` r
+x <- 1:10
+y <- 1 + x + rnorm(10)
+m <- lm(y ~ x)
+ 
+extractRegressionStatistics(m)
+#>   Observations DegreesFreedom ResidualError  Rsquared AdjRsquared      AIC
+#> 1           10              8     0.9743246 0.9176184   0.9073207 31.62712
+#>        BIC Fstatistic Fsignficance Fstars
+#> 1 32.53488   89.10909 1.303216e-05    ***
+```
+
+-   `getRowsOutlierRemoval()` helps to remove outliers at the 0.5% level at both ends (or any other threshold defined by the argument `cutoff`).
+
+``` r
+ d <- data.frame(x = 1:200, y = 1:200 + rnorm(200))
+m <- lm(y ~ x, d)                  # fit original model
+
+idx_rm <- getRowsOutlierRemoval(m) # identify row indices of outliers
+m <- lm(y ~ x, d[-idx_rm, ])       # refit model with outliers removed
+```
+
 Package development
 -------------------
 
--   `remakePackage()` builds, loads and checks package during the development process all at once. In particular, the manual is updated.
+-   `rebuildPackage()` builds, loads and checks package during the development process all at once. In particular, the manual is updated.
 
 ``` r
-remakePackage()
-remakePackage(TRUE) # also runs README.Rmd
+rebuildPackage()
+rebuildPackage(TRUE) # also runs README.Rmd
 ```
 
 ### License
