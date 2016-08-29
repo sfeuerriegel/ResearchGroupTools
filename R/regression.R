@@ -174,7 +174,7 @@ regression <- function(formula, data = NULL, subset = NULL, dummies = NULL, cuto
     m <- lm(formula, data)
     idx_rm <- getRowsOutlierRemoval(m, cutoff)
 
-    cat("Removing", length(idx_rm), "observations; i.e.", length(idx_rm) / nrow(d), "percent.\n")
+    cat("Removing", length(idx_rm), "observations; i.e.", length(idx_rm) / nrow(data), "percent.\n")
 
     if (!is.null(data)) {
       data <- data[-idx_rm, ]

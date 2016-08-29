@@ -25,8 +25,6 @@ at each end).}
 
 \item{rmDummyNA}{Boolean indicating whether to remove dummy variables with NA
 coefficient (default: removal).}
-
-\item{model}{Object of type \code{lm}.}
 }
 \description{
 Function performs default regression via ordinary least squares. It also supports dummy
