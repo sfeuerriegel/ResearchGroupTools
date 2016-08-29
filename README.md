@@ -241,13 +241,59 @@ Regressions
 ``` r
 makeFormula("y", "x")
 #> y ~ x
-#> <environment: 0x000000000d295ee8>
 makeFormula("y", c("x1", "x2", "x3"))
 #> y ~ x1 + x2 + x3
-#> <environment: 0x000000000d1bba60>
 makeFormula("y", c("x1", "x2", "x3"), "dummies")
 #> y ~ x1 + x2 + x3 + dummies
-#> <environment: 0x000000000cf46328>
+```
+
+-   `regression()` is a customized, all-in-one routine for ordinary least squares with optional dummy variables. It can filter for a subset of observations, remove outliers at a certain cutoff and remove dummies that are `NA`.
+
+``` r
+x <- 1:100
+clusters <- rep(c(1, 2), 50)
+dummies <- model.matrix(~ clusters)
+y <- x + clusters + rnorm(100)
+d <- data.frame(x = x, y = y)
+
+m <- regression(formula("y ~ x + dummies"), data = d, subset = 1:90,
+                dummies = "dummies", cutoff = 0.5)
+#> Removing 2 observations; i.e. 0.02 percent.
+#> Dropping 1 coefficients: dummies(Intercept)
+summary(m)
+#> 
+#> Call:
+#> lm(formula = formula, data = data)
+#> 
+#> Residuals:
+#>      Min       1Q   Median       3Q      Max 
+#> -2.35458 -0.47758  0.03748  0.67710  1.89330 
+#> 
+#> Coefficients:
+#>              Estimate Std. Error t value Pr(>|t|)    
+#> (Intercept) -0.265295   0.348944  -0.760    0.449    
+#> x            1.003313   0.003756 267.141  < 2e-16 ***
+#> dummies      1.061065   0.195939   5.415 5.59e-07 ***
+#> ---
+#> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#> 
+#> Residual standard error: 0.9186 on 85 degrees of freedom
+#> Multiple R-squared:  0.9988, Adjusted R-squared:  0.9988 
+#> F-statistic: 3.575e+04 on 2 and 85 DF,  p-value: < 2.2e-16
+```
+
+-   `showCoeftest()` show coefficient tests, but hides (dummy) variables starting with a certain string.
+
+``` r
+x1 <- 1:100
+x2 <- rep(c(1, 2), 50)
+y <- x1 + x2 + rnorm(100)
+
+m <- lm(y ~ x1 + x2)
+
+showCoeftest(m, hide = "x") # leaves only the intercept
+#>               Estimate Std..Error    t.value  Pr...t.. Stars
+#> (Intercept) -0.2788929  0.3515728 -0.7932721 0.4295555
 ```
 
 -   `extractRegressionStatistics()` extracts key statistics of regression and returns them as a `data.frame` (so that it can later be stacked via row-wise binding).
@@ -259,9 +305,9 @@ m <- lm(y ~ x)
  
 extractRegressionStatistics(m)
 #>   Observations DegreesFreedom ResidualError  Rsquared AdjRsquared      AIC
-#> 1           10              8     0.9743246 0.9176184   0.9073207 31.62712
+#> 1           10              8      1.043377 0.9083956    0.896945 32.99659
 #>        BIC Fstatistic Fsignficance Fstars
-#> 1 32.53488   89.10909 1.303216e-05    ***
+#> 1 33.90435   79.33203 2.000286e-05    ***
 ```
 
 -   `getRowsOutlierRemoval()` helps to remove outliers at the 0.5% level at both ends (or any other threshold defined by the argument `cutoff`).

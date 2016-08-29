@@ -186,6 +186,33 @@ makeFormula("y", c("x1", "x2", "x3"))
 makeFormula("y", c("x1", "x2", "x3"), "dummies")
 ```
 
+* `regression()` is a customized, all-in-one routine for ordinary least squares with optional dummy variables. It can filter for a subset of observations, remove outliers at a certain cutoff and remove dummies that are `NA`.
+
+```{r regression}
+x <- 1:100
+clusters <- rep(c(1, 2), 50)
+dummies <- model.matrix(~ clusters)
+y <- x + clusters + rnorm(100)
+d <- data.frame(x = x, y = y)
+
+m <- regression(formula("y ~ x + dummies"), data = d, subset = 1:90,
+                dummies = "dummies", cutoff = 0.5)
+summary(m)
+```
+
+
+* `showCoeftest()` show coefficient tests, but hides (dummy) variables starting with a certain string.
+
+```{r showCoeftest}
+x1 <- 1:100
+x2 <- rep(c(1, 2), 50)
+y <- x1 + x2 + rnorm(100)
+
+m <- lm(y ~ x1 + x2)
+
+showCoeftest(m, hide = "x") # leaves only the intercept
+```
+
 * `extractRegressionStatistics()` extracts key statistics of regression and returns them as a `data.frame` (so that it can later be stacked via row-wise binding).
 
 ```{r extractRegressionStatistics}
