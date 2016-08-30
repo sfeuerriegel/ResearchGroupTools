@@ -77,7 +77,7 @@ correlationMatrix <- function(x, y = NULL,
 
   # matrix with stars
   cor_stars_screen <- apply(cor_Pvalues, 1:2, signifianceToStars)
-  cor_stars_file <- apply(cor_Pvalues, 1:2, function(s) ifelse(s == "   ", "      ", paste0("^{", s, "}")))
+  cor_stars_file <- apply(cor_Pvalues, 1:2, signifianceToTeX)
 
   output_screen <- matrix(paste0(cor_coef, cor_stars_screen),
                           ncol = ifelse(is.null(y), ncol(x), ncol(x) + ncol(y)))
