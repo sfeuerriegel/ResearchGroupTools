@@ -63,6 +63,16 @@ By default, the seed for the random number generator is initialized to 0.
 Library("ggplot2", "dplyr")
 ```
 
+## Strings
+
+* `%+%` concatenates strings (as an alterantive to `paste()`).
+
+```{r concatenate}
+"a" %+% "b"
+3 %+% 4
+`%+%`(letters)
+```
+
 
 ## Numerical functions
 
