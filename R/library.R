@@ -28,3 +28,28 @@ Library <- function(packages, ...) {
     library(p, character.only = TRUE)
   }
 }
+
+#' Loads and installs default libraries for regressions
+#'
+#' Bundles routines for regressions as the mapping between test routine
+#' and originating package is not always obvious.
+#' @examples
+#' \dontrun{
+#'   loadRegressionLibraries()
+#' }
+#' @export
+loadRegressionLibraries <- function() {
+  # Libraries for data handling
+  Library("readr",       # for read_csv
+          "dplyr",       # data handling
+          "magrittr",    # %>% operator
+          "xtable")      # export of LaTeX tables
+
+  # Libraries for econometrics
+  Library("psych",       # for descriptive statistics
+          "lmtest",      # dwtest, bgtest, bptest
+          "sandwich",    # NeweyWest
+          "car",         # car
+          "strucchange") # Fstats
+}
+
