@@ -172,6 +172,7 @@ This requires a few changes to your LaTeX document in order to get it running. T
 \begin{document}
 
 \begin{tabular}{l SSS}
+\toprule
 \include{table_cor}
 \end{tabular}
 \end{document}
