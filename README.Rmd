@@ -162,6 +162,22 @@ correlationMatrix(USArrests, filename = "table_cor.tex") # stores output in LaTe
 unlink("table_cor.tex")
 ```
 
+This requires a few changes to your LaTeX document in order to get it running. The steps are documented in the help of \code{correlationMatrix()}; below is a minimal working example:
+
+```{r eval=FALSE}
+\documentclass{article}
+\usepackage{SIunitx}
+  \newcommand{\sym}[1]{\rlap{$^{#1}$}}
+  \siunitx{input-symbols={()*}}
+\begin{document}
+
+\begin{tabular}{l SSS}
+\include{table_cor}
+\end{tabular}
+\end{document}
+```
+
+Above, we included `SIunitx`, introduced a command `\sym`, changed the `input-symbols` and used custom column alignments (`S`).
 
 ## Visualization
 

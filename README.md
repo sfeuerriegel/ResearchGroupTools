@@ -4,6 +4,7 @@
     -   [Usage](#usage)
 -   [Functionality](#functionality)
     -   [Library handling](#library-handling)
+    -   [Strings](#strings)
     -   [Numerical functions](#numerical-functions)
     -   [Data handling](#data-handling)
     -   [Time series](#time-series)
@@ -65,6 +66,17 @@ Library handling
 Library("ggplot2", "dplyr")
 #> ggplot2
 #> dplyr
+```
+
+Strings
+-------
+
+-   `%+%` concatenates strings (as an alterantive to `paste()`).
+
+``` r
+"a" %+% "b"
+3 %+% 4
+`%+%`(letters)
 ```
 
 Numerical functions
@@ -190,16 +202,33 @@ correlationMatrix(USArrests)
 #>            Murder  Assault UrbanPop Rape
 #> Murder                                  
 #> Assault  0.802***                       
-#> UrbanPop 0.070    0.259                 
-#> Rape     0.564*** 0.665*** 0.411**
+#> UrbanPop    0.070    0.259              
+#> Rape     0.564*** 0.665***  0.411**
 correlationMatrix(USArrests, filename = "table_cor.tex") # stores output in LaTeX file
 #>            Murder  Assault UrbanPop Rape
 #> Murder                                  
 #> Assault  0.802***                       
-#> UrbanPop 0.070    0.259                 
-#> Rape     0.564*** 0.665*** 0.411**
+#> UrbanPop    0.070    0.259              
+#> Rape     0.564*** 0.665***  0.411**
 unlink("table_cor.tex")
 ```
+
+This requires a few changes to your LaTeX document in order to get it running. The steps are documented in the help of ; below is a minimal working example:
+
+``` r
+\documentclass{article}
+\usepackage{SIunitx}
+  \newcommand{\sym}[1]{\rlap{$^{#1}$}}
+  \siunitx{input-symbols={()*}}
+\begin{document}
+
+\begin{tabular}{l SSS}
+\include{table_cor}
+\end{tabular}
+\end{document}
+```
+
+Above, we included `SIunitx`, introduced a command `\sym`, changed the `input-symbols` and used custom column alignments (`S`).
 
 Visualization
 -------------
@@ -258,7 +287,7 @@ d <- data.frame(x = x, y = y)
 
 m <- regression(formula("y ~ x + dummies"), data = d, subset = 1:90,
                 dummies = "dummies", cutoff = 0.5)
-#> Removing 2 observations; i.e. 0.02 percent.
+#> Removing 2 observations; i.e. 0.02222222 percent.
 #> Dropping 1 coefficients: dummies(Intercept)
 summary(m)
 #> 
@@ -282,7 +311,7 @@ summary(m)
 #> F-statistic: 3.575e+04 on 2 and 85 DF,  p-value: < 2.2e-16
 ```
 
--   `showCoeftest()` show coefficient tests, but hides (dummy) variables starting with a certain string.
+-   `showCoeftest()` shows coefficient tests, but hides (dummy) variables starting with a certain string.
 
 ``` r
 x1 <- 1:100

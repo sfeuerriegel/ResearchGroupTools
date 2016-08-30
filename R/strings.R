@@ -9,6 +9,6 @@
 #' 3 %+% 4
 #' `%+%`(letters)
 #' @export
-concatenate <- function(...) {
+`%+%` <- function(...) {
   return(paste0(...))
 }

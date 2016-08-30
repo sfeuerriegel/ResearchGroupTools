@@ -39,6 +39,21 @@ Calculates a correlation matrix for a dataset and display variables, as well
 as P-values in asteriks notation nicely. The function also writes the table
 into a LaTeX file if desired.
 }
+\details{
+To embed this correlation table inside LaTeX, requires a specific
+format as follows:
+\enumerate{
+  \item Insert the library \code{SIunitx} inside the preamble of your
+  LaTeX document.
+  \item At the same location, define the following macro
+  \code{\\newcommand\{\\sym}[1]{\\rlap\{$^\{#1\}$\}\}}
+  \item Also in the preamble, change the sisetup
+  \code{\\sisetup\{input-symbols=\{()*\}\}}
+  \item Finally, choose \code{S} as your column alignment.
+}
+Details: \url{http://tex.stackexchange.com/questions/47418/siunitx-specifying-custom-command-as-input-symbol};
+also refer to the example in the README.
+}
 \examples{
 data(USArrests)
 correlationMatrix(USArrests)

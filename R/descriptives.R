@@ -48,6 +48,19 @@ descriptiveStatistics <- function(x, digits = 3,
 #' @param filename Path to which a LaTeX copy is exported (default is
 #' \code{NULL}). If \code{NULL}, no file is generated.
 #' @return Correlation matrix with pretty output.
+#' @details To embed this correlation table inside LaTeX, requires a specific
+#' format as follows:
+#' \enumerate{
+#'   \item Insert the library \code{SIunitx} inside the preamble of your
+#'   LaTeX document.
+#'   \item At the same location, define the following macro
+#'   \code{\\newcommand\{\\sym}[1]{\\rlap\{$^\{#1\}$\}\}}
+#'   \item Also in the preamble, change the sisetup
+#'   \code{\\sisetup\{input-symbols=\{()*\}\}}
+#'   \item Finally, choose \code{S} as your column alignment.
+#' }
+#' Details: \url{http://tex.stackexchange.com/questions/47418/siunitx-specifying-custom-command-as-input-symbol};
+#' also refer to the example in the README.
 #' @examples
 #' data(USArrests)
 #' correlationMatrix(USArrests)
@@ -93,8 +106,8 @@ correlationMatrix <- function(x, y = NULL,
 
     if (diagonale) {
       # incl. dirty workaround for rounding in R
-      diag(output_screen) <- paste0(format(round(c(pi, 1), digits))[2] , "***")
-      diag(output_file) <- paste0(format(round(c(pi, 1), digits))[2], "^{***}")
+      diag(output_screen) <- paste0(format(round(c(pi, 1), digits))[2] , signifianceToStars(0))
+      diag(output_file) <- paste0(format(round(c(pi, 1), digits))[2], signifianceToTeX(0))
     } else {
       diag(output_screen) <- ""
       diag(output_file) <- ""
@@ -122,7 +135,8 @@ correlationMatrix <- function(x, y = NULL,
   if (!is.null(filename)) {
     print(xtable::xtable(output_file, digits = digits),
           only.contents = TRUE, booktabs = TRUE,
-          file = filename, type = "latex")
+          file = filename, type = "latex",
+          sanitize.text.function = identity)
   }
 
   # Hmisc:rcorr concatenates x and y; so extract submatrix
