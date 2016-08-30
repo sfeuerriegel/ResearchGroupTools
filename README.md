@@ -34,12 +34,12 @@ install.packages("devtools")
 devtools::install_github("sfeuerriegel/ResearchGroupTools")
 
 # Option 2: install directly from bundled archive
-# devtoos::install_local("ResearchGroupTools_0.1.0.tar.gz")
+# devtoos::install_local("ResearchGroupTools_0.2.0.tar.gz")
 ```
 
 Notes:
 
--   In the case of option 2, you have to specify the path either to the directory of **ResearchGroupTools** or to the bundled archive **ResearchGroupTools\_0.1.0.tar.gz**
+-   In the case of option 2, you have to specify the path either to the directory of **ResearchGroupTools** or to the bundled archive **ResearchGroupTools\_0.2.0.tar.gz**
 
 -   The package will only be shipped via GitHub; CRAN support is not intended.
 
@@ -66,6 +66,12 @@ Library handling
 Library("ggplot2", "dplyr")
 #> ggplot2
 #> dplyr
+```
+
+-   `loadRegressionLibraries()` loads and installs common libraries for econometric purposes.
+
+``` r
+loadRegressionLibraries()
 ```
 
 Strings
@@ -223,6 +229,7 @@ This requires a few changes to your LaTeX document in order to get it running. T
 \begin{document}
 
 \begin{tabular}{l SSS}
+\toprule
 \include{table_cor}
 \end{tabular}
 \end{document}
