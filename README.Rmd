@@ -76,7 +76,7 @@ loadRegressionLibraries()
 ```{r concatenate}
 "a" %+% "b"
 3 %+% 4
-`%+%`(letters)
+do.call(`%+%`, as.list(letters))
 ```
 
 

@@ -7,7 +7,7 @@
 #' @examples
 #' "a" %+% "b"
 #' 3 %+% 4
-#' `%+%`(letters)
+#' do.call(`%+%`, as.list(letters))
 #' @export
 `%+%` <- function(...) {
   return(paste0(...))
