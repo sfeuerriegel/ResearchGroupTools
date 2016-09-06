@@ -241,7 +241,7 @@ extract_tvalues <- function(model, hide = NULL) {
 
 #' texreg output with t-values
 #'
-#' Function is a customized interface to the \code{\link[texreg]{tetreg}} function. It replaces
+#' Function is a customized interface to the \code{\link[texreg]{texreg}} function. It replaces
 #' standard errors in the output by t-values.
 #' @param model Object of type \code{lm} or a \code{list} of \code{lm} objects.
 #' @param hide A string. All variables starting with that name are excluded. If \code{NULL} (default),
