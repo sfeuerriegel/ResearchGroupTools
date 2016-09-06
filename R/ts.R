@@ -135,7 +135,7 @@ adf <- function(d, vars = colnames(d),
   }
 
   if (!is.null(filename)) {
-    cat("Column names: ", paste0(colnames(result), collapse = ", "))
+    cat("Column names: ", paste0(colnames(result), collapse = " & "))
     print(xtable::xtable(result[, 1:7], digits = digits),
           only.contents = TRUE, include.colnames = FALSE, booktabs = TRUE,
           file = filename, type = "latex")
@@ -182,18 +182,18 @@ cointegrationTable <- function(d, vars = colnames(d),
   coint <- urca::summary(urca::ca.jo(d[, vars], type = type[1], K = K, ...))
 
   result <- cbind(rownames(coint@cval),
-                  coint@teststat,
+                  round(coint@teststat, digits),
                   coint@cval)
   colnames(result) <- c("H0", "TestStatistic", "CriticalValue10", "CriticalValue5", "CriticalValue1")
 
   # TODO: simple ca.jo interpretation
 
-  cat("Column names: ", paste(colnames(result), collapse = ", "))
+  cat("Column names: ", paste(colnames(result), collapse = " & "))
   print(xtable::xtable(result, digits = digits),
         only.contents = TRUE, include.colnames = FALSE, booktabs = TRUE,
         file = filename, type = "latex")
 
-  return(result)
+  return(as.data.frame(result))
 }
 
 #' Pretty plot of impulse response function
