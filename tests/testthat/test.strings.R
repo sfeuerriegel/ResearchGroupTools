@@ -8,5 +8,5 @@ test_that("string concatenation operator", {
   expect_equal(s, "34")
 
   s <- do.call(`%+%`, as.list(letters))
-  expect_equal(letters, "abcdefghijklmnopqrstuvwxyz")
+  expect_equal(s, "abcdefghijklmnopqrstuvwxyz")
 })
