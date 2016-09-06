@@ -21,7 +21,8 @@ Imports:
     xtable,
     Hmisc,
     dplyr,
-    lmtest
+    lmtest,
+    texreg
 Suggests:
     testthat,
     knitr,

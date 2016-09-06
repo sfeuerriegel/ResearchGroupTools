@@ -209,3 +209,60 @@ regression <- function(formula, data = NULL, subset = NULL, dummies = NULL, cuto
   return(m)
 }
 
+#' Extract t-values from lm object
+#'
+#' Function extracts the t-values from an \code{lm} object as given by the \code{summary} function.
+#' @param model Object of type \code{lm}.
+#' @param hide A string. All variables starting with that name are excluded. If \code{NULL} (default),
+#' no variables are omitted.
+#' @return Vector of type \code{numeric}.
+#' @examples
+#' x1 <- 1:100
+#' x2 <- rep(c(1, 2), 50)
+#' y <- x1 + x2 + rnorm(100)
+#'
+#' m <- lm(y ~ x1 + x2)
+#' extract_tvalues(m)
+#' @importFrom stats lm
+extract_tvalues <- function(model, hide = NULL) {
+  if (class(model) != "lm") {
+    stop("Argument 'model' must be of type lm.")
+  }
+
+  if (is.null(hide)) {
+    idx <- 1:length(coef(model))
+  } else {
+    # Note: "-" to invert selection
+    idx <- -grep(paste0("^", hide), names(coef(model)))
+  }
+
+  return(summary(model)$coefficients[idx, "t value"])
+}
+
+#' texreg output with t-values
+#'
+#' Function is a customized interface to the \code{\link[texreg]{tetreg}} function. It replaces
+#' standard errors in the output by t-values.
+#' @param model Object of type \code{lm} or a \code{list} of \code{lm} objects.
+#' @param hide A string. All variables starting with that name are excluded. If \code{NULL} (default),
+#' no variables are omitted.
+#' @param ... Additional parameters that are passed to default \code{\link[texreg]{texreg}} function.
+#' @return Object of type \code{\link[texreg]{texregTable}}.
+#' @examples
+#' \dontrun{
+#' x1 <- 1:100
+#' x2 <- rep(c(1, 2), 50)
+#' y <- x1 + x2 + rnorm(100)
+#'
+#' m <- lm(y ~ x1 + x2)
+#' texreg_tvalues(m, digits = 4)
+#' }
+#' @importFrom texreg texreg
+#' @export
+texreg_tvalues <- function(model, hide = NULL, ...) {
+  if (class(model) == "lm") {
+    return(texreg(model, override.se = extract_tvalues(model, hide = hide), ...))
+  } else {
+    return(texreg(model, override.se = lapply(model, extract_tvalues, hide = hide), ...))
+  }
+}

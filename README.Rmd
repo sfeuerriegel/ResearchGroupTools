@@ -60,7 +60,7 @@ By default, the seed for the random number generator is initialized to 0.
 * `Library()` (note the capital "L") loads packages. If not available, these are automatically installed. 
 
 ```{r Library, message=FALSE}
-Library("ggplot2", "dplyr")
+Library("texreg")
 ```
 
 * `loadRegressionLibraries()` loads and installs common libraries for econometric purposes.
@@ -228,9 +228,9 @@ dummies <- model.matrix(~ clusters)
 y <- x + clusters + rnorm(100)
 d <- data.frame(x = x, y = y)
 
-m <- regression(formula("y ~ x + dummies"), data = d, subset = 1:90,
-                dummies = "dummies", cutoff = 0.5)
-summary(m)
+m_dummies <- regression(formula("y ~ x + dummies"), data = d, subset = 1:90,
+                        dummies = "dummies", cutoff = 0.5)
+summary(m_dummies)
 ```
 
 
@@ -264,6 +264,13 @@ m <- lm(y ~ x, d)                  # fit original model
 
 idx_rm <- getRowsOutlierRemoval(m) # identify row indices of outliers
 m <- lm(y ~ x, d[-idx_rm, ])       # refit model with outliers removed
+```
+
+* `texreg_tvalues()` converts a the result of an ordinary least squares regression into in LaTeX. Instead of reporting standard errors, it gives t-values as a common alternative in finance. An optional parameter `dummies` can be specified which removes certain coefficients in the output.
+
+```{r texreg_tvalues}
+texreg_tvalues(m_dummies)
+texreg_tvalues(m_dummies, hide = "dummies")
 ```
 
 

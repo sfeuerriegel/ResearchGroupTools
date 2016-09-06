@@ -63,9 +63,9 @@ Library handling
 -   `Library()` (note the capital "L") loads packages. If not available, these are automatically installed.
 
 ``` r
-Library("ggplot2", "dplyr")
-#> ggplot2
-#> dplyr
+Library("texreg")
+#> texreg
+#> Warning: package 'texreg' was built under R version 3.3.1
 ```
 
 -   `loadRegressionLibraries()` loads and installs common libraries for econometric purposes.
@@ -81,8 +81,11 @@ Strings
 
 ``` r
 "a" %+% "b"
+#> [1] "ab"
 3 %+% 4
-`%+%`(letters)
+#> [1] "34"
+do.call(`%+%`, as.list(letters))
+#> [1] "abcdefghijklmnopqrstuvwxyz"
 ```
 
 Numerical functions
@@ -102,6 +105,14 @@ Data handling
 
 ``` r
 library(dplyr)
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
 
 d <- data_frame(x = 1:10,
                y = rnorm(10))
@@ -260,6 +271,11 @@ linePlot(x, sin(x))
 
 ``` r
 library(ggplot2)
+#> 
+#> Attaching package: 'ggplot2'
+#> The following object is masked from 'package:ResearchGroupTools':
+#> 
+#>     %+%
 df <- data.frame(x=rnorm(100), y=rnorm(100))
 ggplot(df, aes(x=x, y=y)) +
   geom_point() +
@@ -292,11 +308,11 @@ dummies <- model.matrix(~ clusters)
 y <- x + clusters + rnorm(100)
 d <- data.frame(x = x, y = y)
 
-m <- regression(formula("y ~ x + dummies"), data = d, subset = 1:90,
-                dummies = "dummies", cutoff = 0.5)
+m_dummies <- regression(formula("y ~ x + dummies"), data = d, subset = 1:90,
+                        dummies = "dummies", cutoff = 0.5)
 #> Removing 2 observations; i.e. 0.02222222 percent.
 #> Dropping 1 coefficients: dummies(Intercept)
-summary(m)
+summary(m_dummies)
 #> 
 #> Call:
 #> lm(formula = formula, data = data)
@@ -354,6 +370,71 @@ m <- lm(y ~ x, d)                  # fit original model
 
 idx_rm <- getRowsOutlierRemoval(m) # identify row indices of outliers
 m <- lm(y ~ x, d[-idx_rm, ])       # refit model with outliers removed
+```
+
+-   `texreg_tvalues()` converts a the result of an ordinary least squares regression into in LaTeX. Instead of reporting standard errors, it gives t-values as a common alternative in finance. An optional parameter `dummies` can be specified which removes certain coefficients in the output.
+
+``` r
+texreg_tvalues(m_dummies)
+#> Warning in override(models, override.coef, override.se, override.pvalues, :
+#> Standard errors were provided using 'override.se', but p-values were not
+#> replaced!
+#> 
+#> \begin{table}
+#> \begin{center}
+#> \begin{tabular}{l c }
+#> \hline
+#>  & Model 1 \\
+#> \hline
+#> (Intercept) & $-0.27$      \\
+#>             & $(-0.76)$    \\
+#> x           & $1.00^{***}$ \\
+#>             & $(267.14)$   \\
+#> dummies     & $1.06^{***}$ \\
+#>             & $(5.42)$     \\
+#> \hline
+#> R$^2$       & 1.00         \\
+#> Adj. R$^2$  & 1.00         \\
+#> Num. obs.   & 88           \\
+#> RMSE        & 0.92         \\
+#> \hline
+#> \multicolumn{2}{l}{\scriptsize{$^{***}p<0.001$, $^{**}p<0.01$, $^*p<0.05$}}
+#> \end{tabular}
+#> \caption{Statistical models}
+#> \label{table:coefficients}
+#> \end{center}
+#> \end{table}
+texreg_tvalues(m_dummies, hide = "dummies")
+#> Warning in override(models, override.coef, override.se, override.pvalues, :
+#> Standard errors were provided using 'override.se', but p-values were not
+#> replaced!
+#> Warning in override(models, override.coef, override.se, override.pvalues, :
+#> SEs must be provided as a list. Using default SEs.
+#> 
+#> \begin{table}
+#> \begin{center}
+#> \begin{tabular}{l c }
+#> \hline
+#>  & Model 1 \\
+#> \hline
+#> (Intercept) & $-0.27$      \\
+#>             & $(0.35)$     \\
+#> x           & $1.00^{***}$ \\
+#>             & $(0.00)$     \\
+#> dummies     & $1.06^{***}$ \\
+#>             & $(0.20)$     \\
+#> \hline
+#> R$^2$       & 1.00         \\
+#> Adj. R$^2$  & 1.00         \\
+#> Num. obs.   & 88           \\
+#> RMSE        & 0.92         \\
+#> \hline
+#> \multicolumn{2}{l}{\scriptsize{$^{***}p<0.001$, $^{**}p<0.01$, $^*p<0.05$}}
+#> \end{tabular}
+#> \caption{Statistical models}
+#> \label{table:coefficients}
+#> \end{center}
+#> \end{table}
 ```
 
 Package development

@@ -19,6 +19,6 @@ to concatenate strings.
 \examples{
 "a" \%+\% "b"
 3 \%+\% 4
-`\%+\%`(letters)
+do.call(`\%+\%`, as.list(letters))
 }
 
