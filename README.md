@@ -490,6 +490,37 @@ cointegrationTable(USArrests, vars = c("Murder", "Rape"), K = 2)
 unlink("cointegration_eigen.tex")
 ```
 
+-   `plotIrf()` returns a `ggplot` with a nice impulse response function in black/white.
+
+``` r
+library(vars)
+#> Warning: package 'vars' was built under R version 3.3.1
+#> Loading required package: MASS
+#> Warning: package 'MASS' was built under R version 3.3.1
+#> 
+#> Attaching package: 'MASS'
+#> The following object is masked from 'package:dplyr':
+#> 
+#>     select
+#> Loading required package: strucchange
+#> Loading required package: zoo
+#> 
+#> Attaching package: 'zoo'
+#> The following objects are masked from 'package:base':
+#> 
+#>     as.Date, as.Date.numeric
+#> Loading required package: sandwich
+#> Loading required package: urca
+#> Warning: package 'urca' was built under R version 3.3.1
+#> Loading required package: lmtest
+data(Canada)
+var.2c <- VAR(Canada, p = 2, type = "const")
+irf <- irf(var.2c, impulse = "e", response = "prod", boot = TRUE)
+plotIrf(irf, ylab = "Production")
+```
+
+![](README-plotrf-1.png)
+
 Package development
 -------------------
 

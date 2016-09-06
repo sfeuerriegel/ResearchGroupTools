@@ -5,7 +5,7 @@
 \title{Cointegration test}
 \usage{
 cointegrationTable(d, vars = colnames(d), type = c("eigen", "trace"),
-  K = NULL, filename = paste0("cointegration", type[1], ".tex"),
+  K = NULL, filename = paste0("cointegration_", type[1], ".tex"),
   digits = 3, ...)
 }
 \arguments{

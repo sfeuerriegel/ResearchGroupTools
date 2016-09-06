@@ -214,10 +214,61 @@ cointegrationTable <- function(d, vars = colnames(d),
 #'
 #' Plots the impulse response function in black/white manner for
 #' suitability with common journals.
-#' @param irf Object of type \code{\link[vars]{varirf}} with impulse response function.
-#' @param ylab ylab
+#' @param irf Object package with impulse response function, i.e. type
+#' \code{varirf} from the \code{vars}
+#' @param name Name of variable of interest.
+#' @param ylab Text on y-axis. By default, this argument is \code{NULL} and the
+#' variable name is taken automatically instead.
+#' @param alpha Opacity for confidence interval. Default is 0.3
+#' @param n.ahead Optional parameter to later choose a smaller x-range for
+#' plotting. Argument expects a numeric value with the maximum step.
+#' @return Object of \code{\link[ggplot2]{ggplot}}.
+#' @examples
+#' library(vars)
+#' data(Canada)
+#' # For VAR
+#' var.2c <- VAR(Canada, p = 2, type = "const")
+#' irf <- irf(var.2c, impulse = "e", response = "prod", boot = TRUE)
+#' plotIrf(irf, ylab = "Production")
 #' @export
-plotImpulseResponseFunction <- function(irf, ylab) {
+plotIrf <- function(irf, name = NULL, ylab = NULL, alpha = 0.3, n.ahead = NULL) {
+  if (!irf$boot) {
+    stop("Plot requires confidence intervals (call irf with argument boot).")
+  }
 
+  if (is.null(name)) {
+    if (length(irf$impulse) == 1) {
+      name <- irf$impulse
+    } else {
+      stop("More than one impulse stored, but no selection made via argument 'name'.")
+    }
+  } else if (!(name %in% irf$impulse)) {
+    stop("Argument 'name' is not a valid impulse as it is not stored in 'irf' object.")
+  }
+
+  df <- data.frame(x = 1:length(irf$irf[[name]]),
+                   impulse = irf$irf[[name]],
+                   upper = irf$Upper[[name]],
+                   lower = irf$Lower[[name]])
+  colnames(df) <- c("x", "impulse", "upper", "lower")
+
+  if (!is.null(n.ahead)) {
+    df <- df[1:n.ahead, ]
+  }
+
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = x)) +
+    ggplot2::geom_line(ggplot2::aes(y = impulse)) +
+    ggplot2::geom_hline(ggplot2::aes(yintercept = 0)) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = lower, ymax = upper), alpha = alpha) +
+    ggplot2::theme_bw() +
+    ggplot2::xlab("")
+
+  if (is.null(ylab)) {
+    p <- p + ggplot2::ylab(name)
+  } else {
+    p <- p + ggplot2::ylab(ylab)
+  }
+
+  return(p)
 }
 

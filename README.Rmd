@@ -285,9 +285,19 @@ unlink("adf.tex")
 
 * `cointegrationTable()` performs a cointegration test following the Johansen procedure. The output is written as LaTeX into a file named `filename`. 
 
-```{r, include=-2}
+```{r cointegrationTable, include=-2}
 cointegrationTable(USArrests, vars = c("Murder", "Rape"), K = 2)
 unlink("cointegration_eigen.tex")
+```
+
+* `plotIrf()` returns a `ggplot` with a nice impulse response function in black/white.
+
+```{r plotrf}
+library(vars)
+data(Canada)
+var.2c <- VAR(Canada, p = 2, type = "const")
+irf <- irf(var.2c, impulse = "e", response = "prod", boot = TRUE)
+plotIrf(irf, ylab = "Production")
 ```
 
 
