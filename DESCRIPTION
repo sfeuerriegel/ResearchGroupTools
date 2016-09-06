@@ -22,7 +22,8 @@ Imports:
     Hmisc,
     dplyr,
     lmtest,
-    texreg
+    texreg,
+    urca
 Suggests:
     testthat,
     knitr,

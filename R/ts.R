@@ -80,3 +80,82 @@ differences <- function(x, lag = 1, order = 1, na_padding = TRUE) {
 
   return(d)
 }
+
+#' Augmented Dickey-Fuller (ADF) test
+#'
+#' Performs the Augmented Dickey-Fuller (ADF) test to check if a time
+#' series is stationary. The result comes in a pretty format.
+#' @param d Data frame containing the time series in column-wise format.
+#' @param vars Column names to check for stationarity. If not specified,
+#' then all columns are tested.
+#' @param type Test type, either \code{"none"}, \code{"drift"} or
+#' \code{"trend"}. See \code{\link[urca]{ur.df}} for details.
+#' @param lags Number of lags for endogenous variable to be included.
+#' Default is 1. See \code{\link[urca]{ur.df}} for details.
+#' @param filename Optional filename to export the table as LaTeX.
+#' Default is \code{NULL}, i.e. no export.
+#' @param digits Number of digits to be printed (default: 3).
+#' @param verbose Flag if the result of each ADF test is printed.
+#' Default is yes (\code{TRUE}).
+#' @param ... Further parameters passed on to \code{\link[urca]{ur.df}}.
+#' @return P-values from ADF test in a simple table. If P-values are
+#' < 0.05, this is an indication of stationarity.
+#' @examples
+#' data(USArrests)
+#' adf(USArrests)
+#' adf(USArrests, vars = c("Murder", "Rape"), type = "drift",
+#'     filename = "adf.tex", verbose = FALSE)
+#' unlink("adf.tex")
+#' @importFrom stats pnorm
+#' @export
+adf <- function(d, vars = colnames(d),
+                type = c("none", "drift", "trend"), lags = 1,
+                filename = NULL, digits = 3, verbose = TRUE, ...) {
+  result <- data.frame(matrix(0, nrow = length(vars), ncol = 8))
+  result[, 1] <- vars
+  result[, 2] <- type[1]
+  colnames(result) <- c("Variable", "Type", "Lags",
+                        "TestStat", "CriticalValue1", "CriticalValue5", "CriticalValue10",
+                        "Pvalue")
+
+  for (i in 1:length(vars)) {
+    cat(paste0(i, "\n"))
+
+    if (inherits(d, "tbl_df")) {
+      ts <- as.numeric(pull_string(d, vars[i]))
+    } else {
+      ts <- as.numeric(d[, i])
+    }
+
+    tmp <- urca::ur.df(ts, type = type[1], ...)
+    result[i, 3:8] <- c(tmp@lags, tmp@teststat[1], tmp@cval[1, ], pnorm(tmp@teststat[1])*2)
+    if (verbose) {
+      print(summary(tmp))
+    }
+  }
+
+  if (!is.null(filename)) {
+    print(xtable::xtable(result[, 1:7], digits = digits),
+          only.contents = TRUE, include.colnames = FALSE, booktabs = TRUE,
+          file = filename, type = "latex")
+  }
+
+  # P-value close to 0: stationarity
+  if (all(result$Pvalue < 0.05)) {
+    cat("All time series appear stationary, since all P-values < 0.05.\n")
+  } else {
+    cat("The following time series appear stationary, as P-values > 0.05: ",
+        paste(vars[result$Pvalue >= 0.05], collapse = ", "), "\n")
+  }
+
+  return(result)
+}
+
+cointegrationTable <- function() {
+
+}
+
+plotImpulseResponseFunction <- function() {
+
+}
+

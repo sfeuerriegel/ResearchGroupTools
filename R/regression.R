@@ -217,12 +217,14 @@ regression <- function(formula, data = NULL, subset = NULL, dummies = NULL, cuto
 #' no variables are omitted.
 #' @return Vector of type \code{numeric}.
 #' @examples
+#' \dontrun{
 #' x1 <- 1:100
 #' x2 <- rep(c(1, 2), 50)
 #' y <- x1 + x2 + rnorm(100)
 #'
 #' m <- lm(y ~ x1 + x2)
 #' extract_tvalues(m)
+#' }
 #' @importFrom stats lm
 extract_tvalues <- function(model, hide = NULL) {
   if (class(model) != "lm") {
@@ -249,14 +251,12 @@ extract_tvalues <- function(model, hide = NULL) {
 #' @param ... Additional parameters that are passed to default \code{\link[texreg]{texreg}} function.
 #' @return Object of type \code{\link[texreg]{texregTable}}.
 #' @examples
-#' \dontrun{
 #' x1 <- 1:100
 #' x2 <- rep(c(1, 2), 50)
 #' y <- x1 + x2 + rnorm(100)
 #'
 #' m <- lm(y ~ x1 + x2)
 #' texreg_tvalues(m, digits = 4)
-#' }
 #' @importFrom texreg texreg
 #' @export
 texreg_tvalues <- function(model, hide = NULL, ...) {
