@@ -19,11 +19,13 @@ Vector of type \code{numeric}.
 Function extracts the t-values from an \code{lm} object as given by the \code{summary} function.
 }
 \examples{
+\dontrun{
 x1 <- 1:100
 x2 <- rep(c(1, 2), 50)
 y <- x1 + x2 + rnorm(100)
 
 m <- lm(y ~ x1 + x2)
 extract_tvalues(m)
+}
 }
 

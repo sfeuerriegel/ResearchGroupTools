@@ -22,13 +22,11 @@ Function is a customized interface to the \code{\link[texreg]{texreg}} function.
 standard errors in the output by t-values.
 }
 \examples{
-\dontrun{
 x1 <- 1:100
 x2 <- rep(c(1, 2), 50)
 y <- x1 + x2 + rnorm(100)
 
 m <- lm(y ~ x1 + x2)
 texreg_tvalues(m, digits = 4)
-}
 }
 
