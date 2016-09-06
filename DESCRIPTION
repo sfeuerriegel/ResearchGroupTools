@@ -23,7 +23,8 @@ Imports:
     dplyr,
     lmtest,
     texreg,
-    urca
+    urca,
+    vars
 Suggests:
     testthat,
     knitr,

@@ -22,6 +22,7 @@ descriptiveStatistics <- function(x, digits = 3,
   rownames(m) <- colnames(x)
 
   if (!is.null(filename)) {
+    cat("Column names: ", paste(colnames(m), collapse = ", "))
     print(xtable::xtable(m, digits = digits),
           only.contents = TRUE, include.colnames = FALSE, booktabs = TRUE,
           file = filename, type = "latex")

@@ -266,3 +266,9 @@ texreg_tvalues <- function(model, hide = NULL, ...) {
     return(texreg(model, override.se = lapply(model, extract_tvalues, hide = hide), ...))
   }
 }
+
+# TODO: ivreg
+
+# TODO: stepwise regression
+
+# TODO: standardized coefficients

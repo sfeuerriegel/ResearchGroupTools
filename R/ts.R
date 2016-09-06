@@ -135,6 +135,7 @@ adf <- function(d, vars = colnames(d),
   }
 
   if (!is.null(filename)) {
+    cat("Column names: ", paste0(colnames(result), collapse = ", "))
     print(xtable::xtable(result[, 1:7], digits = digits),
           only.contents = TRUE, include.colnames = FALSE, booktabs = TRUE,
           file = filename, type = "latex")
@@ -151,11 +152,58 @@ adf <- function(d, vars = colnames(d),
   return(result)
 }
 
-cointegrationTable <- function() {
+#' Cointegration test
+#'
+#' Conducts a cointegration test based on the Johansen procedure for
+#' multivariate time series.
+#' @param d Data frame containing the time series in column-wise format.
+#' @param vars Column names to check for stationarity. If not specified,
+#' then all columns are tested.
+#' @param type The test to be conducted, either \code{"eigen"} or
+#'  \code{"trace"}. See \code{\link[urca]{ur.df}} for details.
+#' @param K The lag order of the series (levels) in the VAR.
+#' @param filename Filename to export the table as LaTeX.
+#' @param digits Number of digits to be printed (default: 3).
+#' @param ... Further parameters passed on to \code{\link[urca]{ca.jo}}.
+#' @return Table with result from cointegration test.
+#' @examples
+#' data(USArrests)
+#' cointegrationTable(USArrests, vars = c("Murder", "Rape"), K = 2)
+#' unlink("cointegration_eigen.tex")
+#' @export
+cointegrationTable <- function(d, vars = colnames(d),
+                               type = c("eigen", "trace"), K = NULL,
+                               filename = paste0("cointegration", type[1], ".tex"),
+                               digits = 3, ...) {
+  if (is.null(K)) {
+    stop("Lag number K needs to be estimated via information criterion and passed on to this function.")
+  }
 
+  coint <- urca::summary(urca::ca.jo(d[, vars], type = type[1], K = K, ...))
+
+  result <- cbind(rownames(coint@cval),
+                  coint@teststat,
+                  coint@cval)
+  colnames(result) <- c("H0", "TestStatistic", "CriticalValue10", "CriticalValue5", "CriticalValue1")
+
+  # TODO: simple ca.jo interpretation
+
+  cat("Column names: ", paste(colnames(result), collapse = ", "))
+  print(xtable::xtable(result, digits = digits),
+        only.contents = TRUE, include.colnames = FALSE, booktabs = TRUE,
+        file = filename, type = "latex")
+
+  return(result)
 }
 
-plotImpulseResponseFunction <- function() {
+#' Pretty plot of impulse response function
+#'
+#' Plots the impulse response function in black/white manner for
+#' suitability with common journals.
+#' @param irf Object of type \code{\link[vars]{varirf}} with impulse response function.
+#' @param ylab ylab
+#' @export
+plotImpulseResponseFunction <- function(irf, ylab) {
 
 }
 
