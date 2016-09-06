@@ -283,6 +283,13 @@ adf(USArrests, vars = c("Murder", "Rape"), type = "drift",
 unlink("adf.tex")
 ```
 
+* `cointegrationTable()` performs a cointegration test following the Johansen procedure. The output is written as LaTeX into a file named `filename`. 
+
+```{r, include=-2}
+cointegrationTable(USArrests, vars = c("Murder", "Rape"), K = 2)
+unlink("cointegration_eigen.tex")
+```
+
 
 ## Package development
 

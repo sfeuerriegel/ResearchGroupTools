@@ -205,6 +205,7 @@ Descriptive statistics
 ``` r
 data(USArrests)
 descriptiveStatistics(USArrests)
+#> Column names:  mean, median, min, max, sd, skew, kurtosis
 #>             mean median  min   max     sd   skew kurtosis
 #> Murder     7.788   7.25  0.8  17.4  4.356  0.371   -0.949
 #> Assault  170.760 159.00 45.0 337.0 83.338  0.221   -1.145
@@ -464,7 +465,7 @@ adf(USArrests, vars = c("Murder", "Rape"), type = "drift",
    filename = "adf.tex", verbose = FALSE)
 #> 1
 #> 2
-#> All time series appear stationary, since all P-values < 0.05.
+#> Column names:  Variable, Type, Lags, TestStat, CriticalValue1, CriticalValue5, CriticalValue10, PvalueAll time series appear stationary, since all P-values < 0.05.
 #>   Variable  Type Lags  TestStat CriticalValue1 CriticalValue5
 #> 1   Murder drift    1 -5.653178          -3.58          -2.93
 #> 2     Rape drift    1 -4.762830          -3.58          -2.93
@@ -472,6 +473,20 @@ adf(USArrests, vars = c("Murder", "Rape"), type = "drift",
 #> 1            -2.6 1.575081e-08
 #> 2            -2.6 1.908966e-06
 unlink("adf.tex")
+```
+
+-   `cointegrationTable()` performs a cointegration test following the Johansen procedure. The output is written as LaTeX into a file named `filename`.
+
+``` r
+cointegrationTable(USArrests, vars = c("Murder", "Rape"), K = 2)
+#> Column names:  H0, TestStatistic, CriticalValue10, CriticalValue5, CriticalValue1
+#>                H0 TestStatistic CriticalValue10 CriticalValue5
+#> r <= 1 | r <= 1 |        21.702             6.5           8.18
+#> r = 0  | r = 0  |         28.63           12.91           14.9
+#>          CriticalValue1
+#> r <= 1 |          11.65
+#> r = 0  |          19.19
+unlink("cointegration_eigen.tex")
 ```
 
 Package development
