@@ -181,19 +181,33 @@ cointegrationTable <- function(d, vars = colnames(d),
 
   coint <- urca::summary(urca::ca.jo(d[, vars], type = type[1], K = K, ...))
 
-  result <- cbind(rownames(coint@cval),
-                  round(coint@teststat, digits),
-                  coint@cval)
+  result <- data.frame(cbind(rownames(coint@cval),
+                             round(coint@teststat, digits),
+                             coint@cval),
+                       stringsAsFactors = FALSE)
   colnames(result) <- c("H0", "TestStatistic", "CriticalValue10", "CriticalValue5", "CriticalValue1")
 
-  # TODO: simple ca.jo interpretation
+  result <- result[nrow(result):1, ]
+
+  if (all(result$TestStatistic < result$CriticalValue1)) {
+    cat("All test statistics are smaller than the 1% critical values: time series are not cointegrated.", "\n")
+  } else {
+    # any(result$TestStatistic > result$CriticalValue1 ))
+
+    if (result$TestStatistic[1] > result$CriticalValue1[1]) {
+      cat("Test statistic in the top row is larger than the 1% values:  All time-series variables are stationary, i.e. I(0), to start with. Cointegration is not relevant here.", "\n")
+    } else {
+      i <- min(which(result$TestStatistic[1] > result$CriticalValue1[1])) - 1
+      cat("First order r where test statistic is larger than the 1% critical value is", rownames(result)[i], ": Integrated of order", i, "\n")
+    }
+  }
 
   cat("Column names: ", paste(colnames(result), collapse = " & "))
   print(xtable::xtable(result, digits = digits),
         only.contents = TRUE, include.colnames = FALSE, booktabs = TRUE,
         file = filename, type = "latex")
 
-  return(as.data.frame(result))
+  return(result)
 }
 
 #' Pretty plot of impulse response function
