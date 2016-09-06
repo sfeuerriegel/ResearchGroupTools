@@ -12,6 +12,7 @@
     -   [Descriptive statistics](#descriptive-statistics)
     -   [Visualization](#visualization)
     -   [Regressions](#regressions)
+    -   [Time series analysis](#time-series-analysis)
     -   [Package development](#package-development)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -435,6 +436,42 @@ texreg_tvalues(m_dummies, hide = "dummies")
 #> \label{table:coefficients}
 #> \end{center}
 #> \end{table}
+```
+
+Time series analysis
+--------------------
+
+-   `adf()` checks a time series for stationarity using the Augmented Dickey-Fuller (ADF) test. It returns the result in a pretty format and, if an optional argument `filename` is specified, it also exports it as LaTeX.
+
+``` r
+adf(USArrests, verbose = FALSE)
+#> 1
+#> 2
+#> 3
+#> 4
+#> The following time series appear stationary, as P-values > 0.05:  Murder, Assault, UrbanPop, Rape
+#>   Variable Type Lags   TestStat CriticalValue1 CriticalValue5
+#> 1   Murder none    1 -1.7630314          -2.62          -1.95
+#> 2  Assault none    1 -1.5869393          -2.62          -1.95
+#> 3 UrbanPop none    1 -0.4833016          -2.62          -1.95
+#> 4     Rape none    1 -1.7395692          -2.62          -1.95
+#>   CriticalValue10     Pvalue
+#> 1           -1.61 0.07789519
+#> 2           -1.61 0.11252638
+#> 3           -1.61 0.62888163
+#> 4           -1.61 0.08193470
+adf(USArrests, vars = c("Murder", "Rape"), type = "drift",
+   filename = "adf.tex", verbose = FALSE)
+#> 1
+#> 2
+#> All time series appear stationary, since all P-values < 0.05.
+#>   Variable  Type Lags  TestStat CriticalValue1 CriticalValue5
+#> 1   Murder drift    1 -5.653178          -3.58          -2.93
+#> 2     Rape drift    1 -4.762830          -3.58          -2.93
+#>   CriticalValue10       Pvalue
+#> 1            -2.6 1.575081e-08
+#> 2            -2.6 1.908966e-06
+unlink("adf.tex")
 ```
 
 Package development

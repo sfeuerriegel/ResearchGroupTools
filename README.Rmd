@@ -273,6 +273,16 @@ texreg_tvalues(m_dummies)
 texreg_tvalues(m_dummies, hide = "dummies")
 ```
 
+## Time series analysis
+
+* `adf()` checks a time series for stationarity using the Augmented Dickey-Fuller (ADF) test. It returns the result in a pretty format and, if an optional argument `filename` is specified, it also exports it as LaTeX. 
+```{r, include=-4}
+adf(USArrests, verbose = FALSE)
+adf(USArrests, vars = c("Murder", "Rape"), type = "drift",
+   filename = "adf.tex", verbose = FALSE)
+unlink("adf.tex")
+```
+
 
 ## Package development
 
