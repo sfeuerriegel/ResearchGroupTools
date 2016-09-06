@@ -173,7 +173,7 @@ adf <- function(d, vars = colnames(d),
 #' @export
 cointegrationTable <- function(d, vars = colnames(d),
                                type = c("eigen", "trace"), K = NULL,
-                               filename = paste0("cointegration", type[1], ".tex"),
+                               filename = paste0("cointegration_", type[1], ".tex"),
                                digits = 3, ...) {
   if (is.null(K)) {
     stop("Lag number K needs to be estimated via information criterion and passed on to this function.")
