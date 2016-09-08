@@ -336,6 +336,6 @@ impulseResponsePlot <- function(var, impulse, response, ...) {
   }
 
   irf <- vars::irf(var, impulse = impulse, response = response, boot = TRUE)
-  plotIrf(irf, ylab = "Production")
+  plotIrf(irf, ...)
 }
 
