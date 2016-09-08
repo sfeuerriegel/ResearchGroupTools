@@ -113,7 +113,7 @@ adf <- function(d, vars = colnames(d),
                 filename = NULL, digits = 3, verbose = TRUE, ...) {
   result <- data.frame(matrix(0, nrow = length(vars), ncol = 8))
   result[, 1] <- vars
-  result[, 2] <- type[1]
+  result[, 2] <- plyr::mapvalues(type[1], c("drift", "trend"), c("Constant", "Trend"))
   colnames(result) <- c("Variable", "Type", "Lags",
                         "TestStat", "CriticalValue10", "CriticalValue5", "CriticalValue1",
                         "Pvalue")
