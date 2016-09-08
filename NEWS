@@ -6,7 +6,9 @@
 
 * Added new functions for regression output as LaTeX with t-values
 
-* Added routines adf(), cointegrationTable() and plotIrf()
+* Added routines adf(), cointegrationTable(), plotIrf(), impulseResponsePlot()
+
+* Added new helpers for plotting: allDigitslabels()
 
 # Version 0.2-0
 
