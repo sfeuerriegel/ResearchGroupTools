@@ -21,8 +21,15 @@ descriptiveStatistics <- function(x, digits = 3,
   # fix the concatenated "1" for the grouping in describeBy
   rownames(m) <- colnames(x)
 
+  # fix kurtosis (as psych::describeBy is actuall computing the excess kurtosis)
+  colnames(m) <- plyr::mapvalues(colnames(m), c("kurtosis"), c("excess_kurtosis"))
+
   if (!is.null(filename)) {
-    cat("Column names: ", paste(colnames(m), collapse = " & "))
+    col_names <- plyr::mapvalues(colnames(m),
+                                 c("mean", "median", "min", "max", "sd", "skew", "excess_kurtosis"),
+                                 c("Mean", "Median", "Min.", "Max", "Std. dev.", "Skewness", "Excess kurtosis"))
+    show_columns(col_names)
+
     print(xtable::xtable(m, digits = digits),
           only.contents = TRUE, include.colnames = FALSE, booktabs = TRUE,
           file = filename, type = "latex")
@@ -134,6 +141,7 @@ correlationMatrix <- function(x, y = NULL,
   }
 
   if (!is.null(filename)) {
+    show_columns(colnames(output_file))
     print(xtable::xtable(output_file, digits = digits),
           only.contents = TRUE, booktabs = TRUE,
           file = filename, type = "latex",
