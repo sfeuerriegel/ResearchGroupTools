@@ -264,14 +264,25 @@ linePlot(x, sin(x))
 -   `scientificLabels()` enables a nice exponential notation in **ggplot2** plots.
 
 ``` r
-df <- data.frame(x=rnorm(100), y=rnorm(100))
+df <- data.frame(x=rnorm(100)/1000, y=rnorm(100)/1000)
 ggplot(df, aes(x=x, y=y)) +
   geom_point() +
   scale_x_continuous(labels=scientificLabels) +
   scale_y_continuous(labels=scientificLabels)
 ```
 
-![](README-scientific_labels-1.png)
+![](README-scientificLabels-1.png)
+
+-   `allDigitsLabels()` enforces that all digits are displayed in **ggplot2** plots.
+
+``` r
+ggplot(df, aes(x=x, y=y)) +
+  geom_point() +
+  scale_x_continuous(labels=allDigitsLabels) +
+  scale_y_continuous(labels=allDigitsLabels)
+```
+
+![](README-allDigitsLabels-1.png)
 
 Regressions
 -----------
@@ -432,6 +443,7 @@ Time series analysis
 
 ``` r
 adf(USArrests, verbose = FALSE)
+#> The following `from` values were not present in `x`: drift, trend
 #> The following time series appear stationary, as P-values > 0.05:  Murder, Assault, UrbanPop, Rape
 #>   Variable Type Lags   TestStat CriticalValue10 CriticalValue5
 #> 1   Murder none    1 -1.7630314           -1.61          -1.95
@@ -445,6 +457,7 @@ adf(USArrests, verbose = FALSE)
 #> 4          -2.62 0.08193470
 adf(USArrests, vars = c("Murder", "Rape"), type = "drift",
    filename = "adf.tex", verbose = FALSE)
+#> The following `from` values were not present in `x`: trend
 #> 
 #> 
 #> \begin{tabular}{ll SSSSS} 
@@ -455,9 +468,9 @@ adf(USArrests, vars = c("Murder", "Rape"), type = "drift",
 #> 
 #> 
 #> All time series appear stationary, since all P-values < 0.05.
-#>   Variable  Type Lags  TestStat CriticalValue10 CriticalValue5
-#> 1   Murder drift    1 -5.653178            -2.6          -2.93
-#> 2     Rape drift    1 -4.762830            -2.6          -2.93
+#>   Variable     Type Lags  TestStat CriticalValue10 CriticalValue5
+#> 1   Murder Constant    1 -5.653178            -2.6          -2.93
+#> 2     Rape Constant    1 -4.762830            -2.6          -2.93
 #>   CriticalValue1       Pvalue
 #> 1          -3.58 1.575081e-08
 #> 2          -3.58 1.908966e-06

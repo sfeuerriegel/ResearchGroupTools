@@ -200,13 +200,22 @@ linePlot(x, sin(x))
 
 * `scientificLabels()` enables a nice exponential notation in **ggplot2** plots.
 
-```{r scientific_labels, echo=-1, message=FALSE, warning=FALSE}
+```{r scientificLabels, echo=-1, message=FALSE, warning=FALSE}
 library(ggplot2)
-df <- data.frame(x=rnorm(100), y=rnorm(100))
+df <- data.frame(x=rnorm(100)/1000, y=rnorm(100)/1000)
 ggplot(df, aes(x=x, y=y)) +
   geom_point() +
   scale_x_continuous(labels=scientificLabels) +
   scale_y_continuous(labels=scientificLabels)
+```
+
+* `allDigitsLabels()` enforces that all digits are displayed in **ggplot2** plots.
+
+```{r allDigitsLabels}
+ggplot(df, aes(x=x, y=y)) +
+  geom_point() +
+  scale_x_continuous(labels=allDigitsLabels) +
+  scale_y_continuous(labels=allDigitsLabels)
 ```
 
 ## Regressions
