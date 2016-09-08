@@ -197,7 +197,7 @@ cointegrationTable <- function(d, vars = colnames(d),
     if (result$TestStatistic[1] > result$CriticalValue1[1]) {
       cat("Test statistic in the top row is larger than the 1% values:  All time-series variables are stationary, i.e. I(0), to start with. Cointegration is not relevant here.", "\n")
     } else {
-      i <- min(which(result$TestStatistic[1] > result$CriticalValue1[1])) - 1
+      i <- min(which(result$TestStatistic > result$CriticalValue1)) - 1
       cat("First order r where test statistic is larger than the 1% critical value is", rownames(result)[i], ": Integrated of order", i, "\n")
     }
   }
