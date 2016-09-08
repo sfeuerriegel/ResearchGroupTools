@@ -115,7 +115,7 @@ adf <- function(d, vars = colnames(d),
   result[, 1] <- vars
   result[, 2] <- type[1]
   colnames(result) <- c("Variable", "Type", "Lags",
-                        "TestStat", "CriticalValue1", "CriticalValue5", "CriticalValue10",
+                        "TestStat", "CriticalValue10", "CriticalValue5", "CriticalValue1",
                         "Pvalue")
 
   for (i in 1:length(vars)) {
@@ -126,7 +126,7 @@ adf <- function(d, vars = colnames(d),
     }
 
     tmp <- urca::ur.df(ts, type = type[1], ...)
-    result[i, 3:8] <- c(tmp@lags, tmp@teststat[1], tmp@cval[1, ], pnorm(tmp@teststat[1])*2)
+    result[i, 3:8] <- c(tmp@lags, tmp@teststat[1], tmp@cval[1, 3:1], pnorm(tmp@teststat[1])*2)
     if (verbose) {
       cat(paste0(i, "\n"))
       print(summary(tmp))
@@ -138,7 +138,7 @@ adf <- function(d, vars = colnames(d),
     cat("\\toprule \n")
     cat("\\multicolumn{1}{l}{Variable} & \\multicolumn{1}{l}{Deterministic trend} & \\multicolumn{1}{c}{Lags}& \\multicolumn{1}{c}{Test value} & \\multicolumn{3}{c}{\\textbf{Critical values}}\\\\ \n")
     cat("\\cline{5-7} \n")
-    cat("&&&& $1\\,\\%$ & $5\\,\\%$ & $10\\,\\%$ \\\\ \n")
+    cat("&&&& $10\\,\\%$ & $5\\,\\%$ & $1\\,\\%$ \\\\ \n")
 
     print(xtable::xtable(result[, 1:7], digits = digits),
           only.contents = TRUE, include.colnames = FALSE, booktabs = TRUE,
@@ -245,8 +245,10 @@ cointegrationTable <- function(d, vars = colnames(d),
 #' data(Canada)
 #' # For VAR
 #' var.2c <- VAR(Canada, p = 2, type = "const")
+#' \dontrun{
 #' irf <- irf(var.2c, impulse = "e", response = "prod", boot = TRUE)
 #' plotIrf(irf, ylab = "Production")
+#' }
 #' @export
 plotIrf <- function(irf, name = NULL, ylab = NULL, alpha = 0.3, n.ahead = NULL) {
   if (!irf$boot) {
@@ -293,5 +295,40 @@ plotIrf <- function(irf, name = NULL, ylab = NULL, alpha = 0.3, n.ahead = NULL) 
   }
 
   return(p)
+}
+
+#' Calculation and pretty plot of impulse response function
+#'
+#' Computes and plots the impulse response function in black/white manner for
+#' suitability with common journals.
+#' @param var Object package with impulse response function, i.e. type
+#' \code{varest} from the \code{vars}
+#' @param impulse String identifier which variable experiences a shock.
+#' @param response String identfier which variable is the response.
+#' @param ... Further arguments passed on to \code{\link{plotIrf}}
+#' @return Object of \code{\link[ggplot2]{ggplot}}.
+#' @examples
+#' library(vars)
+#' data(Canada)
+#' # For VAR
+#' var.2c <- VAR(Canada, p = 2, type = "const")
+#' \dontrun{
+#' impulseResponsePlot(var.2c, impulse = "e", response = "prod", ylab = "Production")
+#' }
+#' @export
+impulseResponsePlot <- function(var, impulse, response, ...) {
+  if (class(var) != "varest") {
+    stop("Argument 'var' is not of type varest.")
+  }
+
+  if (!is.character(impulse) || length(impulse) > 1) {
+    stop("Argument 'impulse' must be a single identifier as a string.")
+  }
+  if (!is.character(response) || length(response) > 1) {
+    stop("Argument 'response' must be a single identifier as a string.")
+  }
+
+  irf <- vars::irf(var, impulse = impulse, response = response, boot = TRUE)
+  plotIrf(irf, ylab = "Production")
 }
 

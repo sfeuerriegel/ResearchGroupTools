@@ -32,7 +32,9 @@ library(vars)
 data(Canada)
 # For VAR
 var.2c <- VAR(Canada, p = 2, type = "const")
+\dontrun{
 irf <- irf(var.2c, impulse = "e", response = "prod", boot = TRUE)
 plotIrf(irf, ylab = "Production")
+}
 }
 

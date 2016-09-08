@@ -292,7 +292,7 @@ unlink("cointegration_eigen.tex")
 
 * `plotIrf()` returns a `ggplot` with a nice impulse response function in black/white.
 
-```{r plotrf, echo=-1, message=FALSE, warning=FALSE}
+```{r plotIrf, echo=-1, message=FALSE, warning=FALSE}
 library(vars)
 data(Canada)
 var.2c <- VAR(Canada, p = 2, type = "const")
@@ -300,6 +300,11 @@ irf <- irf(var.2c, impulse = "e", response = "prod", boot = TRUE)
 plotIrf(irf, ylab = "Production")
 ```
 
+* `impulseResponsePlot()` combines computation and plot, thereby returning a `ggplot` with a nice impulse response function in black/white.
+
+```{r impulseResponsePlot}
+impulseResponsePlot(var.2c, impulse = "e", response = "prod", ylab = "Production")
+```
 
 ## Package development
 

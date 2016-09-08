@@ -432,37 +432,31 @@ Time series analysis
 
 ``` r
 adf(USArrests, verbose = FALSE)
-#> 1
-#> 2
-#> 3
-#> 4
 #> The following time series appear stationary, as P-values > 0.05:  Murder, Assault, UrbanPop, Rape
-#>   Variable Type Lags   TestStat CriticalValue1 CriticalValue5
-#> 1   Murder none    1 -1.7630314          -2.62          -1.95
-#> 2  Assault none    1 -1.5869393          -2.62          -1.95
-#> 3 UrbanPop none    1 -0.4833016          -2.62          -1.95
-#> 4     Rape none    1 -1.7395692          -2.62          -1.95
-#>   CriticalValue10     Pvalue
-#> 1           -1.61 0.07789519
-#> 2           -1.61 0.11252638
-#> 3           -1.61 0.62888163
-#> 4           -1.61 0.08193470
+#>   Variable Type Lags   TestStat CriticalValue10 CriticalValue5
+#> 1   Murder none    1 -1.7630314           -1.61          -1.95
+#> 2  Assault none    1 -1.5869393           -1.61          -1.95
+#> 3 UrbanPop none    1 -0.4833016           -1.61          -1.95
+#> 4     Rape none    1 -1.7395692           -1.61          -1.95
+#>   CriticalValue1     Pvalue
+#> 1          -2.62 0.07789519
+#> 2          -2.62 0.11252638
+#> 3          -2.62 0.62888163
+#> 4          -2.62 0.08193470
 adf(USArrests, vars = c("Murder", "Rape"), type = "drift",
    filename = "adf.tex", verbose = FALSE)
-#> 1
-#> 2
 #> \begin{tabular}{ll SSSSS} 
 #> \toprule 
 #> \multicolumn{1}{l}{Variable} & \multicolumn{1}{l}{Deterministic trend} & \multicolumn{1}{c}{Lags}& \multicolumn{1}{c}{Test value} & \multicolumn{3}{c}{\textbf{Critical values}}\\ 
 #> \cline{5-7} 
-#> &&&& $1\,\%$ & $5\,\%$ & $10\,\%$ \\ 
+#> &&&& $10\,\%$ & $5\,\%$ & $1\,\%$ \\ 
 #> All time series appear stationary, since all P-values < 0.05.
-#>   Variable  Type Lags  TestStat CriticalValue1 CriticalValue5
-#> 1   Murder drift    1 -5.653178          -3.58          -2.93
-#> 2     Rape drift    1 -4.762830          -3.58          -2.93
-#>   CriticalValue10       Pvalue
-#> 1            -2.6 1.575081e-08
-#> 2            -2.6 1.908966e-06
+#>   Variable  Type Lags  TestStat CriticalValue10 CriticalValue5
+#> 1   Murder drift    1 -5.653178            -2.6          -2.93
+#> 2     Rape drift    1 -4.762830            -2.6          -2.93
+#>   CriticalValue1       Pvalue
+#> 1          -3.58 1.575081e-08
+#> 2          -3.58 1.908966e-06
 unlink("adf.tex")
 ```
 
@@ -495,7 +489,15 @@ irf <- irf(var.2c, impulse = "e", response = "prod", boot = TRUE)
 plotIrf(irf, ylab = "Production")
 ```
 
-![](README-plotrf-1.png)
+![](README-plotIrf-1.png)
+
+-   `impulseResponsePlot()` combines computation and plot, thereby returning a `ggplot` with a nice impulse response function in black/white.
+
+``` r
+impulseResponsePlot(var.2c, impulse = "e", response = "prod", ylab = "Production")
+```
+
+![](README-impulseResponsePlot-1.png)
 
 Package development
 -------------------
