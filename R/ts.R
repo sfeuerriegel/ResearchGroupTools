@@ -188,7 +188,7 @@ cointegrationTable <- function(d, vars = colnames(d),
 
   coint <- urca::summary(urca::ca.jo(d[, vars], type = type[1], K = K, ...))
 
-  result <- data.frame(cbind(c(paste0("r<=", 1:(coint@P-1)), "r=0"),
+  result <- data.frame(cbind(c(paste0("r<=", (coint@P-1):1), "r=0"),
                              round(coint@teststat, digits),
                              coint@cval),
                        stringsAsFactors = FALSE)
