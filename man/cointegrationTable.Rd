@@ -5,8 +5,7 @@
 \title{Cointegration test}
 \usage{
 cointegrationTable(d, vars = colnames(d), type = c("eigen", "trace"),
-  K = NULL, filename = paste0("cointegration_", type[1], ".tex"),
-  digits = 3, ...)
+  K = NULL, filename = NULL, digits = 3, ...)
 }
 \arguments{
 \item{d}{Data frame containing the time series in column-wise format.}
@@ -19,7 +18,8 @@ then all columns are tested.}
 
 \item{K}{The lag order of the series (levels) in the VAR.}
 
-\item{filename}{Filename to export the table as LaTeX.}
+\item{filename}{Filename to export the table as LaTeX. Default is
+\code{NULL}, i.e. no export.}
 
 \item{digits}{Number of digits to be printed (default: 3).}
 

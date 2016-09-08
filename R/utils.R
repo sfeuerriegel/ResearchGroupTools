@@ -26,6 +26,6 @@ signifianceToTeX <- function(p, prefix = "\\sym{", suffix = "}") {
   return("")
 }
 
-show_columns <- function(names) {
+showColumns <- function(names) {
   cat("Column names: \\textbf{", paste0(names, collapse = "} & \textbf{"), "} \\\\ \n", sep = "")
 }

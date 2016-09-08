@@ -28,7 +28,7 @@ descriptiveStatistics <- function(x, digits = 3,
     col_names <- plyr::mapvalues(colnames(m),
                                  c("mean", "median", "min", "max", "sd", "skew", "excess_kurtosis"),
                                  c("Mean", "Median", "Min.", "Max", "Std. dev.", "Skewness", "Excess kurtosis"))
-    show_columns(col_names)
+    showColumns(col_names)
 
     print(xtable::xtable(m, digits = digits),
           only.contents = TRUE, include.colnames = FALSE, booktabs = TRUE,
@@ -141,7 +141,7 @@ correlationMatrix <- function(x, y = NULL,
   }
 
   if (!is.null(filename)) {
-    show_columns(colnames(output_file))
+    showColumns(colnames(output_file))
     print(xtable::xtable(output_file, digits = digits),
           only.contents = TRUE, booktabs = TRUE,
           file = filename, type = "latex",

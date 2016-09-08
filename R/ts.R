@@ -119,8 +119,6 @@ adf <- function(d, vars = colnames(d),
                         "Pvalue")
 
   for (i in 1:length(vars)) {
-    cat(paste0(i, "\n"))
-
     if (inherits(d, "tbl_df")) {
       ts <- as.numeric(pull_string(d, vars[i]))
     } else {
@@ -130,12 +128,18 @@ adf <- function(d, vars = colnames(d),
     tmp <- urca::ur.df(ts, type = type[1], ...)
     result[i, 3:8] <- c(tmp@lags, tmp@teststat[1], tmp@cval[1, ], pnorm(tmp@teststat[1])*2)
     if (verbose) {
+      cat(paste0(i, "\n"))
       print(summary(tmp))
     }
   }
 
   if (!is.null(filename)) {
-    cat("Column names: ", paste0(colnames(result), collapse = " & "))
+    cat("\\begin{tabular}{ll SSSSS} \n")
+    cat("\\toprule \n")
+    cat("\\multicolumn{1}{l}{Variable} & \\multicolumn{1}{l}{Deterministic trend} & \\multicolumn{1}{c}{Lags}& \\multicolumn{1}{c}{Test value} & \\multicolumn{3}{c}{\\textbf{Critical values}}\\\\ \n")
+    cat("\\cline{5-7} \n")
+    cat("&&&& $1\\,\\%$ & $5\\,\\%$ & $10\\,\\%$ \\\\ \n")
+
     print(xtable::xtable(result[, 1:7], digits = digits),
           only.contents = TRUE, include.colnames = FALSE, booktabs = TRUE,
           file = filename, type = "latex")
@@ -162,7 +166,8 @@ adf <- function(d, vars = colnames(d),
 #' @param type The test to be conducted, either \code{"eigen"} or
 #'  \code{"trace"}. See \code{\link[urca]{ur.df}} for details.
 #' @param K The lag order of the series (levels) in the VAR.
-#' @param filename Filename to export the table as LaTeX.
+#' @param filename Filename to export the table as LaTeX. Default is
+#' \code{NULL}, i.e. no export.
 #' @param digits Number of digits to be printed (default: 3).
 #' @param ... Further parameters passed on to \code{\link[urca]{ca.jo}}.
 #' @return Table with result from cointegration test.
@@ -173,7 +178,7 @@ adf <- function(d, vars = colnames(d),
 #' @export
 cointegrationTable <- function(d, vars = colnames(d),
                                type = c("eigen", "trace"), K = NULL,
-                               filename = paste0("cointegration_", type[1], ".tex"),
+                               filename = NULL,
                                digits = 3, ...) {
   if (is.null(K)) {
     stop("Lag number K needs to be estimated via information criterion and passed on to this function.")
@@ -202,10 +207,22 @@ cointegrationTable <- function(d, vars = colnames(d),
     }
   }
 
-  cat("Column names: ", paste(colnames(result), collapse = " & "))
-  print(xtable::xtable(result, digits = digits),
-        only.contents = TRUE, include.colnames = FALSE, booktabs = TRUE,
-        file = filename, type = "latex")
+  if (!is.null(filename))
+  {
+    cat("\\begin{tabular}{l SSSS} \n")
+    cat("\\toprule \n")
+    cat("\\textbf{$H_{0}$} \n")
+    cat("& \\textbf{Test statistic} & \\multicolumn{3}{c}{\\textbf{Critical Values}}\\\\ \n")
+    cat("\\crule{3-5} \n")
+    cat("& {$n = ", K, "$}& {$10\\,\\%$} & {$5\\,\\%$} & {$1\\,\\%$} \\\\ \n", sep = "")
+
+    result_file <- cbind(c("$r = 0$", paste("$r \\leq ", 2:K, "$", sep = "")),
+                         result[, -1])
+
+    print(xtable::xtable(result_file, digits = digits),
+          only.contents = TRUE, include.colnames = FALSE, booktabs = TRUE,
+          file = filename, type = "latex")
+  }
 
   return(result)
 }
@@ -245,6 +262,12 @@ plotIrf <- function(irf, name = NULL, ylab = NULL, alpha = 0.3, n.ahead = NULL) 
   } else if (!(name %in% irf$impulse)) {
     stop("Argument 'name' is not a valid impulse as it is not stored in 'irf' object.")
   }
+
+  # to surpress warnings
+  x <- NULL
+  impulse <- NULL
+  upper <- NULL
+  lower <- NULL
 
   df <- data.frame(x = 1:length(irf$irf[[name]]),
                    impulse = irf$irf[[name]],

@@ -105,15 +105,6 @@ Data handling
 -   `pull()`, `pull_string()` and `pull_ith()` extract single columns from a **dplyr** `tbl` object and return them as a vector.
 
 ``` r
-library(dplyr)
-#> 
-#> Attaching package: 'dplyr'
-#> The following objects are masked from 'package:stats':
-#> 
-#>     filter, lag
-#> The following objects are masked from 'package:base':
-#> 
-#>     intersect, setdiff, setequal, union
 
 d <- data_frame(x = 1:10,
                y = rnorm(10))
@@ -205,12 +196,12 @@ Descriptive statistics
 ``` r
 data(USArrests)
 descriptiveStatistics(USArrests)
-#> Column names:  mean & median & min & max & sd & skew & kurtosis
-#>             mean median  min   max     sd   skew kurtosis
-#> Murder     7.788   7.25  0.8  17.4  4.356  0.371   -0.949
-#> Assault  170.760 159.00 45.0 337.0 83.338  0.221   -1.145
-#> UrbanPop  65.540  66.00 32.0  91.0 14.475 -0.213   -0.872
-#> Rape      21.232  20.10  7.3  46.0  9.366  0.754    0.075
+#> Column names: \textbf{Mean} &    extbf{Median} &     extbf{Min.} &   extbf{Max} &    extbf{Std. dev.} &  extbf{Skewness} &   extbf{Excess kurtosis} \\
+#>             mean median  min   max     sd   skew excess_kurtosis
+#> Murder     7.788   7.25  0.8  17.4  4.356  0.371          -0.949
+#> Assault  170.760 159.00 45.0 337.0 83.338  0.221          -1.145
+#> UrbanPop  65.540  66.00 32.0  91.0 14.475 -0.213          -0.872
+#> Rape      21.232  20.10  7.3  46.0  9.366  0.754           0.075
 unlink("table_descriptives.tex")
 ```
 
@@ -224,6 +215,7 @@ correlationMatrix(USArrests)
 #> UrbanPop    0.070    0.259              
 #> Rape     0.564*** 0.665***  0.411**
 correlationMatrix(USArrests, filename = "table_cor.tex") # stores output in LaTeX file
+#> Column names: \textbf{Murder} &  extbf{Assault} &    extbf{UrbanPop} &   extbf{Rape} \\
 #>            Murder  Assault UrbanPop Rape
 #> Murder                                  
 #> Assault  0.802***                       
@@ -272,12 +264,6 @@ linePlot(x, sin(x))
 -   `scientificLabels()` enables a nice exponential notation in **ggplot2** plots.
 
 ``` r
-library(ggplot2)
-#> 
-#> Attaching package: 'ggplot2'
-#> The following object is masked from 'package:ResearchGroupTools':
-#> 
-#>     %+%
 df <- data.frame(x=rnorm(100), y=rnorm(100))
 ggplot(df, aes(x=x, y=y)) +
   geom_point() +
@@ -465,7 +451,12 @@ adf(USArrests, vars = c("Murder", "Rape"), type = "drift",
    filename = "adf.tex", verbose = FALSE)
 #> 1
 #> 2
-#> Column names:  Variable & Type & Lags & TestStat & CriticalValue1 & CriticalValue5 & CriticalValue10 & PvalueAll time series appear stationary, since all P-values < 0.05.
+#> \begin{tabular}{ll SSSSS} 
+#> \toprule 
+#> \multicolumn{1}{l}{Variable} & \multicolumn{1}{l}{Deterministic trend} & \multicolumn{1}{c}{Lags}& \multicolumn{1}{c}{Test value} & \multicolumn{3}{c}{\textbf{Critical values}}\\ 
+#> \cline{5-7} 
+#> &&&& $1\,\%$ & $5\,\%$ & $10\,\%$ \\ 
+#> All time series appear stationary, since all P-values < 0.05.
 #>   Variable  Type Lags  TestStat CriticalValue1 CriticalValue5
 #> 1   Murder drift    1 -5.653178          -3.58          -2.93
 #> 2     Rape drift    1 -4.762830          -3.58          -2.93
@@ -478,9 +469,14 @@ unlink("adf.tex")
 -   `cointegrationTable()` performs a cointegration test following the Johansen procedure. The output is written as LaTeX into a file named `filename`.
 
 ``` r
-cointegrationTable(USArrests, vars = c("Murder", "Rape"), K = 2)
+cointegrationTable(USArrests, vars = c("Murder", "Rape"), K = 2, filename = "cointegration_eigen.tex")
 #> Test statistic in the top row is larger than the 1% values:  All time-series variables are stationary, i.e. I(0), to start with. Cointegration is not relevant here. 
-#> Column names:  H0 & TestStatistic & CriticalValue10 & CriticalValue5 & CriticalValue1
+#> \begin{tabular}{l SSSS} 
+#> \toprule 
+#> \textbf{$H_{0}$} 
+#> & \textbf{Test statistic} & \multicolumn{3}{c}{\textbf{Critical Values}}\\ 
+#> \crule{3-5} 
+#> & {$n = 2$}& {$10\,\%$} & {$5\,\%$} & {$1\,\%$} \\
 #>                H0 TestStatistic CriticalValue10 CriticalValue5
 #> r = 0  | r = 0  |         28.63           12.91           14.9
 #> r <= 1 | r <= 1 |        21.702             6.5           8.18
@@ -493,26 +489,6 @@ unlink("cointegration_eigen.tex")
 -   `plotIrf()` returns a `ggplot` with a nice impulse response function in black/white.
 
 ``` r
-library(vars)
-#> Warning: package 'vars' was built under R version 3.3.1
-#> Loading required package: MASS
-#> Warning: package 'MASS' was built under R version 3.3.1
-#> 
-#> Attaching package: 'MASS'
-#> The following object is masked from 'package:dplyr':
-#> 
-#>     select
-#> Loading required package: strucchange
-#> Loading required package: zoo
-#> 
-#> Attaching package: 'zoo'
-#> The following objects are masked from 'package:base':
-#> 
-#>     as.Date, as.Date.numeric
-#> Loading required package: sandwich
-#> Loading required package: urca
-#> Warning: package 'urca' was built under R version 3.3.1
-#> Loading required package: lmtest
 data(Canada)
 var.2c <- VAR(Canada, p = 2, type = "const")
 irf <- irf(var.2c, impulse = "e", response = "prod", boot = TRUE)

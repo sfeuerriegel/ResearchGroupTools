@@ -92,7 +92,7 @@ ceil(3.4)
 
 * `pull()`, `pull_string()` and `pull_ith()` extract single columns from a **dplyr** `tbl` object and return them as a vector.
 
-```{r pull}
+```{r pull, echo=-1, message=FALSE, warning=FALSE}
 library(dplyr)
 
 d <- data_frame(x = 1:10,
@@ -200,7 +200,7 @@ linePlot(x, sin(x))
 
 * `scientificLabels()` enables a nice exponential notation in **ggplot2** plots.
 
-```{r scientific_labels}
+```{r scientific_labels, echo=-1, message=FALSE, warning=FALSE}
 library(ggplot2)
 df <- data.frame(x=rnorm(100), y=rnorm(100))
 ggplot(df, aes(x=x, y=y)) +
@@ -286,13 +286,13 @@ unlink("adf.tex")
 * `cointegrationTable()` performs a cointegration test following the Johansen procedure. The output is written as LaTeX into a file named `filename`. 
 
 ```{r cointegrationTable, include=-2}
-cointegrationTable(USArrests, vars = c("Murder", "Rape"), K = 2)
+cointegrationTable(USArrests, vars = c("Murder", "Rape"), K = 2, filename = "cointegration_eigen.tex")
 unlink("cointegration_eigen.tex")
 ```
 
 * `plotIrf()` returns a `ggplot` with a nice impulse response function in black/white.
 
-```{r plotrf}
+```{r plotrf, echo=-1, message=FALSE, warning=FALSE}
 library(vars)
 data(Canada)
 var.2c <- VAR(Canada, p = 2, type = "const")
