@@ -134,11 +134,13 @@ adf <- function(d, vars = colnames(d),
   }
 
   if (!is.null(filename)) {
+    cat("\n\n")
     cat("\\begin{tabular}{ll SSSSS} \n")
     cat("\\toprule \n")
     cat("\\multicolumn{1}{l}{Variable} & \\multicolumn{1}{l}{Deterministic trend} & \\multicolumn{1}{c}{Lags}& \\multicolumn{1}{c}{Test value} & \\multicolumn{3}{c}{\\textbf{Critical values}}\\\\ \n")
     cat("\\cline{5-7} \n")
     cat("&&&& $10\\,\\%$ & $5\\,\\%$ & $1\\,\\%$ \\\\ \n")
+    cat("\n\n")
 
     print(xtable::xtable(result[, 1:7], digits = digits),
           only.contents = TRUE, include.colnames = FALSE, booktabs = TRUE,
@@ -186,13 +188,14 @@ cointegrationTable <- function(d, vars = colnames(d),
 
   coint <- urca::summary(urca::ca.jo(d[, vars], type = type[1], K = K, ...))
 
-  result <- data.frame(cbind(rownames(coint@cval),
+  result <- data.frame(cbind(c(paste0("r<=", 1:(coint@P-1)), "r=0"),
                              round(coint@teststat, digits),
                              coint@cval),
                        stringsAsFactors = FALSE)
   colnames(result) <- c("H0", "TestStatistic", "CriticalValue10", "CriticalValue5", "CriticalValue1")
 
   result <- result[nrow(result):1, ]
+  rownames(result) <- NULL
 
   if (all(result$TestStatistic < result$CriticalValue1)) {
     cat("All test statistics are smaller than the 1% critical values: time series are not cointegrated.", "\n")
@@ -209,19 +212,23 @@ cointegrationTable <- function(d, vars = colnames(d),
 
   if (!is.null(filename))
   {
+    cat("\n\n")
     cat("\\begin{tabular}{l SSSS} \n")
     cat("\\toprule \n")
     cat("\\textbf{$H_{0}$} \n")
     cat("& \\textbf{Test statistic} & \\multicolumn{3}{c}{\\textbf{Critical Values}}\\\\ \n")
     cat("\\crule{3-5} \n")
-    cat("& {$n = ", K, "$}& {$10\\,\\%$} & {$5\\,\\%$} & {$1\\,\\%$} \\\\ \n", sep = "")
+    cat("& {$n = ", coint@P, "$}& {$10\\,\\%$} & {$5\\,\\%$} & {$1\\,\\%$} \\\\ \n", sep = "")
+    cat("\n\n")
 
-    result_file <- cbind(c("$r = 0$", paste("$r \\leq ", 2:K, "$", sep = "")),
+    result_file <- cbind(c("$r = 0$", paste0("$r \\leq ", 1:(coint@P-1), "$")),
                          result[, -1])
 
     print(xtable::xtable(result_file, digits = digits),
           only.contents = TRUE, include.colnames = FALSE, booktabs = TRUE,
-          file = filename, type = "latex")
+          file = filename, type = "latex",
+          sanitize.text.function = identity,
+          include.rownames = FALSE,)
   }
 
   return(result)

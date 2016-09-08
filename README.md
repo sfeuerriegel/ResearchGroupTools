@@ -445,11 +445,15 @@ adf(USArrests, verbose = FALSE)
 #> 4          -2.62 0.08193470
 adf(USArrests, vars = c("Murder", "Rape"), type = "drift",
    filename = "adf.tex", verbose = FALSE)
+#> 
+#> 
 #> \begin{tabular}{ll SSSSS} 
 #> \toprule 
 #> \multicolumn{1}{l}{Variable} & \multicolumn{1}{l}{Deterministic trend} & \multicolumn{1}{c}{Lags}& \multicolumn{1}{c}{Test value} & \multicolumn{3}{c}{\textbf{Critical values}}\\ 
 #> \cline{5-7} 
 #> &&&& $10\,\%$ & $5\,\%$ & $1\,\%$ \\ 
+#> 
+#> 
 #> All time series appear stationary, since all P-values < 0.05.
 #>   Variable  Type Lags  TestStat CriticalValue10 CriticalValue5
 #> 1   Murder drift    1 -5.653178            -2.6          -2.93
@@ -465,18 +469,17 @@ unlink("adf.tex")
 ``` r
 cointegrationTable(USArrests, vars = c("Murder", "Rape"), K = 2, filename = "cointegration_eigen.tex")
 #> Test statistic in the top row is larger than the 1% values:  All time-series variables are stationary, i.e. I(0), to start with. Cointegration is not relevant here. 
+#> 
+#> 
 #> \begin{tabular}{l SSSS} 
 #> \toprule 
 #> \textbf{$H_{0}$} 
 #> & \textbf{Test statistic} & \multicolumn{3}{c}{\textbf{Critical Values}}\\ 
 #> \crule{3-5} 
 #> & {$n = 2$}& {$10\,\%$} & {$5\,\%$} & {$1\,\%$} \\
-#>                H0 TestStatistic CriticalValue10 CriticalValue5
-#> r = 0  | r = 0  |         28.63           12.91           14.9
-#> r <= 1 | r <= 1 |        21.702             6.5           8.18
-#>          CriticalValue1
-#> r = 0  |          19.19
-#> r <= 1 |          11.65
+#>     H0 TestStatistic CriticalValue10 CriticalValue5 CriticalValue1
+#> 1  r=0         28.63           12.91           14.9          19.19
+#> 2 r<=1        21.702             6.5           8.18          11.65
 unlink("cointegration_eigen.tex")
 ```
 
