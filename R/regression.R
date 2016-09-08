@@ -260,11 +260,13 @@ extract_tvalues <- function(model, hide = NULL) {
 #' @importFrom texreg texreg
 #' @export
 texreg_tvalues <- function(model, hide = NULL, ...) {
-  if (class(model) == "lm") {
-    return(texreg(model, override.se = extract_tvalues(model, hide = hide), ...))
+  tvalues <- list()
+  if(class(model) == "lm") {
+    tvalues <- extract_tvalues(model, hide = hide)
   } else {
-    return(texreg(model, override.se = lapply(model, extract_tvalues, hide = hide), ...))
+    tvalues <- lapply(model, extract_tvalues, hide = hide)
   }
+  return(suppressWarnings(texreg(model, override.se = tvalues, ...)))
 }
 
 # TODO: ivreg
