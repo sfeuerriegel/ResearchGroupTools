@@ -312,6 +312,9 @@ plotIrf <- function(irf, name = NULL, ylab = NULL, alpha = 0.3, n.ahead = NULL) 
 #' \code{varest} from the \code{vars}
 #' @param impulse String identifier which variable experiences a shock.
 #' @param response String identfier which variable is the response.
+#' @param n.ahead Optional parameter to later choose a smaller x-range for the
+#' impulse response function. Argument expects a numeric value with the maximum
+#' step. Default is 10.
 #' @param ... Further arguments passed on to \code{\link{plotIrf}}
 #' @return Object of \code{\link[ggplot2]{ggplot}}.
 #' @examples
@@ -323,7 +326,7 @@ plotIrf <- function(irf, name = NULL, ylab = NULL, alpha = 0.3, n.ahead = NULL) 
 #' impulseResponsePlot(var.2c, impulse = "e", response = "prod", ylab = "Production")
 #' }
 #' @export
-impulseResponsePlot <- function(var, impulse, response, ...) {
+impulseResponsePlot <- function(var, impulse, response, n.ahead = 10, ...) {
   if (class(var) != "varest") {
     stop("Argument 'var' is not of type varest.")
   }

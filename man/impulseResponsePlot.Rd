@@ -4,7 +4,7 @@
 \alias{impulseResponsePlot}
 \title{Calculation and pretty plot of impulse response function}
 \usage{
-impulseResponsePlot(var, impulse, response, ...)
+impulseResponsePlot(var, impulse, response, n.ahead = 10, ...)
 }
 \arguments{
 \item{var}{Object package with impulse response function, i.e. type
@@ -13,6 +13,10 @@ impulseResponsePlot(var, impulse, response, ...)
 \item{impulse}{String identifier which variable experiences a shock.}
 
 \item{response}{String identfier which variable is the response.}
+
+\item{n.ahead}{Optional parameter to later choose a smaller x-range for the
+impulse response function. Argument expects a numeric value with the maximum
+step. Default is 10.}
 
 \item{...}{Further arguments passed on to \code{\link{plotIrf}}}
 }
