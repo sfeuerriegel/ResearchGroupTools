@@ -13,7 +13,7 @@ scientificLabels(l)
 \item{l}{Labels}
 }
 \value{
-Labels in format
+Labels in the desired format
 }
 \description{
 Allows to adjust the numbers display on both axes for ggplot2 plots. The format is such that the expontent is nicely set.

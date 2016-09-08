@@ -3,6 +3,7 @@
 export("%+%")
 export(Library)
 export(adf)
+export(allDigitsLabels)
 export(ceil)
 export(cointegrationTable)
 export(correlationMatrix)

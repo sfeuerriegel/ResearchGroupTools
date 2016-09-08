@@ -2,7 +2,7 @@
 #'
 #' Allows to adjust the numbers display on both axes for ggplot2 plots. The format is such that the expontent is nicely set.
 #' @param l Labels
-#' @return Labels in format
+#' @return Labels in the desired format
 #' @examples
 #' library(ggplot2)
 #' df <- data.frame(x=rnorm(100), y=rnorm(100))
@@ -21,4 +21,24 @@ scientificLabels <- function(l) {
   l <- gsub("e", "%*%10^", l)
   # return this as an expression
   parse(text=l)
+}
+
+#' ggplot labels showing all digits
+#'
+#' Allows to adjust the numbers display on both axes for ggplot2 plots. The format is such that all digits
+#' are displayed.
+#' @param l Labels
+#' @return Labels in the desired format
+#' @examples
+#' library(ggplot2)
+#' df <- data.frame(x=rnorm(100)/1000, y=rnorm(100)/1000)
+#' ggplot(df, aes(x=x, y=y)) +
+#'   geom_point() +
+#'   scale_x_continuous(labels=allDigitsLabels) +
+#'   scale_y_continuous(labels=allDigitsLabels)
+#' @export
+allDigitsLabels <- function(l) {
+  l <- format(l, scientific = FALSE)
+  # return this as an expression
+  parse(text = l)
 }
