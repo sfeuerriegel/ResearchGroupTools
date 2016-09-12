@@ -510,7 +510,7 @@ plotIrf(irf, ylab = "Production")
 -   `impulseResponsePlot()` combines computation and plot, thereby returning a `ggplot` with a nice impulse response function in black/white.
 
 ``` r
-impulseResponsePlot(var.2c, impulse = "e", response = "prod", ylab = "Production")
+impulseResponsePlot(var.2c, impulse = "e", response = "prod", ylab = "Production", n.ahead = 5)
 ```
 
 ![](README-impulseResponsePlot-1.png)

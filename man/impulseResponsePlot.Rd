@@ -34,6 +34,7 @@ data(Canada)
 var.2c <- VAR(Canada, p = 2, type = "const")
 \dontrun{
 impulseResponsePlot(var.2c, impulse = "e", response = "prod", ylab = "Production")
+impulseResponsePlot(var.2c, impulse = "e", response = "prod", ylab = "Production", n.ahead = 5)
 }
 }
 

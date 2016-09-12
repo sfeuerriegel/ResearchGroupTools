@@ -324,6 +324,7 @@ plotIrf <- function(irf, name = NULL, ylab = NULL, alpha = 0.3, n.ahead = NULL) 
 #' var.2c <- VAR(Canada, p = 2, type = "const")
 #' \dontrun{
 #' impulseResponsePlot(var.2c, impulse = "e", response = "prod", ylab = "Production")
+#' impulseResponsePlot(var.2c, impulse = "e", response = "prod", ylab = "Production", n.ahead = 5)
 #' }
 #' @export
 impulseResponsePlot <- function(var, impulse, response, n.ahead = 10, ...) {
@@ -338,7 +339,7 @@ impulseResponsePlot <- function(var, impulse, response, n.ahead = 10, ...) {
     stop("Argument 'response' must be a single identifier as a string.")
   }
 
-  irf <- vars::irf(var, impulse = impulse, response = response, boot = TRUE)
+  irf <- vars::irf(var, impulse = impulse, response = response, boot = TRUE, n.ahead = n.ahead)
   plotIrf(irf, ...)
 }
 
