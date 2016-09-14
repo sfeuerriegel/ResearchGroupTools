@@ -309,7 +309,7 @@ plotIrf <- function(irf, name = NULL, ylab = NULL, alpha = 0.3, n.ahead = NULL) 
 #' Computes and plots the impulse response function in black/white manner for
 #' suitability with common journals.
 #' @param var Object package with impulse response function, i.e. type
-#' \code{varest} from the \code{vars}
+#' \code{varest} or \code{svarest} from the \code{vars}.
 #' @param impulse String identifier which variable experiences a shock.
 #' @param response String identfier which variable is the response.
 #' @param n.ahead Optional parameter to later choose a smaller x-range for the
@@ -328,8 +328,8 @@ plotIrf <- function(irf, name = NULL, ylab = NULL, alpha = 0.3, n.ahead = NULL) 
 #' }
 #' @export
 impulseResponsePlot <- function(var, impulse, response, n.ahead = 10, ...) {
-  if (class(var) != "varest") {
-    stop("Argument 'var' is not of type varest.")
+  if (class(var) != "varest" && class(var) != "svarest") {
+    stop("Argument 'var' is not of type varest or svarest.")
   }
 
   if (!is.character(impulse) || length(impulse) > 1) {
