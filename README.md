@@ -55,6 +55,8 @@ library(ResearchGroupTools)
 #> Warning: package 'texreg' was built under R version 3.3.1
 #> Warning: changing locked binding for 'coeftostring' in 'texreg' whilst
 #> loading 'ResearchGroupTools'
+#> Warning: changing locked binding for 'sanitize.numbers' in 'xtable' whilst
+#> loading 'ResearchGroupTools'
 ```
 
 By default, the seed for the random number generator is initialized to 0.
@@ -199,7 +201,35 @@ Descriptive statistics
 ``` r
 data(USArrests)
 descriptiveStatistics(USArrests)
-#> Column names: \textbf{Mean} & \textbf{Median} & \textbf{Min.} & \textbf{Max} & \textbf{Std. dev.} & \textbf{Skewness} & \textbf{Excess kurtosis} \\
+#> Column names: \textbf{Mean} & \textbf{Median} & \textbf{Min.} & \textbf{Max} & \textbf{Std. dev.} & \textbf{Skewness} & \textbf{Excess kurtosis} \\ 
+#> 7.788
+#> 170.760
+#> 65.540
+#> 21.232
+#> 7.250
+#> 159.000
+#> 66.000
+#> 20.100
+#> 0.800
+#> 45.000
+#> 32.000
+#> 7.300
+#> 17.400
+#> 337.000
+#> 91.000
+#> 46.000
+#> 4.356
+#> 83.338
+#> 14.475
+#> 9.366
+#> 0.371
+#> 0.221
+#> -0.213
+#> 0.754
+#> -0.949
+#> -1.145
+#> -0.872
+#> 0.075
 #>             mean median  min   max     sd   skew excess_kurtosis
 #> Murder     7.788   7.25  0.8  17.4  4.356  0.371          -0.949
 #> Assault  170.760 159.00 45.0 337.0 83.338  0.221          -1.145
@@ -462,6 +492,16 @@ adf(USArrests, vars = c("Murder", "Rape"), type = "drift",
 #> &&&& $10\,\%$ & $5\,\%$ & $1\,\%$ \\ 
 #> 
 #> 
+#> 1.000
+#> 1.000
+#> -5.653
+#> -4.763
+#> -2.600
+#> -2.600
+#> -2.930
+#> -2.930
+#> -3.580
+#> -3.580
 #> All time series appear stationary, since all P-values < 0.05.
 #>   Variable     Type Lags  TestStat CriticalValue10 CriticalValue5
 #> 1   Murder Constant    1 -5.653178            -2.6          -2.93
@@ -546,6 +586,29 @@ texreg(m) # intercept would otherwise be "-0.00"
 #> \caption{Statistical models}
 #> \label{table:coefficients}
 #> \end{center}
+#> \end{table}
+```
+
+-   `sanitize.numbers()` inside `xtable` is overwritten.
+
+``` r
+xtable(matrix(1:4, nrow = 2) * -0.000001) # would otherwise return "-0.00"
+#> -0.00
+#> -0.00
+#> -0.00
+#> -0.00
+#> % latex table generated in R 3.3.0 by xtable 1.8-2 package
+#> % Tue Sep 20 19:03:25 2016
+#> \begin{table}[ht]
+#> \centering
+#> \begin{tabular}{rrr}
+#>   \hline
+#>  & 1 & 2 \\ 
+#>   \hline
+#> 1 & 0.00 & 0.00 \\ 
+#>   2 & 0.00 & 0.00 \\ 
+#>    \hline
+#> \end{tabular}
 #> \end{table}
 ```
 

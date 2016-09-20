@@ -327,6 +327,12 @@ m <- lm(y ~ x, data = d)
 texreg(m) # intercept would otherwise be "-0.00"
 ```
 
+* `sanitize.numbers()` inside `xtable` is overwritten.
+
+```{r sanitize.numbers}
+xtable(matrix(1:4, nrow = 2) * -0.000001) # would otherwise return "-0.00"
+```
+
 
 ## Package development
 
