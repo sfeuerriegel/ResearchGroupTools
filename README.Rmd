@@ -315,6 +315,19 @@ plotIrf(irf, ylab = "Production")
 impulseResponsePlot(var.2c, impulse = "e", response = "prod", ylab = "Production", n.ahead = 5)
 ```
 
+## Hooks to other packages
+
+* `coeftostring()` from the `texreg` package is overwritten. This also fixes the behavior of `texreg()` itself. 
+
+```{r coeftostring}
+coeftostring(-0.000001, digits = 4) # the original function would return "-.0000"
+
+d <- data.frame(y = 1:1000 - 0.0000001, x = 1:1000)
+m <- lm(y ~ x, data = d)
+texreg(m) # intercept would otherwise be "-0.00"
+```
+
+
 ## Package development
 
 * `rebuildPackage()` builds, loads and checks package during the development process all at once. In particular, the manual is updated. 

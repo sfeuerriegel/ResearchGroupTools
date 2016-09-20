@@ -14,7 +14,8 @@ License: MIT + file LICENSE
 URL: https://github.com/sfeuerriegel/ResearchGroupTools
 BugReports: https://github.com/sfeuerriegel/ResearchGroupTools/issues
 Depends:
-    R (>= 2.10)
+    R (>= 2.10),
+    texreg
 Imports:
     ggplot2,
     psych,
@@ -23,7 +24,6 @@ Imports:
     plyr,
     dplyr,
     lmtest,
-    texreg,
     urca,
     vars
 Suggests:

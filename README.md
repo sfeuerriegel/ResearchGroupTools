@@ -13,6 +13,7 @@
     -   [Visualization](#visualization)
     -   [Regressions](#regressions)
     -   [Time series analysis](#time-series-analysis)
+    -   [Hooks to other packages](#hooks-to-other-packages)
     -   [Package development](#package-development)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -51,6 +52,9 @@ This section shows the basic functionality of how to perform a sentiment analysi
 
 ``` r
 library(ResearchGroupTools)
+#> Warning: package 'texreg' was built under R version 3.3.1
+#> Warning: changing locked binding for 'coeftostring' in 'texreg' whilst
+#> loading 'ResearchGroupTools'
 ```
 
 By default, the seed for the random number generator is initialized to 0.
@@ -66,7 +70,6 @@ Library handling
 ``` r
 Library("texreg")
 #> texreg
-#> Warning: package 'texreg' was built under R version 3.3.1
 ```
 
 -   `loadRegressionLibraries()` loads and installs common libraries for econometric purposes.
@@ -196,7 +199,7 @@ Descriptive statistics
 ``` r
 data(USArrests)
 descriptiveStatistics(USArrests)
-#> Column names: \textbf{Mean} &    extbf{Median} &     extbf{Min.} &   extbf{Max} &    extbf{Std. dev.} &  extbf{Skewness} &   extbf{Excess kurtosis} \\
+#> Column names: \textbf{Mean} & \textbf{Median} & \textbf{Min.} & \textbf{Max} & \textbf{Std. dev.} & \textbf{Skewness} & \textbf{Excess kurtosis} \\
 #>             mean median  min   max     sd   skew excess_kurtosis
 #> Murder     7.788   7.25  0.8  17.4  4.356  0.371          -0.949
 #> Assault  170.760 159.00 45.0 337.0 83.338  0.221          -1.145
@@ -215,7 +218,7 @@ correlationMatrix(USArrests)
 #> UrbanPop    0.070    0.259              
 #> Rape     0.564*** 0.665***  0.411**
 correlationMatrix(USArrests, filename = "table_cor.tex") # stores output in LaTeX file
-#> Column names: \textbf{Murder} &  extbf{Assault} &    extbf{UrbanPop} &   extbf{Rape} \\
+#> Column names: \textbf{Murder} & \textbf{Assault} & \textbf{UrbanPop} & \textbf{Rape} \\
 #>            Murder  Assault UrbanPop Rape
 #> Murder                                  
 #> Assault  0.802***                       
@@ -375,9 +378,6 @@ m <- lm(y ~ x, d[-idx_rm, ])       # refit model with outliers removed
 
 ``` r
 texreg_tvalues(m_dummies)
-#> Warning in override(models, override.coef, override.se, override.pvalues, :
-#> Standard errors were provided using 'override.se', but p-values were not
-#> replaced!
 #> 
 #> \begin{table}
 #> \begin{center}
@@ -404,11 +404,6 @@ texreg_tvalues(m_dummies)
 #> \end{center}
 #> \end{table}
 texreg_tvalues(m_dummies, hide = "dummies")
-#> Warning in override(models, override.coef, override.se, override.pvalues, :
-#> Standard errors were provided using 'override.se', but p-values were not
-#> replaced!
-#> Warning in override(models, override.coef, override.se, override.pvalues, :
-#> SEs must be provided as a list. Using default SEs.
 #> 
 #> \begin{table}
 #> \begin{center}
@@ -514,6 +509,45 @@ impulseResponsePlot(var.2c, impulse = "e", response = "prod", ylab = "Production
 ```
 
 ![](README-impulseResponsePlot-1.png)
+
+Hooks to other packages
+-----------------------
+
+-   `coeftostring()` from the `texreg` package is overwritten. This also fixes the behavior of `texreg()` itself.
+
+``` r
+coeftostring(-0.000001, digits = 4) # the original function would return "-.0000"
+#> [1] ".0000"
+
+d <- data.frame(y = 1:1000 - 0.0000001, x = 1:1000)
+m <- lm(y ~ x, data = d)
+texreg(m) # intercept would otherwise be "-0.00"
+#> Warning in summary.lm(model, ...): essentially perfect fit: summary may be
+#> unreliable
+#> 
+#> \begin{table}
+#> \begin{center}
+#> \begin{tabular}{l c }
+#> \hline
+#>  & Model 1 \\
+#> \hline
+#> (Intercept) & $0.00^{***}$ \\
+#>             & $(0.00)$     \\
+#> x           & $1.00^{***}$ \\
+#>             & $(0.00)$     \\
+#> \hline
+#> R$^2$       & 1.00         \\
+#> Adj. R$^2$  & 1.00         \\
+#> Num. obs.   & 1000         \\
+#> RMSE        & 0.00         \\
+#> \hline
+#> \multicolumn{2}{l}{\scriptsize{$^{***}p<0.001$, $^{**}p<0.01$, $^*p<0.05$}}
+#> \end{tabular}
+#> \caption{Statistical models}
+#> \label{table:coefficients}
+#> \end{center}
+#> \end{table}
+```
 
 Package development
 -------------------
