@@ -473,9 +473,9 @@ Time series analysis
 -   `standardizeCoefficients()` returns standardized coefficients.
 
 ``` r
-var <- VAR(Canada, p = 2, type = "none")
+var.2c <- VAR(Canada, p = 2, type = "none")
 
-standardizeCoefficients(var$varresult$e)
+standardizeCoefficients(var.2c$varresult$e)
 #>                Coef   SdChange StandardizedCoef
 #> e.l1     1.62046761 14.4485612       1.60957876
 #> prod.l1  0.17973134  0.7418013       0.08263712
@@ -486,7 +486,7 @@ standardizeCoefficients(var$varresult$e)
 #> rw.l2    0.04475537  1.0337409       0.11515939
 #> U.l2    -0.06581206 -0.1040299      -0.01158900
 
-std <- standardizeCoefficients(var)
+std <- standardizeCoefficients(var.2c)
 std$e
 #>                Coef   SdChange StandardizedCoef
 #> e.l1     1.62046761 14.4485612       1.60957876
@@ -559,9 +559,6 @@ unlink("cointegration_eigen.tex")
 -   `plotIrf()` returns a `ggplot` with a nice impulse response function in black/white.
 
 ``` r
-data(Canada)
-var.2c <- VAR(Canada, p = 2, type = "const")
-irf <- irf(var.2c, impulse = "e", response = "prod", boot = TRUE)
 plotIrf(irf, ylab = "Production")
 ```
 
@@ -574,6 +571,21 @@ impulseResponsePlot(var.2c, impulse = "e", response = "prod", ylab = "Production
 ```
 
 ![](README-impulseResponsePlot-1.png)
+
+-   `testSpecification()` checks if non-autocorrelation, normally distributed residuals and homoskedasticity is present.
+
+``` r
+testSpecification(var.2c)
+#> All specification tests seem fine. No autocorrelation, normally distributed residuals, homoskedasticity.
+#>                           BG                PT               JB
+#> Statistic   97.8554991662177  193.690038336454 4.37397926053634
+#> Pvalue    0.0853032132233613 0.753481554600346 0.82190467653541
+#> Stars                                                          
+#>                        MARCH
+#> Statistic   541.888980939688
+#> Pvalue    0.0950466601495369
+#> Stars
+```
 
 Hooks to other packages
 -----------------------
@@ -619,7 +631,7 @@ texreg(m) # intercept would otherwise be "-0.00"
 ``` r
 xtable(matrix(1:4, nrow = 2) * -0.000001) # would otherwise return "-0.00"
 #> % latex table generated in R 3.3.0 by xtable 1.8-2 package
-#> % Wed Sep 21 16:23:06 2016
+#> % Wed Sep 21 17:13:31 2016
 #> \begin{table}[ht]
 #> \centering
 #> \begin{tabular}{rrr}

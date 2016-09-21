@@ -4,6 +4,8 @@
 
 ## New features and functions
 
+* Added testSpecification() to check VAR models
+
 * New routine standardizeCoefficients() for lm and vars
 
 * Hooks to output to eliminate output of "-0.00"

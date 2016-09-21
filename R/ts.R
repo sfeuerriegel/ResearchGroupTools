@@ -342,3 +342,63 @@ impulseResponsePlot <- function(var, impulse, response, n.ahead = 10, ...) {
   irf <- vars::irf(var, impulse = impulse, response = response, boot = TRUE, n.ahead = n.ahead)
   plotIrf(irf, ...)
 }
+
+#' Specification tests for VAR model
+#'
+#' Tests VAR model regarding non-autocorrelation (Breusch-Godfrey, Portmanteau),
+#' normal distribution of residuals (Jarque-Bera) and homoskedasticity (MARCH).
+#' @param var Estimated vector autoregressive model of type \code{varest} from the
+#' \code{vars} package.
+#' @param lags.pt	An integer specifying the lags to be used for the Portmanteau
+#' statistic.
+#' @param lags.bg	An integer specifying the lags to be used for the Breusch-Godfrey
+#' statistic.
+#' @param lags.multi An integer specifying the lags to be used for the multivariate
+#' ARCH-LM statistic.
+#' @examples
+#' library(vars)
+#' data(Canada)
+#' var.2c <- VAR(Canada, p = 2, type = "none")
+#'
+#' testSpecification(var.2c)
+#' @export
+testSpecification <- function(var, lags.pt = 15, lags.bg = 5, lags.multi = 5) {
+  # should be > 0.05 with H_0: autocorrelation
+  serial_bg <- vars::serial.test(var, lags.bg = lags.bg, type = "BG")
+  serial_pt <- vars::serial.test(var, lags.pt = lags.pt, type = "PT.asymptotic")
+
+  if (serial_bg$serial$statistic <= 0.05) {
+    cat("Autocorrelation (Bresch-Godfrey): reject null hypothesis of no autocorrelation => P-value should be above 0.05\n")
+  }
+  if (serial_pt$serial$statistic <= 0.05) {
+    cat("Autocorrelation (Portmanteau): reject null hypothesis of no autocorrelation => P-value should be above 0.05\n")
+  }
+
+  # should be > 0.05 with H_0: normality
+  normality <- normality.test(var)$jb.mul$JB
+
+  if (serial_pt$serial$statistic <= 0.05) {
+    cat("Non-normality of residuals (Jarque-Bera): reject null hypothesis of residuals being normally distributed => P-value should be above 0.05\n")
+  }
+
+  # should be > 0.05 with H_0: no ARCH effects (ARCH = autoregressive conditional heteroscedasticity)
+  arch <- arch.test(var, lags.multi = lags.multi)
+
+  if (serial_pt$serial$statistic <= 0.05) {
+    cat("Heteroskedasticity (MARCH): reject null hypothesis of residuals homoskedastic => P-value should be above 0.05\n")
+    cat("=> Apply heteroskedastic-robust standard errros in the Granger causality test\n")
+  }
+
+  df <- data.frame(BG = c(serial_bg$serial$statistic, serial_bg$serial$p.value, signifianceToStars(serial_bg$serial$p.value)),
+                   PT = c(serial_pt$serial$statistic, serial_pt$serial$p.value, signifianceToStars(serial_pt$serial$p.value)),
+                   JB = c(normality$statistic, normality$p.value, signifianceToStars(normality$p.value)),
+                   MARCH = c(arch$arch.mul$statistic, arch$arch.mul$p.value, signifianceToStars(arch$arch.mul$p.value)),
+                   stringsAsFactors = FALSE)
+  row.names(df) <- c("Statistic", "Pvalue", "Stars")
+
+  if (all(df[2, ] > 0.05)) {
+    cat("All specification tests seem fine. No autocorrelation, normally distributed residuals, homoskedasticity.")
+  }
+
+  return(df)
+}

@@ -301,11 +301,11 @@ texreg_tvalues(m_dummies, hide = "dummies")
 * `standardizeCoefficients()` returns standardized coefficients.
 
 ```{r}
-var <- VAR(Canada, p = 2, type = "none")
+var.2c <- VAR(Canada, p = 2, type = "none")
 
-standardizeCoefficients(var$varresult$e)
+standardizeCoefficients(var.2c$varresult$e)
 
-std <- standardizeCoefficients(var)
+std <- standardizeCoefficients(var.2c)
 std$e
 ```
 
@@ -327,9 +327,6 @@ unlink("cointegration_eigen.tex")
 * `plotIrf()` returns a `ggplot` with a nice impulse response function in black/white.
 
 ```{r plotIrf, echo=-1, message=FALSE, warning=FALSE}
-library(vars)
-data(Canada)
-var.2c <- VAR(Canada, p = 2, type = "const")
 irf <- irf(var.2c, impulse = "e", response = "prod", boot = TRUE)
 plotIrf(irf, ylab = "Production")
 ```
@@ -339,6 +336,13 @@ plotIrf(irf, ylab = "Production")
 ```{r impulseResponsePlot}
 impulseResponsePlot(var.2c, impulse = "e", response = "prod", ylab = "Production", n.ahead = 5)
 ```
+
+* `testSpecification()` checks if non-autocorrelation, normally distributed residuals and homoskedasticity is present. 
+
+```{r}
+testSpecification(var.2c)
+```
+
 
 ## Hooks to other packages
 

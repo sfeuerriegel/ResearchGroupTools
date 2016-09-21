@@ -51,9 +51,9 @@ standardizeCoefficients(m)
 m <- lm(Prod ~ Lag1 + Lag2, data = production)
 standardizeCoefficients(m)
 
-var <- VAR(Canada, p = 2, type = "none")
-standardizeCoefficients(var$varresult$e)
-std <- standardizeCoefficients(var)
+var.2c <- VAR(Canada, p = 2, type = "none")
+standardizeCoefficients(var.2c$varresult$e)
+std <- standardizeCoefficients(var.2c)
 std$e
 }
 
