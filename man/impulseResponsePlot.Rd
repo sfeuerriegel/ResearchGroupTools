@@ -8,7 +8,7 @@ impulseResponsePlot(var, impulse, response, n.ahead = 10, ...)
 }
 \arguments{
 \item{var}{Object package with impulse response function, i.e. type
-\code{varest} from the \code{vars}}
+\code{varest} or \code{svarest} from the \code{vars}.}
 
 \item{impulse}{String identifier which variable experiences a shock.}
 

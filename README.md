@@ -201,35 +201,7 @@ Descriptive statistics
 ``` r
 data(USArrests)
 descriptiveStatistics(USArrests)
-#> Column names: \textbf{Mean} & \textbf{Median} & \textbf{Min.} & \textbf{Max} & \textbf{Std. dev.} & \textbf{Skewness} & \textbf{Excess kurtosis} \\ 
-#> 7.788
-#> 170.760
-#> 65.540
-#> 21.232
-#> 7.250
-#> 159.000
-#> 66.000
-#> 20.100
-#> 0.800
-#> 45.000
-#> 32.000
-#> 7.300
-#> 17.400
-#> 337.000
-#> 91.000
-#> 46.000
-#> 4.356
-#> 83.338
-#> 14.475
-#> 9.366
-#> 0.371
-#> 0.221
-#> -0.213
-#> 0.754
-#> -0.949
-#> -1.145
-#> -0.872
-#> 0.075
+#> Column names: \textbf{Mean} & \textbf{Median} & \textbf{Min.} & \textbf{Max} & \textbf{Std. dev.} & \textbf{Skewness} & \textbf{Excess kurtosis} \\
 #>             mean median  min   max     sd   skew excess_kurtosis
 #> Murder     7.788   7.25  0.8  17.4  4.356  0.371          -0.949
 #> Assault  170.760 159.00 45.0 337.0 83.338  0.221          -1.145
@@ -380,6 +352,40 @@ showCoeftest(m, hide = "x") # leaves only the intercept
 #> (Intercept) -0.2788929  0.3515728 -0.7932721 0.4295555
 ```
 
+-   `standardizeCoefficients()` extracts standardized coefficients and hides (dummy) variables if needed.
+
+``` r
+library(vars)
+#> Warning: package 'vars' was built under R version 3.3.1
+#> Loading required package: MASS
+#> Warning: package 'MASS' was built under R version 3.3.1
+#> 
+#> Attaching package: 'MASS'
+#> The following object is masked from 'package:dplyr':
+#> 
+#>     select
+#> Loading required package: strucchange
+#> Loading required package: zoo
+#> 
+#> Attaching package: 'zoo'
+#> The following objects are masked from 'package:base':
+#> 
+#>     as.Date, as.Date.numeric
+#> Loading required package: sandwich
+#> Loading required package: urca
+#> Warning: package 'urca' was built under R version 3.3.1
+#> Loading required package: lmtest
+data(Canada)
+
+prod <- differences(as.numeric(Canada[, 2]))
+production <- data.frame(Prod = prod, Lag1 = dplyr::lag(prod), Lag2 = dplyr::lag(prod, 2))
+
+m <- lm(Prod ~ Lag1, data = production)
+standardizeCoefficients(m)
+#>           Coef  SdChange StandardizedCoef
+#> Lag1 0.2969171 0.2143436        0.2968569
+```
+
 -   `extractRegressionStatistics()` extracts key statistics of regression and returns them as a `data.frame` (so that it can later be stacked via row-wise binding).
 
 ``` r
@@ -464,6 +470,35 @@ texreg_tvalues(m_dummies, hide = "dummies")
 Time series analysis
 --------------------
 
+-   `standardizeCoefficients()` returns standardized coefficients.
+
+``` r
+var <- VAR(Canada, p = 2, type = "none")
+
+standardizeCoefficients(var$varresult$e)
+#>                Coef   SdChange StandardizedCoef
+#> e.l1     1.62046761 14.4485612       1.60957876
+#> prod.l1  0.17973134  0.7418013       0.08263712
+#> rw.l1   -0.04425592 -0.9971380      -0.11108180
+#> U.l1     0.11310425  0.1799192       0.02004311
+#> e.l2    -0.64815156 -5.7426482      -0.63973460
+#> prod.l2 -0.11683270 -0.4640806      -0.05169887
+#> rw.l2    0.04475537  1.0337409       0.11515939
+#> U.l2    -0.06581206 -0.1040299      -0.01158900
+
+std <- standardizeCoefficients(var)
+std$e
+#>                Coef   SdChange StandardizedCoef
+#> e.l1     1.62046761 14.4485612       1.60957876
+#> prod.l1  0.17973134  0.7418013       0.08263712
+#> rw.l1   -0.04425592 -0.9971380      -0.11108180
+#> U.l1     0.11310425  0.1799192       0.02004311
+#> e.l2    -0.64815156 -5.7426482      -0.63973460
+#> prod.l2 -0.11683270 -0.4640806      -0.05169887
+#> rw.l2    0.04475537  1.0337409       0.11515939
+#> U.l2    -0.06581206 -0.1040299      -0.01158900
+```
+
 -   `adf()` checks a time series for stationarity using the Augmented Dickey-Fuller (ADF) test. It returns the result in a pretty format and, if an optional argument `filename` is specified, it also exports it as LaTeX.
 
 ``` r
@@ -492,16 +527,6 @@ adf(USArrests, vars = c("Murder", "Rape"), type = "drift",
 #> &&&& $10\,\%$ & $5\,\%$ & $1\,\%$ \\ 
 #> 
 #> 
-#> 1.000
-#> 1.000
-#> -5.653
-#> -4.763
-#> -2.600
-#> -2.600
-#> -2.930
-#> -2.930
-#> -3.580
-#> -3.580
 #> All time series appear stationary, since all P-values < 0.05.
 #>   Variable     Type Lags  TestStat CriticalValue10 CriticalValue5
 #> 1   Murder Constant    1 -5.653178            -2.6          -2.93
@@ -593,12 +618,8 @@ texreg(m) # intercept would otherwise be "-0.00"
 
 ``` r
 xtable(matrix(1:4, nrow = 2) * -0.000001) # would otherwise return "-0.00"
-#> -0.00
-#> -0.00
-#> -0.00
-#> -0.00
 #> % latex table generated in R 3.3.0 by xtable 1.8-2 package
-#> % Tue Sep 20 19:03:25 2016
+#> % Wed Sep 21 16:23:06 2016
 #> \begin{table}[ht]
 #> \centering
 #> \begin{tabular}{rrr}

@@ -255,6 +255,20 @@ m <- lm(y ~ x1 + x2)
 showCoeftest(m, hide = "x") # leaves only the intercept
 ```
 
+* `standardizeCoefficients()` extracts standardized coefficients and hides (dummy) variables if needed.
+
+```{r}
+library(vars)
+data(Canada)
+
+prod <- differences(as.numeric(Canada[, 2]))
+production <- data.frame(Prod = prod, Lag1 = dplyr::lag(prod), Lag2 = dplyr::lag(prod, 2))
+
+m <- lm(Prod ~ Lag1, data = production)
+standardizeCoefficients(m)
+```
+
+
 * `extractRegressionStatistics()` extracts key statistics of regression and returns them as a `data.frame` (so that it can later be stacked via row-wise binding).
 
 ```{r extractRegressionStatistics}
@@ -283,6 +297,17 @@ texreg_tvalues(m_dummies, hide = "dummies")
 ```
 
 ## Time series analysis
+
+* `standardizeCoefficients()` returns standardized coefficients.
+
+```{r}
+var <- VAR(Canada, p = 2, type = "none")
+
+standardizeCoefficients(var$varresult$e)
+
+std <- standardizeCoefficients(var)
+std$e
+```
 
 * `adf()` checks a time series for stationarity using the Augmented Dickey-Fuller (ADF) test. It returns the result in a pretty format and, if an optional argument `filename` is specified, it also exports it as LaTeX. 
 ```{r, include=-4}

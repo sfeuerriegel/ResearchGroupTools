@@ -228,7 +228,7 @@ cointegrationTable <- function(d, vars = colnames(d),
           only.contents = TRUE, include.colnames = FALSE, booktabs = TRUE,
           file = filename, type = "latex",
           sanitize.text.function = identity,
-          include.rownames = FALSE,)
+          include.rownames = FALSE)
   }
 
   return(result)
@@ -342,4 +342,3 @@ impulseResponsePlot <- function(var, impulse, response, n.ahead = 10, ...) {
   irf <- vars::irf(var, impulse = impulse, response = response, boot = TRUE, n.ahead = n.ahead)
   plotIrf(irf, ...)
 }
-
