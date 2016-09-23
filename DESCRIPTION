@@ -18,6 +18,7 @@ Depends:
     texreg,
     xtable
 Imports:
+    magrittr,
     ggplot2,
     psych,
     Hmisc,

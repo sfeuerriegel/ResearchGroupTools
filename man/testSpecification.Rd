@@ -20,8 +20,8 @@ statistic.}
 ARCH-LM statistic.}
 }
 \description{
-Tests VAr mode lregarding non-autocorrelation (Breusch-Godfrey, Portmanteau),
-normal distribution of residuals (Jarque-Bera) and homoskedasticity (ARCH-LM).
+Tests VAR model regarding non-autocorrelation (Breusch-Godfrey, Portmanteau),
+normal distribution of residuals (Jarque-Bera) and homoskedasticity (MARCH).
 }
 \examples{
 library(vars)

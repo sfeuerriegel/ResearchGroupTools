@@ -126,6 +126,20 @@ d %>% pull_ith(1)
 #>  [1]  1  2  3  4  5  6  7  8  9 10
 ```
 
+-   `completeLowResolutionData()` takes data in low resolution (e.g. monthly) and copies its values to match a high resolution (e.g. daily).
+
+``` r
+ts <- data.frame(Date = seq(from = as.Date("2000-01-01"), to = as.Date("2000-03-31"), by = "1 day"))
+df_monthly <- data.frame(Month = c(as.Date("2000-01-31"), as.Date("2000-02-29"), as.Date("2000-03-31")),
+                         Values = 1:3)
+
+df_daily <- completeLowResolutionData(ts$Date, df_monthly, "Month")
+
+# example of how to bind things together
+ts <- ts %>%
+  left_join(df_daily, by = c("Date" = "Month"))
+```
+
 Time series
 -----------
 
@@ -631,7 +645,7 @@ texreg(m) # intercept would otherwise be "-0.00"
 ``` r
 xtable(matrix(1:4, nrow = 2) * -0.000001) # would otherwise return "-0.00"
 #> % latex table generated in R 3.3.0 by xtable 1.8-2 package
-#> % Wed Sep 21 17:13:31 2016
+#> % Fri Sep 23 12:06:54 2016
 #> \begin{table}[ht]
 #> \centering
 #> \begin{tabular}{rrr}
