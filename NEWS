@@ -1,8 +1,14 @@
-# ResearchGroupTools 0.2-0
+# ResearchGroupTools 0.3-0
 
 # Development version
 
 ## New features and functions
+
+* Added completeLowResolutionData()
+
+* Added last_non_NA()
+
+# Version 0.3-0
 
 * Added testSpecification() to check VAR models
 

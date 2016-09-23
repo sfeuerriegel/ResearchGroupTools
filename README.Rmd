@@ -34,12 +34,12 @@ install.packages("devtools")
 devtools::install_github("sfeuerriegel/ResearchGroupTools")
 
 # Option 2: install directly from bundled archive
-# devtoos::install_local("ResearchGroupTools_0.2.0.tar.gz")
+# devtoos::install_local("ResearchGroupTools_0.3.0.tar.gz")
 ```
 
 Notes: 
 
-* In the case of option 2, you have to specify the path either to the directory of **ResearchGroupTools** or to the bundled archive **ResearchGroupTools_0.2.0.tar.gz**
+* In the case of option 2, you have to specify the path either to the directory of **ResearchGroupTools** or to the bundled archive **ResearchGroupTools_0.3.0.tar.gz**
 
 * The package will only be shipped via GitHub; CRAN support is not intended. 
 
@@ -163,6 +163,24 @@ showRowsNA(m) # prints rows with NA values
 findColsNA(m) # returns name of that columns
 showColsNA(m) # print columns with NA values
 ```
+
+* `last_non_NA()` returns the last entry in a vector which is not `NA`. This is helpful when aggregating high resolution data (see example below).
+
+```{r}
+last_non_NA(c(1, 2, 3, 4, NA))
+ 
+values <- 1:100
+values[sample(1:100, 10)] <- NA
+df <- cbind(Year = c(rep(2000, 5), rep(2001, 5)),
+              as.data.frame(matrix(values, nrow = 10)))
+
+df %>%
+  group_by(Year) %>%
+  summarize_each(funs(last_non_NA)) %>%
+  ungroup() %>%
+  head()
+```
+
 
 ## Descriptive statistics
 

@@ -36,12 +36,12 @@ install.packages("devtools")
 devtools::install_github("sfeuerriegel/ResearchGroupTools")
 
 # Option 2: install directly from bundled archive
-# devtoos::install_local("ResearchGroupTools_0.2.0.tar.gz")
+# devtoos::install_local("ResearchGroupTools_0.3.0.tar.gz")
 ```
 
 Notes:
 
--   In the case of option 2, you have to specify the path either to the directory of **ResearchGroupTools** or to the bundled archive **ResearchGroupTools\_0.2.0.tar.gz**
+-   In the case of option 2, you have to specify the path either to the directory of **ResearchGroupTools** or to the bundled archive **ResearchGroupTools\_0.3.0.tar.gz**
 
 -   The package will only be shipped via GitHub; CRAN support is not intended.
 
@@ -207,6 +207,29 @@ showColsNA(m) # print columns with NA values
 #> [1] "a" "b" NA  "c" NA
 ```
 
+-   `last_non_NA()` returns the last entry in a vector which is not `NA`. This is helpful when aggregating high resolution data (see example below).
+
+``` r
+last_non_NA(c(1, 2, 3, 4, NA))
+#> [1] 4
+ 
+values <- 1:100
+values[sample(1:100, 10)] <- NA
+df <- cbind(Year = c(rep(2000, 5), rep(2001, 5)),
+              as.data.frame(matrix(values, nrow = 10)))
+
+df %>%
+  group_by(Year) %>%
+  summarize_each(funs(last_non_NA)) %>%
+  ungroup() %>%
+  head()
+#> # A tibble: 2 x 11
+#>    Year    V1    V2    V3    V4    V5    V6    V7    V8    V9   V10
+#>   <dbl> <int> <int> <int> <int> <int> <int> <int> <int> <int> <int>
+#> 1  2000     5    15    25    35    45    55    65    75    85    95
+#> 2  2001    10    20    30    40    50    60    70    79    90   100
+```
+
 Descriptive statistics
 ----------------------
 
@@ -337,19 +360,19 @@ summary(m_dummies)
 #> 
 #> Residuals:
 #>      Min       1Q   Median       3Q      Max 
-#> -2.35458 -0.47758  0.03748  0.67710  1.89330 
+#> -2.41774 -0.54210  0.04042  0.69658  1.98686 
 #> 
 #> Coefficients:
 #>              Estimate Std. Error t value Pr(>|t|)    
-#> (Intercept) -0.265295   0.348944  -0.760    0.449    
-#> x            1.003313   0.003756 267.141  < 2e-16 ***
-#> dummies      1.061065   0.195939   5.415 5.59e-07 ***
+#> (Intercept) -0.275912   0.365074  -0.756    0.452    
+#> x            1.005309   0.003875 259.463  < 2e-16 ***
+#> dummies      1.033796   0.201966   5.119 1.89e-06 ***
 #> ---
 #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #> 
-#> Residual standard error: 0.9186 on 85 degrees of freedom
-#> Multiple R-squared:  0.9988, Adjusted R-squared:  0.9988 
-#> F-statistic: 3.575e+04 on 2 and 85 DF,  p-value: < 2.2e-16
+#> Residual standard error: 0.947 on 85 degrees of freedom
+#> Multiple R-squared:  0.9987, Adjusted R-squared:  0.9987 
+#> F-statistic: 3.37e+04 on 2 and 85 DF,  p-value: < 2.2e-16
 ```
 
 -   `showCoeftest()` shows coefficient tests, but hides (dummy) variables starting with a certain string.
@@ -362,8 +385,8 @@ y <- x1 + x2 + rnorm(100)
 m <- lm(y ~ x1 + x2)
 
 showCoeftest(m, hide = "x") # leaves only the intercept
-#>               Estimate Std..Error    t.value  Pr...t.. Stars
-#> (Intercept) -0.2788929  0.3515728 -0.7932721 0.4295555
+#>              Estimate Std..Error   t.value  Pr...t.. Stars
+#> (Intercept) 0.3149528  0.3523625 0.8938319 0.3736242
 ```
 
 -   `standardizeCoefficients()` extracts standardized coefficients and hides (dummy) variables if needed.
@@ -409,9 +432,9 @@ m <- lm(y ~ x)
  
 extractRegressionStatistics(m)
 #>   Observations DegreesFreedom ResidualError  Rsquared AdjRsquared      AIC
-#> 1           10              8      1.043377 0.9083956    0.896945 32.99659
+#> 1           10              8      1.194957 0.8544966   0.8363087 35.70954
 #>        BIC Fstatistic Fsignficance Fstars
-#> 1 33.90435   79.33203 2.000286e-05    ***
+#> 1 36.61729   46.98152 0.0001304184    ***
 ```
 
 -   `getRowsOutlierRemoval()` helps to remove outliers at the 0.5% level at both ends (or any other threshold defined by the argument `cutoff`).
@@ -435,17 +458,17 @@ texreg_tvalues(m_dummies)
 #> \hline
 #>  & Model 1 \\
 #> \hline
-#> (Intercept) & $-0.27$      \\
+#> (Intercept) & $-0.28$      \\
 #>             & $(-0.76)$    \\
-#> x           & $1.00^{***}$ \\
-#>             & $(267.14)$   \\
-#> dummies     & $1.06^{***}$ \\
-#>             & $(5.42)$     \\
+#> x           & $1.01^{***}$ \\
+#>             & $(259.46)$   \\
+#> dummies     & $1.03^{***}$ \\
+#>             & $(5.12)$     \\
 #> \hline
 #> R$^2$       & 1.00         \\
 #> Adj. R$^2$  & 1.00         \\
 #> Num. obs.   & 88           \\
-#> RMSE        & 0.92         \\
+#> RMSE        & 0.95         \\
 #> \hline
 #> \multicolumn{2}{l}{\scriptsize{$^{***}p<0.001$, $^{**}p<0.01$, $^*p<0.05$}}
 #> \end{tabular}
@@ -461,17 +484,17 @@ texreg_tvalues(m_dummies, hide = "dummies")
 #> \hline
 #>  & Model 1 \\
 #> \hline
-#> (Intercept) & $-0.27$      \\
-#>             & $(0.35)$     \\
-#> x           & $1.00^{***}$ \\
+#> (Intercept) & $-0.28$      \\
+#>             & $(0.37)$     \\
+#> x           & $1.01^{***}$ \\
 #>             & $(0.00)$     \\
-#> dummies     & $1.06^{***}$ \\
+#> dummies     & $1.03^{***}$ \\
 #>             & $(0.20)$     \\
 #> \hline
 #> R$^2$       & 1.00         \\
 #> Adj. R$^2$  & 1.00         \\
 #> Num. obs.   & 88           \\
-#> RMSE        & 0.92         \\
+#> RMSE        & 0.95         \\
 #> \hline
 #> \multicolumn{2}{l}{\scriptsize{$^{***}p<0.001$, $^{**}p<0.01$, $^*p<0.05$}}
 #> \end{tabular}
@@ -645,7 +668,7 @@ texreg(m) # intercept would otherwise be "-0.00"
 ``` r
 xtable(matrix(1:4, nrow = 2) * -0.000001) # would otherwise return "-0.00"
 #> % latex table generated in R 3.3.0 by xtable 1.8-2 package
-#> % Fri Sep 23 12:06:54 2016
+#> % Fri Sep 23 14:23:46 2016
 #> \begin{table}[ht]
 #> \centering
 #> \begin{tabular}{rrr}

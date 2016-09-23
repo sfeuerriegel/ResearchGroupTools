@@ -105,3 +105,31 @@ showRowsNA <- function(d) {
 
   return(d)
 }
+
+#' Returns the last non-NA entry
+#'
+#' Finds the last value in a vector which is not \code{NA} and
+#' returns it. If all entries are \code{NA}, it returns an \code{NA}
+#' @param d Vector with numeric entries and possibly \code{NA} values.
+#' @return Last value in \code{d} with non-NA entry.
+#' @examples
+#' last_non_NA(c(1, 2, 3, 4, NA))
+#'
+#' values <- 1:100
+#' values[sample(1:100, 10)] <- NA
+#' df <- cbind(Year = c(rep(2000, 5), rep(2001, 5)),
+#'             as.data.frame(matrix(values, nrow = 10)))
+#'
+#' library(dplyr)
+#' df %>%
+#'   group_by(Year) %>%
+#'   summarize_each(funs(last_non_NA)) %>%
+#'   ungroup()
+#' @export
+last_non_NA <- function(d) {
+  if (all(is.na(d))) {
+    return(NA)
+  } else {
+    return(d[max(which(!is.na(d)))])
+  }
+}
