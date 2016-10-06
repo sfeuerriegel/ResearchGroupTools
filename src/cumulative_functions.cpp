@@ -60,7 +60,15 @@ NumericVector moment(NumericVector x, int m) {
 
 }
 
-
+//' Cumulativate versions of skewness, kurtosis, sd, adv
+//'
+//' ResearchGroupTools adds \code{cumskewness}, \code{cumkurtosis},
+//' \code{cumadv}, and \code{cumsd} to complete
+//' R's set of cumulate functions to match the aggregation functions available
+//' in most databases
+//'
+//' @param x For \code{cumskewness}, \code{cumkurtosis}, \code{cumsd},
+//' \code{cumadv} an integer or numeric vector
 //' @export
 // [[Rcpp::export]]
 NumericVector cumsd(NumericVector x) {
@@ -69,6 +77,7 @@ NumericVector cumsd(NumericVector x) {
 
 
 //' @export
+//' @rdname cumsd
 // [[Rcpp::export]]
 NumericVector cumskewness(NumericVector x) {
   return moment(x, 3);
@@ -76,6 +85,7 @@ NumericVector cumskewness(NumericVector x) {
 
 
 //' @export
+//' @rdname cumsd
 // [[Rcpp::export]]
 NumericVector cumkurtosis(NumericVector x) {
   return moment(x, 4);
@@ -83,6 +93,7 @@ NumericVector cumkurtosis(NumericVector x) {
 
 
 //' @export
+//' @rdname cumsd
 // [[Rcpp::export]]
 NumericVector cumadev(NumericVector x) {
   int n = x.length();
