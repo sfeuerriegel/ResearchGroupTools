@@ -52,7 +52,6 @@ This section shows the basic functionality of how to perform a sentiment analysi
 
 ``` r
 library(ResearchGroupTools)
-#> Warning: package 'texreg' was built under R version 3.3.1
 #> Warning: changing locked binding for 'coeftostring' in 'texreg' whilst
 #> loading 'ResearchGroupTools'
 #> Warning: changing locked binding for 'sanitize.numbers' in 'xtable' whilst
@@ -223,7 +222,7 @@ df %>%
   summarize_each(funs(last_non_NA)) %>%
   ungroup() %>%
   head()
-#> # A tibble: 2 x 11
+#> # A tibble: 2 × 11
 #>    Year    V1    V2    V3    V4    V5    V6    V7    V8    V9   V10
 #>   <dbl> <int> <int> <int> <int> <int> <int> <int> <int> <int> <int>
 #> 1  2000     5    15    25    35    45    55    65    75    85    95
@@ -393,9 +392,7 @@ showCoeftest(m, hide = "x") # leaves only the intercept
 
 ``` r
 library(vars)
-#> Warning: package 'vars' was built under R version 3.3.1
 #> Loading required package: MASS
-#> Warning: package 'MASS' was built under R version 3.3.1
 #> 
 #> Attaching package: 'MASS'
 #> The following object is masked from 'package:dplyr':
@@ -410,7 +407,6 @@ library(vars)
 #>     as.Date, as.Date.numeric
 #> Loading required package: sandwich
 #> Loading required package: urca
-#> Warning: package 'urca' was built under R version 3.3.1
 #> Loading required package: lmtest
 data(Canada)
 
@@ -667,8 +663,8 @@ texreg(m) # intercept would otherwise be "-0.00"
 
 ``` r
 xtable(matrix(1:4, nrow = 2) * -0.000001) # would otherwise return "-0.00"
-#> % latex table generated in R 3.3.0 by xtable 1.8-2 package
-#> % Fri Sep 23 14:23:46 2016
+#> % latex table generated in R 3.3.1 by xtable 1.8-2 package
+#> % Thu Oct 06 14:50:48 2016
 #> \begin{table}[ht]
 #> \centering
 #> \begin{tabular}{rrr}
