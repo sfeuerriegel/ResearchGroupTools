@@ -28,7 +28,6 @@ library(dplyr)
 df \%>\%
   group_by(Year) \%>\%
   summarize_each(funs(last_non_NA)) \%>\%
-  ungroup() \%>\%
-  head()
+  ungroup()
 }
 
