@@ -169,7 +169,7 @@ adf <- function(d, vars = colnames(d),
 #' but always displays the results for the levels first, followed by the differences and
 #' then continues with the next variables.
 #' @param adf_levels ADF test for variables in levels as returned by \code{\link{adf}}.
-#' @param adf_diffs ADF test for variables in differences as returned by \code{\link{adf}}.
+#' @param adf_diff1 ADF test for variables in differences as returned by \code{\link{adf}}.
 #' @param filename LaTeX file to export to. Defaul name is \code{adf.tex}.
 #' @param digits Number of digits in the resulting table. Default is 3.
 #' @return Pretty table for output in R.
