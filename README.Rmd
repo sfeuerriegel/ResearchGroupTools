@@ -349,6 +349,19 @@ adf(USArrests, vars = c("Murder", "Rape"), type = "drift",
 unlink("adf.tex")
 ```
 
+* `exportAdfDifferences()` allows to export an ADF test in levels and in differences in a combined table.
+
+```{r, include=-7}
+adf_levels <- adf(USArrests)
+adf_diff1 <- adf(data.frame(Murder = diff(USArrests$Murder),
+                            Assault = diff(USArrests$Assault),
+                            UrbanPop = diff(USArrests$UrbanPop),
+                            Rape = diff(USArrests$Rape)))
+exportAdfDifferences(adf_levels, adf_diff1)
+unlink("adf.tex")
+```
+
+
 * `cointegrationTable()` performs a cointegration test following the Johansen procedure. The output is written as LaTeX into a file named `filename`. 
 
 ```{r cointegrationTable, include=-2}
@@ -363,10 +376,11 @@ irf <- irf(var.2c, impulse = "e", response = "prod", boot = TRUE)
 plotIrf(irf, ylab = "Production")
 ```
 
-* `impulseResponsePlot()` combines computation and plot, thereby returning a `ggplot` with a nice impulse response function in black/white.
+* `impulseResponsePlot()` combines computation and plot, thereby returning a `ggplot` with a nice impulse response function in black/white. If the optional argument `filename` is specified, the plot is automatically saved on the disk.
 
-```{r impulseResponsePlot}
-impulseResponsePlot(var.2c, impulse = "e", response = "prod", ylab = "Production", n.ahead = 5)
+```{r impulseResponsePlot, include=-2}
+impulseResponsePlot(var.2c, impulse = "e", response = "prod", ylab = "Production", n.ahead = 5, filename = "irf_e_prod.pdf")
+unlink("irf_e_prod.pdf")
 ```
 
 * `testSpecification()` checks if non-autocorrelation, normally distributed residuals and homoskedasticity is present. 
