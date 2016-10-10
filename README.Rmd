@@ -376,6 +376,10 @@ testSpecification(var.2c)
 ```
 
 
+## Cumulative functions
+
+* `cumskewness()`, `cumkurtosis()`, `cumsd()` (standard deviation) and `cumadv` (average deviation) return a vector with cumulative results of the specific function. 
+
 ## Hooks to other packages
 
 * `coeftostring()` from the `texreg` package is overwritten. This also fixes the behavior of `texreg()` itself. 
