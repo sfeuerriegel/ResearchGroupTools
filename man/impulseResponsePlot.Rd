@@ -4,7 +4,8 @@
 \alias{impulseResponsePlot}
 \title{Calculation and pretty plot of impulse response function}
 \usage{
-impulseResponsePlot(var, impulse, response, n.ahead = 10, ...)
+impulseResponsePlot(var, impulse, response, n.ahead = 10, filename = NULL,
+  width = 10, height = 6, ...)
 }
 \arguments{
 \item{var}{Object package with impulse response function, i.e. type
@@ -17,6 +18,13 @@ impulseResponsePlot(var, impulse, response, n.ahead = 10, ...)
 \item{n.ahead}{Optional parameter to later choose a smaller x-range for the
 impulse response function. Argument expects a numeric value with the maximum
 step. Default is 10.}
+
+\item{filename}{Filename to export the table as LaTeX. Default is
+\code{NULL}, i.e. no export.}
+
+\item{width}{Width of exported figure (default: 10).}
+
+\item{height}{Height of exported figure (default: 6).}
 
 \item{...}{Further arguments passed on to \code{\link{plotIrf}}}
 }
@@ -34,7 +42,8 @@ data(Canada)
 var.2c <- VAR(Canada, p = 2, type = "const")
 \dontrun{
 impulseResponsePlot(var.2c, impulse = "e", response = "prod", ylab = "Production")
-impulseResponsePlot(var.2c, impulse = "e", response = "prod", ylab = "Production", n.ahead = 5)
+impulseResponsePlot(var.2c, impulse = "e", response = "prod", ylab = "Production",
+                    n.ahead = 5, filename = "irf_e_prod.pdf")
 }
 }
 

@@ -1,7 +1,8 @@
 inst/doc
 .Rproj.user
 data-raw
-.Rhistory
+
+/.Rhistory
 
 # Rcpp related
 src/*.o

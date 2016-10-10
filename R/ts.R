@@ -81,6 +81,16 @@ differences <- function(x, lag = 1, order = 1, na_padding = TRUE) {
   return(d)
 }
 
+printHeaderAdfTable <- function() {
+  cat("\n\n")
+  cat("\\begin{tabular}{ll SSSSS} \n")
+  cat("\\toprule \n")
+  cat("\\multicolumn{1}{l}{Variable} & \\multicolumn{1}{l}{Deterministic trend} & \\multicolumn{1}{c}{Lags}& \\multicolumn{1}{c}{Test value} & \\multicolumn{3}{c}{\\textbf{Critical values}}\\\\ \n")
+  cat("\\cline{5-7} \n")
+  cat("&&&& $10\\,\\%$ & $5\\,\\%$ & $1\\,\\%$ \\\\ \n")
+  cat("\n\n")
+}
+
 #' Augmented Dickey-Fuller (ADF) test
 #'
 #' Performs the Augmented Dickey-Fuller (ADF) test to check if a time
@@ -113,7 +123,7 @@ adf <- function(d, vars = colnames(d),
                 filename = NULL, digits = 3, verbose = TRUE, ...) {
   result <- data.frame(matrix(0, nrow = length(vars), ncol = 8))
   result[, 1] <- vars
-  result[, 2] <- plyr::mapvalues(type[1], c("drift", "trend"), c("Constant", "Trend"))
+  result[, 2] <- plyr::mapvalues(type[1], c("drift", "trend"), c("Constant", "Trend"), warn_missing = FALSE)
   colnames(result) <- c("Variable", "Type", "Lags",
                         "TestStat", "CriticalValue10", "CriticalValue5", "CriticalValue1",
                         "Pvalue")
@@ -134,13 +144,7 @@ adf <- function(d, vars = colnames(d),
   }
 
   if (!is.null(filename)) {
-    cat("\n\n")
-    cat("\\begin{tabular}{ll SSSSS} \n")
-    cat("\\toprule \n")
-    cat("\\multicolumn{1}{l}{Variable} & \\multicolumn{1}{l}{Deterministic trend} & \\multicolumn{1}{c}{Lags}& \\multicolumn{1}{c}{Test value} & \\multicolumn{3}{c}{\\textbf{Critical values}}\\\\ \n")
-    cat("\\cline{5-7} \n")
-    cat("&&&& $10\\,\\%$ & $5\\,\\%$ & $1\\,\\%$ \\\\ \n")
-    cat("\n\n")
+    printHeaderAdfTable()
 
     print(xtable::xtable(result[, 1:7], digits = digits),
           only.contents = TRUE, include.colnames = FALSE, booktabs = TRUE,
@@ -156,6 +160,42 @@ adf <- function(d, vars = colnames(d),
   }
 
   return(result)
+}
+
+#' Export multiple ADF tests
+#'
+#' Exports augmented Dickey-Fuller (ADF) tests of variables in levels and variables in
+#' differences into a single LaTeX file. It keeps the original order of the variables,
+#' but always displays the results for the levels first, followed by the differences and
+#' then continues with the next variables.
+#' @param adf_levels ADF test for variables in levels as returned by \code{\link{adf}}.
+#' @param adf_diff1 ADF test for variables in differences as returned by \code{\link{adf}}.
+#' @param filename LaTeX file to export to. Defaul name is \code{adf.tex}.
+#' @param digits Number of digits in the resulting table. Default is 3.
+#' @return Pretty table for output in R.
+#' @examples
+#' data(USArrests)
+#' adf_levels <- adf(USArrests)
+#' adf_diff1 <- adf(data.frame(Murder = diff(USArrests$Murder),
+#'                             Assault = diff(USArrests$Assault),
+#'                             UrbanPop = diff(USArrests$UrbanPop),
+#'                             Rape = diff(USArrests$Rape)))
+#' exportAdfDifferences(adf_levels, adf_diff1)
+#' unlink("adf.tex")
+#' @export
+exportAdfDifferences <- function(adf_levels, adf_diff1, filename = "adf.tex", digits = 3) {
+  printHeaderAdfTable()
+
+  tmp <- rbind(adf_levels, adf_diff1)
+  idx <- as.vector(t(matrix(1:nrow(tmp), ncol = 2, byrow = FALSE)))
+
+  adf_xtable <- print.data.frame(cbind(tmp$Variable, tmp$Type, round(tmp[idx, c("Lags", "TestStat",
+                                                                                "CriticalValue10", "CriticalValue5", "CriticalValue1")], digits)))
+
+  print(xtable(adf_xtable, digits = c(0, 0, 0, 0, digits, digits, digits, digits)), booktabs = TRUE,
+        file = filename, include.rownames = FALSE)
+
+  return(adf_xtable)
 }
 
 #' Cointegration test
@@ -246,6 +286,11 @@ cointegrationTable <- function(d, vars = colnames(d),
 #' @param alpha Opacity for confidence interval. Default is 0.3
 #' @param n.ahead Optional parameter to later choose a smaller x-range for
 #' plotting. Argument expects a numeric value with the maximum step.
+#' @param filename Filename to export the table as LaTeX. Default is
+#' \code{NULL}, i.e. no export.
+#' @param width Width of exported figure (default: 10).
+#' @param height Height of exported figure (default: 6).
+#' @param ... Further arguments passed on to \code{\link[ggplot2]{ggsave}}
 #' @return Object of \code{\link[ggplot2]{ggplot}}.
 #' @examples
 #' library(vars)
@@ -255,9 +300,10 @@ cointegrationTable <- function(d, vars = colnames(d),
 #' \dontrun{
 #' irf <- irf(var.2c, impulse = "e", response = "prod", boot = TRUE)
 #' plotIrf(irf, ylab = "Production")
+#' plotIrf(irf, ylab = "Production", filename = "irf_e_prod.pdf")
 #' }
 #' @export
-plotIrf <- function(irf, name = NULL, ylab = NULL, alpha = 0.3, n.ahead = NULL) {
+plotIrf <- function(irf, name = NULL, ylab = NULL, alpha = 0.3, n.ahead = NULL, filename = NULL, width = 10, height = 6, ...) {
   if (!irf$boot) {
     stop("Plot requires confidence intervals (call irf with argument boot).")
   }
@@ -301,6 +347,10 @@ plotIrf <- function(irf, name = NULL, ylab = NULL, alpha = 0.3, n.ahead = NULL) 
     p <- p + ggplot2::ylab(ylab)
   }
 
+  if (!is.null(filename)) {
+    ggsave(filename, p, ...)
+  }
+
   return(p)
 }
 
@@ -315,6 +365,10 @@ plotIrf <- function(irf, name = NULL, ylab = NULL, alpha = 0.3, n.ahead = NULL) 
 #' @param n.ahead Optional parameter to later choose a smaller x-range for the
 #' impulse response function. Argument expects a numeric value with the maximum
 #' step. Default is 10.
+#' @param filename Filename to export the table as LaTeX. Default is
+#' \code{NULL}, i.e. no export.
+#' @param width Width of exported figure (default: 10).
+#' @param height Height of exported figure (default: 6).
 #' @param ... Further arguments passed on to \code{\link{plotIrf}}
 #' @return Object of \code{\link[ggplot2]{ggplot}}.
 #' @examples
@@ -324,10 +378,11 @@ plotIrf <- function(irf, name = NULL, ylab = NULL, alpha = 0.3, n.ahead = NULL) 
 #' var.2c <- VAR(Canada, p = 2, type = "const")
 #' \dontrun{
 #' impulseResponsePlot(var.2c, impulse = "e", response = "prod", ylab = "Production")
-#' impulseResponsePlot(var.2c, impulse = "e", response = "prod", ylab = "Production", n.ahead = 5)
+#' impulseResponsePlot(var.2c, impulse = "e", response = "prod", ylab = "Production",
+#'                     n.ahead = 5, filename = "irf_e_prod.pdf")
 #' }
 #' @export
-impulseResponsePlot <- function(var, impulse, response, n.ahead = 10, ...) {
+impulseResponsePlot <- function(var, impulse, response, n.ahead = 10, filename = NULL, width = 10, height = 6, ...) {
   if (class(var) != "varest" && class(var) != "svarest") {
     stop("Argument 'var' is not of type varest or svarest.")
   }
@@ -340,7 +395,7 @@ impulseResponsePlot <- function(var, impulse, response, n.ahead = 10, ...) {
   }
 
   irf <- vars::irf(var, impulse = impulse, response = response, boot = TRUE, n.ahead = n.ahead)
-  plotIrf(irf, ...)
+  plotIrf(irf, filename = filename, width = width, height = height, ...)
 }
 
 #' Specification tests for VAR model

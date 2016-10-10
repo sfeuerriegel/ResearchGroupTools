@@ -52,6 +52,7 @@ This section shows the basic functionality of how to perform a sentiment analysi
 
 ``` r
 library(ResearchGroupTools)
+#> Warning: package 'texreg' was built under R version 3.3.1
 #> Warning: changing locked binding for 'coeftostring' in 'texreg' whilst
 #> loading 'ResearchGroupTools'
 #> Warning: changing locked binding for 'sanitize.numbers' in 'xtable' whilst
@@ -222,7 +223,7 @@ df %>%
   summarize_each(funs(last_non_NA)) %>%
   ungroup() %>%
   head()
-#> # A tibble: 2 × 11
+#> # A tibble: 2 x 11
 #>    Year    V1    V2    V3    V4    V5    V6    V7    V8    V9   V10
 #>   <dbl> <int> <int> <int> <int> <int> <int> <int> <int> <int> <int>
 #> 1  2000     5    15    25    35    45    55    65    75    85    95
@@ -392,7 +393,9 @@ showCoeftest(m, hide = "x") # leaves only the intercept
 
 ``` r
 library(vars)
+#> Warning: package 'vars' was built under R version 3.3.1
 #> Loading required package: MASS
+#> Warning: package 'MASS' was built under R version 3.3.1
 #> 
 #> Attaching package: 'MASS'
 #> The following object is masked from 'package:dplyr':
@@ -407,6 +410,7 @@ library(vars)
 #>     as.Date, as.Date.numeric
 #> Loading required package: sandwich
 #> Loading required package: urca
+#> Warning: package 'urca' was built under R version 3.3.1
 #> Loading required package: lmtest
 data(Canada)
 
@@ -536,7 +540,6 @@ std$e
 
 ``` r
 adf(USArrests, verbose = FALSE)
-#> The following `from` values were not present in `x`: drift, trend
 #> The following time series appear stationary, as P-values > 0.05:  Murder, Assault, UrbanPop, Rape
 #>   Variable Type Lags   TestStat CriticalValue10 CriticalValue5
 #> 1   Murder none    1 -1.7630314           -1.61          -1.95
@@ -550,7 +553,6 @@ adf(USArrests, verbose = FALSE)
 #> 4          -2.62 0.08193470
 adf(USArrests, vars = c("Murder", "Rape"), type = "drift",
    filename = "adf.tex", verbose = FALSE)
-#> The following `from` values were not present in `x`: trend
 #> 
 #> 
 #> \begin{tabular}{ll SSSSS} 
@@ -567,6 +569,89 @@ adf(USArrests, vars = c("Murder", "Rape"), type = "drift",
 #>   CriticalValue1       Pvalue
 #> 1          -3.58 1.575081e-08
 #> 2          -3.58 1.908966e-06
+unlink("adf.tex")
+```
+
+-   `exportAdfDifferences()` allows to export an ADF test in levels and in differences in a combined table.
+
+``` r
+adf_levels <- adf(USArrests)
+#> 1
+#> Length  Class   Mode 
+#>      1  ur.df     S4 
+#> 2
+#> Length  Class   Mode 
+#>      1  ur.df     S4 
+#> 3
+#> Length  Class   Mode 
+#>      1  ur.df     S4 
+#> 4
+#> Length  Class   Mode 
+#>      1  ur.df     S4 
+#> The following time series appear stationary, as P-values > 0.05:  Murder, Assault, UrbanPop, Rape
+adf_diff1 <- adf(data.frame(Murder = diff(USArrests$Murder),
+                            Assault = diff(USArrests$Assault),
+                            UrbanPop = diff(USArrests$UrbanPop),
+                            Rape = diff(USArrests$Rape)))
+#> 1
+#> Length  Class   Mode 
+#>      1  ur.df     S4 
+#> 2
+#> Length  Class   Mode 
+#>      1  ur.df     S4 
+#> 3
+#> Length  Class   Mode 
+#>      1  ur.df     S4 
+#> 4
+#> Length  Class   Mode 
+#>      1  ur.df     S4 
+#> All time series appear stationary, since all P-values < 0.05.
+exportAdfDifferences(adf_levels, adf_diff1)
+#> 
+#> 
+#> \begin{tabular}{ll SSSSS} 
+#> \toprule 
+#> \multicolumn{1}{l}{Variable} & \multicolumn{1}{l}{Deterministic trend} & \multicolumn{1}{c}{Lags}& \multicolumn{1}{c}{Test value} & \multicolumn{3}{c}{\textbf{Critical values}}\\ 
+#> \cline{5-7} 
+#> &&&& $10\,\%$ & $5\,\%$ & $1\,\%$ \\ 
+#> 
+#> 
+#>   tmp$Variable tmp$Type Lags TestStat CriticalValue10 CriticalValue5
+#> 1       Murder     none    1   -1.763           -1.61          -1.95
+#> 5      Assault     none    1   -8.020           -1.61          -1.95
+#> 2     UrbanPop     none    1   -1.587           -1.61          -1.95
+#> 6         Rape     none    1   -8.360           -1.61          -1.95
+#> 3       Murder     none    1   -0.483           -1.61          -1.95
+#> 7      Assault     none    1   -8.389           -1.61          -1.95
+#> 4     UrbanPop     none    1   -1.740           -1.61          -1.95
+#> 8         Rape     none    1  -10.775           -1.61          -1.95
+#>   CriticalValue1
+#> 1          -2.62
+#> 5          -2.62
+#> 2          -2.62
+#> 6          -2.62
+#> 3          -2.62
+#> 7          -2.62
+#> 4          -2.62
+#> 8          -2.62
+#>   tmp$Variable tmp$Type Lags TestStat CriticalValue10 CriticalValue5
+#> 1       Murder     none    1   -1.763           -1.61          -1.95
+#> 5      Assault     none    1   -8.020           -1.61          -1.95
+#> 2     UrbanPop     none    1   -1.587           -1.61          -1.95
+#> 6         Rape     none    1   -8.360           -1.61          -1.95
+#> 3       Murder     none    1   -0.483           -1.61          -1.95
+#> 7      Assault     none    1   -8.389           -1.61          -1.95
+#> 4     UrbanPop     none    1   -1.740           -1.61          -1.95
+#> 8         Rape     none    1  -10.775           -1.61          -1.95
+#>   CriticalValue1
+#> 1          -2.62
+#> 5          -2.62
+#> 2          -2.62
+#> 6          -2.62
+#> 3          -2.62
+#> 7          -2.62
+#> 4          -2.62
+#> 8          -2.62
 unlink("adf.tex")
 ```
 
@@ -597,13 +682,18 @@ plotIrf(irf, ylab = "Production")
 
 ![](README-plotIrf-1.png)
 
--   `impulseResponsePlot()` combines computation and plot, thereby returning a `ggplot` with a nice impulse response function in black/white.
+-   `impulseResponsePlot()` combines computation and plot, thereby returning a `ggplot` with a nice impulse response function in black/white. If the optional argument `filename` is specified, the plot is automatically saved on the disk.
 
 ``` r
-impulseResponsePlot(var.2c, impulse = "e", response = "prod", ylab = "Production", n.ahead = 5)
+impulseResponsePlot(var.2c, impulse = "e", response = "prod", ylab = "Production", n.ahead = 5, filename = "irf_e_prod.pdf")
+#> Saving 7 x 5 in image
 ```
 
 ![](README-impulseResponsePlot-1.png)
+
+``` r
+unlink("irf_e_prod.pdf")
+```
 
 -   `testSpecification()` checks if non-autocorrelation, normally distributed residuals and homoskedasticity is present.
 
@@ -663,8 +753,8 @@ texreg(m) # intercept would otherwise be "-0.00"
 
 ``` r
 xtable(matrix(1:4, nrow = 2) * -0.000001) # would otherwise return "-0.00"
-#> % latex table generated in R 3.3.1 by xtable 1.8-2 package
-#> % Thu Oct 06 14:50:48 2016
+#> % latex table generated in R 3.3.0 by xtable 1.8-2 package
+#> % Sun Oct 09 16:19:33 2016
 #> \begin{table}[ht]
 #> \centering
 #> \begin{tabular}{rrr}
