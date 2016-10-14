@@ -13,6 +13,7 @@
     -   [Visualization](#visualization)
     -   [Regressions](#regressions)
     -   [Time series analysis](#time-series-analysis)
+    -   [Cumulative functions](#cumulative-functions)
     -   [Hooks to other packages](#hooks-to-other-packages)
     -   [Package development](#package-development)
 
@@ -52,7 +53,6 @@ This section shows the basic functionality of how to perform a sentiment analysi
 
 ``` r
 library(ResearchGroupTools)
-#> Warning: package 'texreg' was built under R version 3.3.1
 #> Warning: changing locked binding for 'coeftostring' in 'texreg' whilst
 #> loading 'ResearchGroupTools'
 #> Warning: changing locked binding for 'sanitize.numbers' in 'xtable' whilst
@@ -223,7 +223,7 @@ df %>%
   summarize_each(funs(last_non_NA)) %>%
   ungroup() %>%
   head()
-#> # A tibble: 2 x 11
+#> # A tibble: 2 × 11
 #>    Year    V1    V2    V3    V4    V5    V6    V7    V8    V9   V10
 #>   <dbl> <int> <int> <int> <int> <int> <int> <int> <int> <int> <int>
 #> 1  2000     5    15    25    35    45    55    65    75    85    95
@@ -393,9 +393,7 @@ showCoeftest(m, hide = "x") # leaves only the intercept
 
 ``` r
 library(vars)
-#> Warning: package 'vars' was built under R version 3.3.1
 #> Loading required package: MASS
-#> Warning: package 'MASS' was built under R version 3.3.1
 #> 
 #> Attaching package: 'MASS'
 #> The following object is masked from 'package:dplyr':
@@ -410,7 +408,6 @@ library(vars)
 #>     as.Date, as.Date.numeric
 #> Loading required package: sandwich
 #> Loading required package: urca
-#> Warning: package 'urca' was built under R version 3.3.1
 #> Loading required package: lmtest
 data(Canada)
 
@@ -710,6 +707,11 @@ testSpecification(var.2c)
 #> Stars
 ```
 
+Cumulative functions
+--------------------
+
+-   `cumskewness()`, `cumkurtosis()`, `cumsd()` (standard deviation) and `cumadev()` (average deviation) return a vector with cumulative results of the specific function.
+
 Hooks to other packages
 -----------------------
 
@@ -753,8 +755,8 @@ texreg(m) # intercept would otherwise be "-0.00"
 
 ``` r
 xtable(matrix(1:4, nrow = 2) * -0.000001) # would otherwise return "-0.00"
-#> % latex table generated in R 3.3.0 by xtable 1.8-2 package
-#> % Sun Oct 09 16:19:33 2016
+#> % latex table generated in R 3.3.1 by xtable 1.8-2 package
+#> % Fri Oct 14 15:21:23 2016
 #> \begin{table}[ht]
 #> \centering
 #> \begin{tabular}{rrr}

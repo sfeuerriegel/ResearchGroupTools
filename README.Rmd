@@ -392,7 +392,9 @@ testSpecification(var.2c)
 
 ## Cumulative functions
 
-* `cumskewness()`, `cumkurtosis()`, `cumsd()` (standard deviation) and `cumadv` (average deviation) return a vector with cumulative results of the specific function. 
+* `cumskewness()`, `cumkurtosis()`, `cumsd()` (standard deviation) and `cumadev()` (average deviation) return a vector with cumulative results of the specific function. 
+
+
 
 ## Hooks to other packages
 
