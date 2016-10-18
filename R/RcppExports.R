@@ -4,7 +4,7 @@
 #' Cumulativate versions of skewness, kurtosis, sd, adv
 #'
 #' ResearchGroupTools adds \code{cumskewness}, \code{cumkurtosis},
-#' \code{cumadv}, and \code{cumsd} to complete
+#' \code{cumadev}, and \code{cumsd} to complete
 #' R's set of cumulate functions to match the aggregation functions available
 #' in most databases
 #'

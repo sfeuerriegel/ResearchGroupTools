@@ -393,6 +393,13 @@ testSpecification(var.2c)
 ## Cumulative functions
 
 * `cumskewness()`, `cumkurtosis()`, `cumsd()` (standard deviation) and `cumadev()` (average deviation) return a vector with cumulative results of the specific function. 
+```{r cum_functions}
+x1 <- c(1:10)
+cumsd(x1)
+rn <- rnorm(100)
+cumskewness(rn)
+```
+
 
 
 
