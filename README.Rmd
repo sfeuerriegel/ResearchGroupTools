@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
 
 ## Installation
 
-Using the **devtools** package, you can easily install the latest development version of **SentimentAnalysis** with
+Using the **devtools** package, you can easily install the latest development version of **ResearchGroupTools** with
 
 ```{r,eval=FALSE}
 install.packages("devtools")
@@ -40,7 +40,7 @@ Notes:
 
 ## Usage
 
-This section shows the basic functionality of how to perform a sentiment analysis. First, load the corresponding package **ResearchGroupTools**. 
+This section shows the basic functionality of how accelerate data science in R. First, load the corresponding package **ResearchGroupTools**. 
 
 ```{r, message=FALSE}
 library(ResearchGroupTools)

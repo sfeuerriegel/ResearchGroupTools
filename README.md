@@ -27,7 +27,7 @@ ResearchGroupTools
 Installation
 ------------
 
-Using the **devtools** package, you can easily install the latest development version of **SentimentAnalysis** with
+Using the **devtools** package, you can easily install the latest development version of **ResearchGroupTools** with
 
 ``` r
 install.packages("devtools")
@@ -43,7 +43,7 @@ Notes:
 Usage
 -----
 
-This section shows the basic functionality of how to perform a sentiment analysis. First, load the corresponding package **ResearchGroupTools**.
+This section shows the basic functionality of how accelerate data science in R. First, load the corresponding package **ResearchGroupTools**.
 
 ``` r
 library(ResearchGroupTools)
@@ -782,7 +782,7 @@ texreg(m) # intercept would otherwise be "-0.00"
 ``` r
 xtable(matrix(1:4, nrow = 2) * -0.000001) # would otherwise return "-0.00"
 #> % latex table generated in R 3.3.0 by xtable 1.8-2 package
-#> % Tue Oct 18 13:02:56 2016
+#> % Tue Oct 18 17:45:13 2016
 #> \begin{table}[ht]
 #> \centering
 #> \begin{tabular}{rrr}

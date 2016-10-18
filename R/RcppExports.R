@@ -4,7 +4,7 @@
 #' Cumulativate versions of skewness, kurtosis, sd, adv
 #'
 #' Functions include \code{cumskewness}, \code{cumkurtosis},
-#' \code{cumadev}, and \code{cumsd} to complete
+#' \code{cumadev} (average deviation), and \code{cumsd} to complete
 #' R's set of cumulate functions to match the aggregation functions available
 #' in most databases.
 #' @param x For \code{cumskewness}, \code{cumkurtosis}, \code{cumsd},
