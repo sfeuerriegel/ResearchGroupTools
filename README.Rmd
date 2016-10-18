@@ -31,7 +31,7 @@ Using the **devtools** package, you can easily install the latest development ve
 install.packages("devtools")
 
 # Recommended option: download and install latest version from "GitHub"
-devtools::install_github("sfeuerriegel/ResearchGroupTools")
+devtools::install_github("sfeuerriegel/ResearchGroupTools", dependencies = TRUE)
 ```
 
 Notes: 
