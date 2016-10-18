@@ -1,12 +1,14 @@
-# ResearchGroupTools 0.3-0
+# ResearchGroupTools 0.4-0
 
 # Development version
 
-## New features and functions
+# Version 0.4-0
 
 * Added completeLowResolutionData()
 
 * Added last_non_NA()
+
+* Added cumskewness(), cumkurtosis(), cumsd(), etc.
 
 # Version 0.3-0
 
@@ -23,8 +25,6 @@
 * Added new helpers for plotting: allDigitslabels()
 
 # Version 0.2-0
-
-## New features and functions
 
 * Added new functions for string manipulating
 

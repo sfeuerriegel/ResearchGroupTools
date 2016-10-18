@@ -32,18 +32,13 @@ Using the **devtools** package, you can easily install the latest development ve
 ``` r
 install.packages("devtools")
 
-# Option 1: download and install latest version from "GitHub"
+# Recommended option: download and install latest version from "GitHub"
 devtools::install_github("sfeuerriegel/ResearchGroupTools")
-
-# Option 2: install directly from bundled archive
-# devtoos::install_local("ResearchGroupTools_0.3.0.tar.gz")
 ```
 
 Notes:
 
--   In the case of option 2, you have to specify the path either to the directory of **ResearchGroupTools** or to the bundled archive **ResearchGroupTools\_0.3.0.tar.gz**
-
--   The package will only be shipped via GitHub; CRAN support is not intended.
+-   The package will only be shipped via GitHub; CRAN support is not intended due to several hooks.
 
 Usage
 -----
@@ -787,7 +782,7 @@ texreg(m) # intercept would otherwise be "-0.00"
 ``` r
 xtable(matrix(1:4, nrow = 2) * -0.000001) # would otherwise return "-0.00"
 #> % latex table generated in R 3.3.0 by xtable 1.8-2 package
-#> % Tue Oct 18 12:58:56 2016
+#> % Tue Oct 18 13:02:56 2016
 #> \begin{table}[ht]
 #> \centering
 #> \begin{tabular}{rrr}
