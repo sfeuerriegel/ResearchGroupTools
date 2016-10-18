@@ -22,7 +22,7 @@ Library <- function(packages, ...) {
   for (p in c(packages, ...)) {
     cat(paste0(p, "\n"))
     if (!(p %in% rownames(installed.packages()))) {
-      install.packages(p)
+      install.packages(p, dependencies = TRUE)
     }
 
     library(p, character.only = TRUE)
