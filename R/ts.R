@@ -1,5 +1,26 @@
 # TODO: monthly differences
 
+#' Multiple lags of time series
+#'
+#' @param x A vector or univariate time series.
+#' @param k A numeric value or a vector denoting which lags should be
+#' retrieved.
+#' @param ... Further parameters passed to \code{\link[dplyr]{lag}}.
+#' @return Matrix where the number of rows is identical to the length
+#' of \code{x}. The number of columns is identical the number of entries
+#' in \code{k}.
+#' @examples
+#' x <- 1:10
+#' lags(x, c(1, 2, 3))
+#'
+#' z <- ts(1:10)
+#' lags(z, c(1, 2, 5))
+#' @importFrom stats lag
+#' @export
+lags <- function(x, k, ...) {
+  do.call("cbind", lapply(k, function(i) dplyr::lag(x, n = i, ...)))
+}
+
 #' Lagged returns
 #'
 #' Calculates returns between values with specified lag.

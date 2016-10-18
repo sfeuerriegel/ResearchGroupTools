@@ -129,6 +129,14 @@ ts <- ts %>%
 
 ## Time series
 
+* `lags()` computes several lags of a vector.
+
+```{r lags}
+lags(1:5, c(1, 2, 3))
+lags(ts(1:5), c(1, 2, 5))
+```
+
+
 * `differences()` calculates lagged differences of a given order. It is more convenient thant `diff()` as it adds leading `NA` values.
 
 ```{r differences}
