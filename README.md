@@ -33,7 +33,7 @@ Using the **devtools** package, you can easily install the latest development ve
 install.packages("devtools")
 
 # Recommended option: download and install latest version from "GitHub"
-devtools::install_github("sfeuerriegel/ResearchGroupTools")
+devtools::install_github("sfeuerriegel/ResearchGroupTools", dependencies = TRUE)
 ```
 
 Notes:
@@ -170,6 +170,41 @@ ts <- ts %>%
 
 Time series
 -----------
+
+-   `lags()` computes several lags of a vector.
+
+``` r
+lags(1:5, c(1, 2, 3))
+#>      [,1] [,2] [,3]
+#> [1,]   NA   NA   NA
+#> [2,]    1   NA   NA
+#> [3,]    2    1   NA
+#> [4,]    3    2    1
+#> [5,]    4    3    2
+lags(ts(1:5), c(1, 2, 5))
+#> Time Series:
+#> Start = 1 
+#> End = 5 
+#> Frequency = 1 
+#>   structure(c(NA, 1L, 2L, 3L, 4L), .Tsp = c(1, 5, 1), class = "ts")
+#> 1                                                                NA
+#> 2                                                                 1
+#> 3                                                                 2
+#> 4                                                                 3
+#> 5                                                                 4
+#>   structure(c(NA, NA, 1L, 2L, 3L), .Tsp = c(1, 5, 1), class = "ts")
+#> 1                                                                NA
+#> 2                                                                NA
+#> 3                                                                 1
+#> 4                                                                 2
+#> 5                                                                 3
+#>   structure(c(NA_integer_, NA_integer_, NA_integer_, NA_integer_, 
+#> 1                                                               NA
+#> 2                                                               NA
+#> 3                                                               NA
+#> 4                                                               NA
+#> 5                                                               NA
+```
 
 -   `differences()` calculates lagged differences of a given order. It is more convenient thant `diff()` as it adds leading `NA` values.
 
@@ -782,7 +817,7 @@ texreg(m) # intercept would otherwise be "-0.00"
 ``` r
 xtable(matrix(1:4, nrow = 2) * -0.000001) # would otherwise return "-0.00"
 #> % latex table generated in R 3.3.0 by xtable 1.8-2 package
-#> % Tue Oct 18 17:45:13 2016
+#> % Tue Oct 18 23:35:19 2016
 #> \begin{table}[ht]
 #> \centering
 #> \begin{tabular}{rrr}
