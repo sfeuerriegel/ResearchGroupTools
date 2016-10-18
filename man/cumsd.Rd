@@ -17,12 +17,28 @@ cumadev(x)
 }
 \arguments{
 \item{x}{For \code{cumskewness}, \code{cumkurtosis}, \code{cumsd},
-\code{cumadv} an integer or numeric vector}
+\code{cumadv} an integer or numeric vector.}
+}
+\value{
+Returns a vector of the same length with new elements.
 }
 \description{
-ResearchGroupTools adds \code{cumskewness}, \code{cumkurtosis},
-\code{cumadv}, and \code{cumsd} to complete
+Functions include \code{cumskewness}, \code{cumkurtosis},
+\code{cumadev}, and \code{cumsd} to complete
 R's set of cumulate functions to match the aggregation functions available
-in most databases
+in most databases.
+}
+\details{
+The most common variants \code{\link{cummin}}, \code{\link{cummax}}
+and \code{\link{cumsum}} are included in the \code{"base"} package. In
+addition, \code{"dplyr"} ships a \code{\link[dplyr]{cummean}}.
+}
+\examples{
+library(dplyr)
+
+df <- data.frame(x = 1:10, y = rnorm(10))
+cumsd(df$x)
+df \%>\%
+  mutate_all(funs("mean" = cummean, "sd" = cumsd))
 }
 

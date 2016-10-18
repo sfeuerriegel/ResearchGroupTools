@@ -13,7 +13,6 @@
     -   [Visualization](#visualization)
     -   [Regressions](#regressions)
     -   [Time series analysis](#time-series-analysis)
-    -   [Cumulative functions](#cumulative-functions)
     -   [Hooks to other packages](#hooks-to-other-packages)
     -   [Package development](#package-development)
 
@@ -53,6 +52,7 @@ This section shows the basic functionality of how to perform a sentiment analysi
 
 ``` r
 library(ResearchGroupTools)
+#> Warning: package 'texreg' was built under R version 3.3.1
 #> Warning: changing locked binding for 'coeftostring' in 'texreg' whilst
 #> loading 'ResearchGroupTools'
 #> Warning: changing locked binding for 'sanitize.numbers' in 'xtable' whilst
@@ -104,15 +104,48 @@ ceil(3.4)
 #> [1] 4
 ```
 
+-   `cumskewness()`, `cumkurtosis()`, `cumsd()` (standard deviation) and `cumadev()` (average deviation) return a vector with cumulative results of the specific function.
+
+``` r
+library(dplyr)
+#> Warning: package 'dplyr' was built under R version 3.3.1
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
+
+df <- data_frame(x = 1:10, y = rnorm(10))
+cumsd(df$x)
+#>  [1]        NA 0.7071068 1.0000000 1.2909944 1.5811388 1.8708287 2.1602469
+#>  [8] 2.4494897 2.7386128 3.0276504
+
+df %>%
+  mutate_all(funs("mean" = cummean, "sd" = cumsd))
+#> # A tibble: 10 x 6
+#>        x            y x_mean    y_mean      x_sd      y_sd
+#>    <int>        <dbl>  <dbl>     <dbl>     <dbl>     <dbl>
+#> 1      1  1.262954285    1.0 1.2629543        NA        NA
+#> 2      2 -0.326233361    1.5 0.4683605 0.7071068 1.1237254
+#> 3      3  1.329799263    2.0 0.7555067 1.0000000 0.9374104
+#> 4      4  1.272429321    2.5 0.8847374 1.2909944 0.8078538
+#> 5      5  0.414641434    3.0 0.7907182 1.5811388 0.7305264
+#> 6      6 -1.539950042    3.5 0.4022735 1.8708287 1.1542404
+#> 7      7 -0.928567035    4.0 0.2121534 2.1602469 1.1675809
+#> 8      8 -0.294720447    4.5 0.1487942 2.4494897 1.0957240
+#> 9      9 -0.005767173    5.0 0.1316207 2.7386128 1.0262500
+#> 10    10  2.404653389    5.5 0.3589240 3.0276504 1.2053364
+```
+
 Data handling
 -------------
 
 -   `pull()`, `pull_string()` and `pull_ith()` extract single columns from a **dplyr** `tbl` object and return them as a vector.
 
 ``` r
-
-d <- data_frame(x = 1:10,
-               y = rnorm(10))
 d %>% pull(x)
 #>  [1]  1  2  3  4  5  6  7  8  9 10
 d %>% pull("x")
@@ -223,11 +256,11 @@ df %>%
   summarize_each(funs(last_non_NA)) %>%
   ungroup() %>%
   head()
-#> # A tibble: 2 × 11
+#> # A tibble: 2 x 11
 #>    Year    V1    V2    V3    V4    V5    V6    V7    V8    V9   V10
 #>   <dbl> <int> <int> <int> <int> <int> <int> <int> <int> <int> <int>
-#> 1  2000     5    15    25    35    45    55    65    75    85    95
-#> 2  2001    10    20    30    40    50    60    70    79    90   100
+#> 1  2000     5    15    25    35    45    55    65    74    85    95
+#> 2  2001    10    20    30    40    50    60    70    80    90   100
 ```
 
 Descriptive statistics
@@ -360,19 +393,19 @@ summary(m_dummies)
 #> 
 #> Residuals:
 #>      Min       1Q   Median       3Q      Max 
-#> -2.41774 -0.54210  0.04042  0.69658  1.98686 
+#> -2.44887 -0.56382  0.04689  0.66382  1.91157 
 #> 
 #> Coefficients:
 #>              Estimate Std. Error t value Pr(>|t|)    
-#> (Intercept) -0.275912   0.365074  -0.756    0.452    
-#> x            1.005309   0.003875 259.463  < 2e-16 ***
-#> dummies      1.033796   0.201966   5.119 1.89e-06 ***
+#> (Intercept) -0.150553   0.360156  -0.418    0.677    
+#> x            1.003736   0.003817 262.979  < 2e-16 ***
+#> dummies      1.038393   0.198100   5.242 1.14e-06 ***
 #> ---
 #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #> 
-#> Residual standard error: 0.947 on 85 degrees of freedom
-#> Multiple R-squared:  0.9987, Adjusted R-squared:  0.9987 
-#> F-statistic: 3.37e+04 on 2 and 85 DF,  p-value: < 2.2e-16
+#> Residual standard error: 0.9289 on 85 degrees of freedom
+#> Multiple R-squared:  0.9988, Adjusted R-squared:  0.9987 
+#> F-statistic: 3.46e+04 on 2 and 85 DF,  p-value: < 2.2e-16
 ```
 
 -   `showCoeftest()` shows coefficient tests, but hides (dummy) variables starting with a certain string.
@@ -386,14 +419,16 @@ m <- lm(y ~ x1 + x2)
 
 showCoeftest(m, hide = "x") # leaves only the intercept
 #>              Estimate Std..Error   t.value  Pr...t.. Stars
-#> (Intercept) 0.3149528  0.3523625 0.8938319 0.3736242
+#> (Intercept) 0.1669856  0.3539642 0.4717586 0.6381586
 ```
 
 -   `standardizeCoefficients()` extracts standardized coefficients and hides (dummy) variables if needed.
 
 ``` r
 library(vars)
+#> Warning: package 'vars' was built under R version 3.3.1
 #> Loading required package: MASS
+#> Warning: package 'MASS' was built under R version 3.3.1
 #> 
 #> Attaching package: 'MASS'
 #> The following object is masked from 'package:dplyr':
@@ -408,6 +443,7 @@ library(vars)
 #>     as.Date, as.Date.numeric
 #> Loading required package: sandwich
 #> Loading required package: urca
+#> Warning: package 'urca' was built under R version 3.3.1
 #> Loading required package: lmtest
 data(Canada)
 
@@ -429,9 +465,9 @@ m <- lm(y ~ x)
  
 extractRegressionStatistics(m)
 #>   Observations DegreesFreedom ResidualError  Rsquared AdjRsquared      AIC
-#> 1           10              8      1.194957 0.8544966   0.8363087 35.70954
-#>        BIC Fstatistic Fsignficance Fstars
-#> 1 36.61729   46.98152 0.0001304184    ***
+#> 1           10              8      1.209819 0.8762685    0.860802 35.95675
+#>       BIC Fstatistic Fsignficance Fstars
+#> 1 36.8645   56.65612 6.752956e-05    ***
 ```
 
 -   `getRowsOutlierRemoval()` helps to remove outliers at the 0.5% level at both ends (or any other threshold defined by the argument `cutoff`).
@@ -455,17 +491,17 @@ texreg_tvalues(m_dummies)
 #> \hline
 #>  & Model 1 \\
 #> \hline
-#> (Intercept) & $-0.28$      \\
-#>             & $(-0.76)$    \\
-#> x           & $1.01^{***}$ \\
-#>             & $(259.46)$   \\
-#> dummies     & $1.03^{***}$ \\
-#>             & $(5.12)$     \\
+#> (Intercept) & $-0.15$      \\
+#>             & $(-0.42)$    \\
+#> x           & $1.00^{***}$ \\
+#>             & $(262.98)$   \\
+#> dummies     & $1.04^{***}$ \\
+#>             & $(5.24)$     \\
 #> \hline
 #> R$^2$       & 1.00         \\
 #> Adj. R$^2$  & 1.00         \\
 #> Num. obs.   & 88           \\
-#> RMSE        & 0.95         \\
+#> RMSE        & 0.93         \\
 #> \hline
 #> \multicolumn{2}{l}{\scriptsize{$^{***}p<0.001$, $^{**}p<0.01$, $^*p<0.05$}}
 #> \end{tabular}
@@ -481,17 +517,17 @@ texreg_tvalues(m_dummies, hide = "dummies")
 #> \hline
 #>  & Model 1 \\
 #> \hline
-#> (Intercept) & $-0.28$      \\
-#>             & $(0.37)$     \\
-#> x           & $1.01^{***}$ \\
+#> (Intercept) & $-0.15$      \\
+#>             & $(0.36)$     \\
+#> x           & $1.00^{***}$ \\
 #>             & $(0.00)$     \\
-#> dummies     & $1.03^{***}$ \\
+#> dummies     & $1.04^{***}$ \\
 #>             & $(0.20)$     \\
 #> \hline
 #> R$^2$       & 1.00         \\
 #> Adj. R$^2$  & 1.00         \\
 #> Num. obs.   & 88           \\
-#> RMSE        & 0.95         \\
+#> RMSE        & 0.93         \\
 #> \hline
 #> \multicolumn{2}{l}{\scriptsize{$^{***}p<0.001$, $^{**}p<0.01$, $^*p<0.05$}}
 #> \end{tabular}
@@ -707,40 +743,6 @@ testSpecification(var.2c)
 #> Stars
 ```
 
-Cumulative functions
---------------------
-
--   `cumskewness()`, `cumkurtosis()`, `cumsd()` (standard deviation) and `cumadev()` (average deviation) return a vector with cumulative results of the specific function.
-
-``` r
-x1 <- c(1:10)
-cumsd(x1)
-#>  [1]        NA 0.7071068 1.0000000 1.2909944 1.5811388 1.8708287 2.1602469
-#>  [8] 2.4494897 2.7386128 3.0276504
-rn <- rnorm(100)
-cumskewness(rn)
-#>   [1]            NA  0.0000000000  0.3605232737  0.7037146426  0.2693301309
-#>   [6]  0.0496128590 -0.1359557105 -0.3278504903 -0.2790022871 -0.1129727755
-#>  [11] -0.0196749121 -0.8274261556 -0.9457583432 -0.7095798678 -0.5251091924
-#>  [16] -0.4516457202 -0.5095087829 -0.5344038510 -0.6157129137 -0.5667920109
-#>  [21] -0.4570253177 -0.4691812581 -0.3964842226 -0.4195824782 -0.3989073976
-#>  [26] -0.4061683665 -0.4634627635 -0.4393422092 -0.1290865840 -0.1069857765
-#>  [31] -0.1165552377 -0.1409684616 -0.0929925428 -0.0847139167 -0.0282248326
-#>  [36]  0.0132616983  0.0380259066  0.0111902332  0.0037586529 -0.0003793632
-#>  [41] -0.0409142800 -0.0644401430 -0.0195889837  0.0246256319  0.0615463442
-#>  [46]  0.0372760757 -0.0045232802 -0.0353492377 -0.0554458079 -0.0875846168
-#>  [51] -0.1236943529 -0.0850646708 -0.1038614211 -0.1216568076 -0.0868469667
-#>  [56] -0.0669309189 -0.0472316934 -0.0477480992 -0.0215880692 -0.0293756922
-#>  [61] -0.0448751474 -0.0127498593 -0.0362963255 -0.0392413651 -0.0500999829
-#>  [66] -0.0694672142 -0.0965088796 -0.1199329546 -0.1003025143 -0.0943432561
-#>  [71] -0.0740630343 -0.0535399116 -0.0727234070 -0.0976829994 -0.0935445540
-#>  [76] -0.0670200373 -0.0743811251 -0.0664696504 -0.0409677753 -0.0173862257
-#>  [81]  0.0031211209 -0.0208563551 -0.0092668988 -0.0206396129 -0.0388423538
-#>  [86] -0.0612720813 -0.0826160826 -0.1012833539 -0.1209818350 -0.1415890141
-#>  [91] -0.1599641225 -0.1797046479 -0.1904085629 -0.1684270654 -0.1745636663
-#>  [96] -0.1713975825 -0.1736235669 -0.1916703234 -0.2091274118 -0.1035723303
-```
-
 Hooks to other packages
 -----------------------
 
@@ -784,8 +786,8 @@ texreg(m) # intercept would otherwise be "-0.00"
 
 ``` r
 xtable(matrix(1:4, nrow = 2) * -0.000001) # would otherwise return "-0.00"
-#> % latex table generated in R 3.3.1 by xtable 1.8-2 package
-#> % Tue Oct 18 08:50:45 2016
+#> % latex table generated in R 3.3.0 by xtable 1.8-2 package
+#> % Tue Oct 18 12:58:56 2016
 #> \begin{table}[ht]
 #> \centering
 #> \begin{tabular}{rrr}

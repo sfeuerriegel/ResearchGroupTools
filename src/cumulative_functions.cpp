@@ -62,13 +62,23 @@ NumericVector moment(NumericVector x, int m) {
 
 //' Cumulativate versions of skewness, kurtosis, sd, adv
 //'
-//' ResearchGroupTools adds \code{cumskewness}, \code{cumkurtosis},
+//' Functions include \code{cumskewness}, \code{cumkurtosis},
 //' \code{cumadev}, and \code{cumsd} to complete
 //' R's set of cumulate functions to match the aggregation functions available
-//' in most databases
-//'
+//' in most databases.
 //' @param x For \code{cumskewness}, \code{cumkurtosis}, \code{cumsd},
-//' \code{cumadv} an integer or numeric vector
+//' \code{cumadv} an integer or numeric vector.
+//' @return Returns a vector of the same length with new elements.
+//' @details The most common variants \code{\link{cummin}}, \code{\link{cummax}}
+//' and \code{\link{cumsum}} are included in the \code{"base"} package. In
+//' addition, \code{"dplyr"} ships a \code{\link[dplyr]{cummean}}.
+//' @examples
+//' library(dplyr)
+//'
+//' df <- data.frame(x = 1:10, y = rnorm(10))
+//' cumsd(df$x)
+//' df %>%
+//'   mutate_all(funs("mean" = cummean, "sd" = cumsd))
 //' @export
 // [[Rcpp::export]]
 NumericVector cumsd(NumericVector x) {
