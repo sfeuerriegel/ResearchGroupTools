@@ -2,6 +2,7 @@
 -   [ResearchGroupTools](#researchgrouptools)
     -   [Installation](#installation)
     -   [Usage](#usage)
+    -   [Changes to LaTeX](#LaTeX)
 -   [Functionality](#functionality)
     -   [Library handling](#library-handling)
     -   [Strings](#strings)
@@ -55,6 +56,27 @@ library(ResearchGroupTools)
 ```
 
 By default, the seed for the random number generator is initialized to 0.
+
+Changes to LaTeX
+----------------
+
+Some export routines require a few changes to your LaTeX document in order to get it running. The steps are documented in the help of e.g. ; below is a minimal working example:
+
+``` r
+\documentclass{article}
+\usepackage{SIunitx}
+  \newcommand{\sym}[1]{\rlap{$^{#1}$}}
+  \siunitx{input-symbols={()*}}
+\begin{document}
+
+\begin{tabular}{l SSS}
+\toprule
+\include{table_cor}
+\end{tabular}
+\end{document}
+```
+
+Above, we included `SIunitx`, introduced a command `\sym`, changed the `input-symbols` and used custom column alignments (`S`).
 
 Functionality
 =============
@@ -310,7 +332,7 @@ descriptiveStatistics(USArrests)
 unlink("table_descriptives.tex")
 ```
 
--   `correlationMatrix()` computes a **pretty** correlation matrix. An optional parameter `filename` can be used to specify a LaTeX file to which the result is exported with significance stars.
+-   `correlationMatrix()` computes a **pretty** correlation matrix. An optional parameter `filename` can be used to specify a LaTeX file to which the result is exported with significance stars. Note: this requires a few [changes to your LaTeX preamble](#LaTeX).
 
 ``` r
 correlationMatrix(USArrests)
@@ -328,24 +350,6 @@ correlationMatrix(USArrests, filename = "table_cor.tex") # stores output in LaTe
 #> Rape     0.564*** 0.665***  0.411**
 unlink("table_cor.tex")
 ```
-
-This requires a few changes to your LaTeX document in order to get it running. The steps are documented in the help of ; below is a minimal working example:
-
-``` r
-\documentclass{article}
-\usepackage{SIunitx}
-  \newcommand{\sym}[1]{\rlap{$^{#1}$}}
-  \siunitx{input-symbols={()*}}
-\begin{document}
-
-\begin{tabular}{l SSS}
-\toprule
-\include{table_cor}
-\end{tabular}
-\end{document}
-```
-
-Above, we included `SIunitx`, introduced a command `\sym`, changed the `input-symbols` and used custom column alignments (`S`).
 
 Visualization
 -------------
@@ -438,18 +442,13 @@ summary(m_dummies)
 #> F-statistic: 3.46e+04 on 2 and 85 DF,  p-value: < 2.2e-16
 ```
 
--   `showCoeftest()` shows coefficient tests, but hides (dummy) variables starting with a certain string.
+-   `showCoeftest()` shows coefficient tests, but hides (dummy) variables starting with a certain string. Note: this is designed for output in the R console or within Rmarkdown. For exporting, better use **texreg** which has an argument named `omit.coef`.
 
 ``` r
-x1 <- 1:100
-x2 <- rep(c(1, 2), 50)
-y <- x1 + x2 + rnorm(100)
-
-m <- lm(y ~ x1 + x2)
-
-showCoeftest(m, hide = "x") # leaves only the intercept
-#>              Estimate Std..Error   t.value  Pr...t.. Stars
-#> (Intercept) 0.1669856  0.3539642 0.4717586 0.6381586
+showCoeftest(m_dummies, hide = "x") # leaves only the intercept
+#>               Estimate Std..Error    t.value     Pr...t.. Stars
+#> (Intercept) -0.1505534   0.360156 -0.4180227 6.769847e-01      
+#> dummies      1.0383927   0.198100  5.2417614 1.142791e-06   ***
 ```
 
 -   `standardizeCoefficients()` extracts standardized coefficients and hides (dummy) variables if needed.
@@ -494,10 +493,10 @@ y <- 1 + x + rnorm(10)
 m <- lm(y ~ x)
  
 extractRegressionStatistics(m)
-#>   Observations DegreesFreedom ResidualError  Rsquared AdjRsquared      AIC
-#> 1           10              8      1.209819 0.8762685    0.860802 35.95675
-#>       BIC Fstatistic Fsignficance Fstars
-#> 1 36.8645   56.65612 6.752956e-05    ***
+#>   Observations DegreesFreedom ResidualError Rsquared AdjRsquared      AIC
+#> 1           10              8     0.8742011   0.9303   0.9215875 29.45844
+#>        BIC Fstatistic Fsignficance Fstars
+#> 1 30.36619   106.7776 6.641585e-06    ***
 ```
 
 -   `getRowsOutlierRemoval()` helps to remove outliers at the 0.5% level at both ends (or any other threshold defined by the argument `cutoff`).
@@ -817,7 +816,7 @@ texreg(m) # intercept would otherwise be "-0.00"
 ``` r
 xtable(matrix(1:4, nrow = 2) * -0.000001) # would otherwise return "-0.00"
 #> % latex table generated in R 3.3.0 by xtable 1.8-2 package
-#> % Tue Oct 18 23:35:19 2016
+#> % Wed Oct 19 18:19:43 2016
 #> \begin{table}[ht]
 #> \centering
 #> \begin{tabular}{rrr}
