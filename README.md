@@ -66,7 +66,7 @@ Some export routines require a few changes to your LaTeX document in order to ge
 \documentclass{article}
 \usepackage{SIunitx}
   \newcommand{\sym}[1]{\rlap{$^{#1}$}}
-  \siunitx{input-symbols={()*}}
+  \sisetup{input-symbols={()*}}
 \begin{document}
 
 \begin{tabular}{l SSS}
@@ -816,7 +816,7 @@ texreg(m) # intercept would otherwise be "-0.00"
 ``` r
 xtable(matrix(1:4, nrow = 2) * -0.000001) # would otherwise return "-0.00"
 #> % latex table generated in R 3.3.0 by xtable 1.8-2 package
-#> % Wed Oct 19 18:19:43 2016
+#> % Fri Oct 21 16:02:55 2016
 #> \begin{table}[ht]
 #> \centering
 #> \begin{tabular}{rrr}

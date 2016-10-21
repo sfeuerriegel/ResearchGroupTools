@@ -56,7 +56,7 @@ Some export routines require a few changes to your LaTeX document in order to ge
 \documentclass{article}
 \usepackage{SIunitx}
   \newcommand{\sym}[1]{\rlap{$^{#1}$}}
-  \siunitx{input-symbols={()*}}
+  \sisetup{input-symbols={()*}}
 \begin{document}
 
 \begin{tabular}{l SSS}
