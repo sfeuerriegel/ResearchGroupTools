@@ -28,5 +28,8 @@ y <- x1 + x2 + rnorm(100)
 
 m <- lm(y ~ x1 + x2)
 texreg_tvalues(m, digits = 4)
+
+m2 <- lm(y ~ x1)
+texreg_tvalues(list(m, m2))
 }
 

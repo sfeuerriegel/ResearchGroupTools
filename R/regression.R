@@ -257,6 +257,9 @@ extract_tvalues <- function(model, hide = NULL) {
 #'
 #' m <- lm(y ~ x1 + x2)
 #' texreg_tvalues(m, digits = 4)
+#'
+#' m2 <- lm(y ~ x1)
+#' texreg_tvalues(list(m, m2))
 #' @importFrom texreg texreg
 #' @export
 texreg_tvalues <- function(model, hide = NULL, ...) {

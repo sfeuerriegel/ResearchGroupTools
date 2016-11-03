@@ -331,11 +331,12 @@ idx_rm <- getRowsOutlierRemoval(m) # identify row indices of outliers
 m <- lm(y ~ x, d[-idx_rm, ])       # refit model with outliers removed
 ```
 
-* `texreg_tvalues()` converts a the result of an ordinary least squares regression into in LaTeX. Instead of reporting standard errors, it gives t-values as a common alternative in finance. An optional parameter `dummies` can be specified which removes certain coefficients in the output.
+* `texreg_tvalues()` converts a the result of an ordinary least squares regression into in LaTeX. Instead of reporting standard errors, it gives t-values as a common alternative in finance. An optional parameter `dummies` can be specified which removes certain coefficients in the output. More than one model can be passed via a list.
 
 ```{r texreg_tvalues}
 texreg_tvalues(m_dummies)
 texreg_tvalues(m_dummies, hide = "dummies")
+texreg_tvalues(list(m, m_dummies))
 ```
 
 ## Time series analysis
