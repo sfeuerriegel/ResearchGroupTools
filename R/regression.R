@@ -272,6 +272,50 @@ texreg_tvalues <- function(model, hide = NULL, ...) {
   return(suppressWarnings(texreg(model, override.se = tvalues, ...)))
 }
 
+#' Function to perform \code{textreg} export of \code{spikeslab} objects.
+#' @param model Object of type \code{spikeslab}.
+#' @param standarized A logical value. If \code{TRUE}, standardized coefficient are used (default).
+#' @param exludeNoise A logical value. If \code{TRUE}, non-relevant regressors are excluded (default).
+#' @return Object of type \code{\link[texreg]{texreg}}.
+#' @export
+extract.spikeslab <- function(model, standardized = TRUE, excludeNoise = TRUE, ...) {
+  # extract information from model object
+  coefnames <- model$names
+  if (standardized == TRUE) {
+    coefs <- model$gnet.scale
+  } else {
+    coefs <- model$gnet
+  }
+
+  predictors <- data.frame(coefnames, coefs, stringsAsFactors = F)
+  predictors$inclusionProb <- sapply(c(1:model$verbose[[6]]),
+                                     function(x)
+                                       sum(sapply(model$model,
+                                                  function(y)
+                                                    x %in% y)) / model$verbose[[8]])
+
+  if (excludeNoise == TRUE) {
+    predictors <- predictors[predictors$coefs != 0,]
+  }
+
+  # create and return a texreg object
+  tr <- texreg::createTexreg(
+    coef.names = predictors$coefnames,
+    coef = predictors$coefs,
+    gof.names = c("Observations", "Regressors", "MSE"),
+    gof = c(length(model$y), sum(predictors$coefs != 0), model$verbose[[9]]),
+    gof.decimal = c(TRUE, TRUE, TRUE),
+    se = predictors$inclusionProb
+  )
+  return(tr)
+}
+
+#' @importFrom texreg extract
+#' @export
+setMethod("extract",
+          signature = className("spikeslab", "spikeslab"),
+          definition = extract.spikeslab)
+
 # TODO: ivreg
 
 # TODO: stepwise regression
