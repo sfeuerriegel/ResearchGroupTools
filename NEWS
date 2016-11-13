@@ -2,6 +2,8 @@
 
 # Development version
 
+* Added jplot()
+
 * Added lags()
 
 # Version 0.4-0
