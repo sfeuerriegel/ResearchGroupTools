@@ -49,10 +49,6 @@ This section shows the basic functionality of how accelerate data science in R. 
 ``` r
 library(ResearchGroupTools)
 #> Warning: package 'texreg' was built under R version 3.3.1
-#> Warning: changing locked binding for 'coeftostring' in 'texreg' whilst
-#> loading 'ResearchGroupTools'
-#> Warning: changing locked binding for 'sanitize.numbers' in 'xtable' whilst
-#> loading 'ResearchGroupTools'
 ```
 
 By default, the seed for the random number generator is initialized to 0.
@@ -354,6 +350,43 @@ unlink("table_cor.tex")
 Visualization
 -------------
 
+-   `jplot()` is an alternative to `ggplot()` but with a journal-style layout
+
+``` r
+library(ggplot2)
+#> 
+#> Attaching package: 'ggplot2'
+#> The following object is masked from 'package:ResearchGroupTools':
+#> 
+#>     %+%
+
+df <- data.frame(x = 1:20,
+                 y = 1:20,
+                 z = as.factor(rep(1:4, each = 5)))
+
+jplot(df) +
+  geom_line(aes(x = x, y = y, color = z, linetype = z))
+```
+
+![](README-jplot-1.png)
+
+``` r
+# For comparison:
+# ggplot(df) +
+#  geom_line(aes(x = x, y = y, color = z, linetype = z))
+
+jplot(df) +
+  geom_point(aes(x = x, y = y, color = z))
+```
+
+![](README-jplot-2.png)
+
+``` r
+# For comparison:
+# ggplot(df) +
+#   geom_point(aes(x = x, y = y, color = z))
+```
+
 -   `linePlot()` is a simple wrapper to **ggplot2**.
 
 ``` r
@@ -373,7 +406,6 @@ linePlot(x, sin(x))
 -   `scientificLabels()` enables a nice exponential notation in **ggplot2** plots.
 
 ``` r
-df <- data.frame(x=rnorm(100)/1000, y=rnorm(100)/1000)
 ggplot(df, aes(x=x, y=y)) +
   geom_point() +
   scale_x_continuous(labels=scientificLabels) +
@@ -801,6 +833,8 @@ testSpecification(var.2c)
 Hooks to other packages
 -----------------------
 
+-   The default theme of **ggplot2** is changed to `theme_bw()`.
+
 -   `coeftostring()` from the `texreg` package is overwritten. This also fixes the behavior of `texreg()` itself.
 
 ``` r
@@ -842,7 +876,7 @@ texreg(m) # intercept would otherwise be "-0.00"
 ``` r
 xtable(matrix(1:4, nrow = 2) * -0.000001) # would otherwise return "-0.00"
 #> % latex table generated in R 3.3.0 by xtable 1.8-2 package
-#> % Thu Nov 03 23:04:20 2016
+#> % Mon Nov 14 00:14:46 2016
 #> \begin{table}[ht]
 #> \centering
 #> \begin{tabular}{rrr}

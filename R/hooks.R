@@ -3,6 +3,11 @@
   packageStartupMessage("ResearchGroupTools: Initializing seed to 0.")
   set.seed(0)
 
+  packageStartupMessage("ResearchGroupTools: Setting ggplot theme to 'theme_bw'.")
+
+  ggplot2::theme_set(ggplot2::theme_bw())
+  ggplot2::theme_update(legend.position = c(0.15, 0.8))
+
   packageStartupMessage("ResearchGroupTools: Fixing behavior of texreg regarding '-0.0...'.")
 
   coeftostring_internal <- texreg::coeftostring

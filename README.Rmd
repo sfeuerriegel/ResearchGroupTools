@@ -236,6 +236,28 @@ unlink("table_cor.tex")
 
 ## Visualization
 
+* `jplot()` is an alternative to `ggplot()` but with a journal-style layout
+
+```{r jplot}
+library(ggplot2)
+
+df <- data.frame(x = 1:20,
+                 y = 1:20,
+                 z = as.factor(rep(1:4, each = 5)))
+
+jplot(df) +
+  geom_line(aes(x = x, y = y, color = z, linetype = z))
+# For comparison:
+# ggplot(df) +
+#  geom_line(aes(x = x, y = y, color = z, linetype = z))
+
+jplot(df) +
+  geom_point(aes(x = x, y = y, color = z))
+# For comparison:
+# ggplot(df) +
+#   geom_point(aes(x = x, y = y, color = z))
+```
+
 * `linePlot()` is a simple wrapper to **ggplot2**. 
 
 ```{r linePlot}
@@ -249,7 +271,6 @@ linePlot(x, sin(x))
 * `scientificLabels()` enables a nice exponential notation in **ggplot2** plots.
 
 ```{r scientificLabels, echo=-1, message=FALSE, warning=FALSE}
-library(ggplot2)
 df <- data.frame(x=rnorm(100)/1000, y=rnorm(100)/1000)
 ggplot(df, aes(x=x, y=y)) +
   geom_point() +
@@ -401,6 +422,8 @@ testSpecification(var.2c)
 ```
 
 ## Hooks to other packages
+
+* The default theme of **ggplot2** is changed to `theme_bw()`.
 
 * `coeftostring()` from the `texreg` package is overwritten. This also fixes the behavior of `texreg()` itself. 
 
