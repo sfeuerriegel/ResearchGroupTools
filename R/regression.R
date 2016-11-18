@@ -316,6 +316,80 @@ setMethod("extract",
           signature = className("spikeslab", "spikeslab"),
           definition = extract.spikeslab)
 
+#' Test assumptions of least squares
+#'
+#' Function tests the main assumption of ordinary least squares (OLS), including
+#' non-multicollinearity, non-autocorrelation and homoskedasticity.
+#' @param model Linear model to test.
+#' @param alpha Critical value of hypothesis tests.
+#' @return Named vector with outcomes of main test statistics.
+#' @examples
+#' library(car)
+#' m <- lm(mpg ~ disp + hp + wt + drat, data = mtcars)
+#'
+#' testSpecification(m)
+#' @export
+testSpecification <- function(model, alpha = 0.05){
+  output <- rep(FALSE, 4)
+  names(output) <- c("Multicollinearity", "Heteroscedacity", "Autocorrelation", "Serial correlation")
+
+  #Multicollinearity vif >4 => Multicollinearity
+
+  print("Testing for multicollinearity")
+  vif_vec<-vif(model)
+  multi_cor_var <- list()
+  m_Matrix <- model$model
+  m_Matrix_temp <-m_Matrix[,-(which.max(vif_vec)+1)]
+  while(any(vif_vec>4)){
+    multi_cor_var[[length(multi_cor_var)+1]]<- names(which.max(vif_vec))
+    m_temp <- lm(m_Matrix_temp)
+    vif_vec <- vif(m_temp)
+    m_Matrix_temp <-m_Matrix_temp[,-(which.max(vif_vec)+1)]
+  }
+  if(length(multi_cor_var)>0){
+    output["Multicollinearity"] <- TRUE
+    print("The following variables do have a variance inflation factor of 4 or greater:")
+    print(unlist(multi_cor_var))
+  } else {
+    print("The variance inflation factor for all variables is less or equal to 4. Multicollinearity appears not to be an issue")
+  }
+
+  # Homoscedacity
+
+  print("Testing for heteroscedacity")
+  brpa <- bptest(model)
+  if(brpa$p.value <= alpha){
+    print("The hypothesis of homoscedacity needs to be discarded for the given significance level")
+    output["Heteroscedacity"] <- TRUE
+  } else {
+    print("The hypothesis of homoscedacity can not be discarded for the given significance level")
+  }
+
+  # Serial correlation
+
+  print("Testing for serial correlation")
+  brgo <- bgtest(model)
+  if(brgo$p.value <= alpha){
+    print("The hypothesis of no serial correlation needs to be discarded for the given significance level")
+    output["Serial correlation"] <- TRUE
+  } else {
+    print("The hypothesis of no serial correlation can not be discarded for the given significance level")
+  }
+
+  # Autocorrelation
+
+  print("Testing for autocorrelation")
+  duwa <- dwtest(model)
+  if(duwa$p.value <= alpha){
+    print("The hypothesis of no autocorrelation needs to be discarded for the given significance level")
+    output["Autocorrelation"] <- TRUE
+  } else {
+    print("The hypothesis of no autocorrelation can not be discarded for the given significance level")
+  }
+  return(output)
+}
+
+
 # TODO: ivreg
 
 # TODO: stepwise regression
