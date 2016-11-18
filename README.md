@@ -624,6 +624,29 @@ texreg_tvalues(list(m, m_dummies))
 #> \end{table}
 ```
 
+-   `testDiagnostics()` checks if non-autocollreation, no serial correlation, homoskedasticity and no multicollinearity is present.
+
+``` r
+library(car)
+#> 
+#> Attaching package: 'car'
+#> The following object is masked from 'package:dplyr':
+#> 
+#>     recode
+m <- lm(mpg ~ disp + hp + wt + drat, data = mtcars)
+
+testDiagnostics(m)
+#> * VIF: The following variables do have a variance inflation factor of 4 or greater:  .
+#> * Breusch-Pagan Test: The hypothesis of homoskedasticity cannot be rejected for the given significance level. Hence, homoskedasticity
+#> * Breusch-Godfrey Test: The hypothesis of no serial correlation cannot be rejected for the given significance level. Hence, no serial correlation.
+#> * Durbin-Watson Test: The hypothesis of no autocorrelation cannot be rejected for the given significance level. Hence, no autocorrelation.
+#> The following diagnostic test caused troubles:  Non-multicollinearity .
+#>  Non-multicollinearity       Homoskedasticity    Non-autocorrelation 
+#>                  FALSE                   TRUE                   TRUE 
+#> Non-serial correlation 
+#>                   TRUE
+```
+
 Time series analysis
 --------------------
 
@@ -876,7 +899,7 @@ texreg(m) # intercept would otherwise be "-0.00"
 ``` r
 xtable(matrix(1:4, nrow = 2) * -0.000001) # would otherwise return "-0.00"
 #> % latex table generated in R 3.3.0 by xtable 1.8-2 package
-#> % Mon Nov 14 00:14:46 2016
+#> % Fri Nov 18 18:28:52 2016
 #> \begin{table}[ht]
 #> \centering
 #> \begin{tabular}{rrr}

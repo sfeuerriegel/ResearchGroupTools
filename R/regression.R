@@ -327,65 +327,62 @@ setMethod("extract",
 #' library(car)
 #' m <- lm(mpg ~ disp + hp + wt + drat, data = mtcars)
 #'
-#' testSpecification(m)
+#' testDiagnostics(m)
 #' @export
-testSpecification <- function(model, alpha = 0.05){
+testDiagnostics <- function(model, alpha = 0.05){
   output <- rep(FALSE, 4)
-  names(output) <- c("Multicollinearity", "Heteroscedacity", "Autocorrelation", "Serial correlation")
+  names(output) <- c("Non-multicollinearity", "Homoskedasticity", "Non-autocorrelation", "Non-serial correlation")
 
-  #Multicollinearity vif >4 => Multicollinearity
+  # Multicollinearity
 
-  print("Testing for multicollinearity")
-  vif_vec<-vif(model)
-  multi_cor_var <- list()
-  m_Matrix <- model$model
-  m_Matrix_temp <-m_Matrix[,-(which.max(vif_vec)+1)]
-  while(any(vif_vec>4)){
-    multi_cor_var[[length(multi_cor_var)+1]]<- names(which.max(vif_vec))
-    m_temp <- lm(m_Matrix_temp)
-    vif_vec <- vif(m_temp)
-    m_Matrix_temp <-m_Matrix_temp[,-(which.max(vif_vec)+1)]
-  }
-  if(length(multi_cor_var)>0){
-    output["Multicollinearity"] <- TRUE
-    print("The following variables do have a variance inflation factor of 4 or greater:")
-    print(unlist(multi_cor_var))
+  vifs <- car::vif(model)
+  if (any(vifs > 4)) {
+    cat("* VIF: The following variables do have a variance inflation factor of 4 or greater:", paste0(colnames(vifs)[vifs > 4], collapse = ", "), ".\n")
   } else {
-    print("The variance inflation factor for all variables is less or equal to 4. Multicollinearity appears not to be an issue")
+    cat("* VIF: The variance inflation factor for all variables is <= 4. Multicollinearity appears not to be an issue.\n")
+    output["Non-multicollinearity"] <- TRUE
   }
 
-  # Homoscedacity
+  # Homoskedasticity
 
-  print("Testing for heteroscedacity")
-  brpa <- bptest(model)
-  if(brpa$p.value <= alpha){
-    print("The hypothesis of homoscedacity needs to be discarded for the given significance level")
-    output["Heteroscedacity"] <- TRUE
+  bp <- lmtest::bptest(model)
+  if (bp$p.value <= alpha){
+    cat("* Breusch-Pagan Test: The hypothesis of homoskedasticity needs to be rejected for the given significance level. Hence, heteroskedasticity.\n")
   } else {
-    print("The hypothesis of homoscedacity can not be discarded for the given significance level")
+    cat("* Breusch-Pagan Test: The hypothesis of homoskedasticity cannot be rejected for the given significance level. Hence, homoskedasticity\n")
+    output["Homoskedasticity"] <- TRUE
   }
 
   # Serial correlation
+  # print("Testing for serial correlation")
 
-  print("Testing for serial correlation")
-  brgo <- bgtest(model)
-  if(brgo$p.value <= alpha){
-    print("The hypothesis of no serial correlation needs to be discarded for the given significance level")
-    output["Serial correlation"] <- TRUE
+  bg <- lmtest::bgtest(model)
+  if(bg$p.value <= alpha){
+    cat("* Breusch-Godfrey Test: The hypothesis of no serial correlation needs to be rejected for the given significance level. Hence, serial correlation.\n")
   } else {
-    print("The hypothesis of no serial correlation can not be discarded for the given significance level")
+    cat("* Breusch-Godfrey Test: The hypothesis of no serial correlation cannot be rejected for the given significance level. Hence, no serial correlation.\n")
+    output["Non-serial correlation"] <- TRUE
   }
 
   # Autocorrelation
+  # print("Testing for autocorrelation")
 
-  print("Testing for autocorrelation")
-  duwa <- dwtest(model)
-  if(duwa$p.value <= alpha){
-    print("The hypothesis of no autocorrelation needs to be discarded for the given significance level")
-    output["Autocorrelation"] <- TRUE
+  dw <- lmtest::dwtest(model)
+  if(dw$p.value <= alpha){
+    cat("* Durbin-Watson Test: The hypothesis of no autocorrelation needs to be rejected for the given significance level. Hence, autocorrelation.\n")
   } else {
-    print("The hypothesis of no autocorrelation can not be discarded for the given significance level")
+    cat("* Durbin-Watson Test: The hypothesis of no autocorrelation cannot be rejected for the given significance level. Hence, no autocorrelation.\n")
+    output["Non-autocorrelation"] <- TRUE
   }
+
+  # Summary
+
+  if (all(output)) {
+    cat("All diagnostic tests seem fine. No autocrrelation, no serial correlation, homoskedasticity and no multicollinearity.\n")
+  } else {
+    cat("The following diagnostic test caused troubles: ", paste0(names(output)[which(!output)], collapse = ", "), ".\n")
+  }
+
   return(output)
 }
 

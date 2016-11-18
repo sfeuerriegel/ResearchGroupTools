@@ -360,6 +360,15 @@ texreg_tvalues(m_dummies, hide = "dummies")
 texreg_tvalues(list(m, m_dummies))
 ```
 
+* `testDiagnostics()` checks if non-autocollreation, no serial correlation, homoskedasticity and no multicollinearity is present. 
+
+```{r testDiagnostics}
+library(car)
+m <- lm(mpg ~ disp + hp + wt + drat, data = mtcars)
+
+testDiagnostics(m)
+```
+
 ## Time series analysis
 
 * `standardizeCoefficients()` returns standardized coefficients.

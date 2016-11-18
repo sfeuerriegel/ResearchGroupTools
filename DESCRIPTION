@@ -27,7 +27,8 @@ Imports:
     lmtest,
     urca,
     vars,
-    Rcpp
+    Rcpp,
+    car
 LinkingTo:
     Rcpp
 Suggests:

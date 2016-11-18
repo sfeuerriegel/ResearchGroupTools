@@ -2,6 +2,8 @@
 
 # Development version
 
+* Added testDiagnostics()
+
 * Added jplot()
 
 * Added lags()
