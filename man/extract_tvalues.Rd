@@ -2,9 +2,15 @@
 % Please edit documentation in R/regression.R
 \name{extract_tvalues}
 \alias{extract_tvalues}
+\alias{extract_tvalues.lm}
+\alias{extract_tvalues.rq}
 \title{Extract t-values from lm object}
 \usage{
 extract_tvalues(model, hide = NULL)
+
+\method{extract_tvalues}{lm}(model, hide = NULL)
+
+\method{extract_tvalues}{rq}(model, hide = NULL)
 }
 \arguments{
 \item{model}{Object of type \code{lm}.}
@@ -25,6 +31,9 @@ x2 <- rep(c(1, 2), 50)
 y <- x1 + x2 + rnorm(100)
 
 m <- lm(y ~ x1 + x2)
+extract_tvalues(m)
+
+qr <- rq(y ~ x1 + x2)
 extract_tvalues(m)
 }
 }

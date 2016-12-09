@@ -28,7 +28,8 @@ Imports:
     urca,
     vars,
     Rcpp,
-    car
+    car,
+    quantreg
 LinkingTo:
     Rcpp
 Suggests:

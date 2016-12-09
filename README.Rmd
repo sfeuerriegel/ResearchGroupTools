@@ -329,6 +329,12 @@ production <- data.frame(Prod = prod, Lag1 = dplyr::lag(prod), Lag2 = dplyr::lag
 
 m <- lm(Prod ~ Lag1, data = production)
 standardizeCoefficients(m)
+
+library(quantreg)
+data(stackloss)
+
+qr <- rq(stack.loss ~ stack.x, 0.25)
+standardizeCoefficients(qr)
 ```
 
 
@@ -358,6 +364,11 @@ m <- lm(y ~ x, d[-idx_rm, ])       # refit model with outliers removed
 texreg_tvalues(m_dummies)
 texreg_tvalues(m_dummies, hide = "dummies")
 texreg_tvalues(list(m, m_dummies))
+
+qr25 <- rq(stack.loss ~ stack.x, 0.25)
+qr50 <- rq(stack.loss ~ stack.x, 0.50)
+qr75 <- rq(stack.loss ~ stack.x, 0.75)
+texreg_tvalues(list(qr25, qr50, qr75))
 ```
 
 * `testDiagnostics()` checks if non-autocollreation, no serial correlation, homoskedasticity and no multicollinearity is present. 

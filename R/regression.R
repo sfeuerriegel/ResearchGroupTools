@@ -224,13 +224,20 @@ regression <- function(formula, data = NULL, subset = NULL, dummies = NULL, cuto
 #'
 #' m <- lm(y ~ x1 + x2)
 #' extract_tvalues(m)
+#'
+#' qr <- rq(y ~ x1 + x2)
+#' extract_tvalues(m)
 #' }
 #' @importFrom stats lm
+#' @export
+#' @rdname extract_tvalues
 extract_tvalues <- function(model, hide = NULL) {
-  if (class(model) != "lm") {
-    stop("Argument 'model' must be of type lm.")
-  }
+  UseMethod("extract_tvalues", model)
+}
 
+#' @export
+#' @rdname extract_tvalues
+extract_tvalues.lm <- function(model, hide = NULL) {
   if (is.null(hide)) {
     idx <- 1:length(coef(model))
   } else {
@@ -241,11 +248,25 @@ extract_tvalues <- function(model, hide = NULL) {
   return(summary(model)$coefficients[idx, "t value"])
 }
 
+#' @export
+#' @rdname extract_tvalues
+extract_tvalues.rq <- function(model, hide = NULL) {
+  if (is.null(hide)) {
+    idx <- 1:length(coef(model))
+  } else {
+    # Note: "-" to invert selection
+    idx <- -grep(paste0("^", hide), names(coef(model)))
+  }
+
+  return(summary(model, se = "ker")$coefficients[idx, "t value"])
+}
+
 #' texreg output with t-values
 #'
 #' Function is a customized interface to the \code{\link[texreg]{texreg}} function. It replaces
 #' standard errors in the output by t-values.
-#' @param model Object of type \code{lm} or a \code{list} of \code{lm} objects.
+#' @param model Object of type \code{lm} or a \code{list} of \code{lm} and \code{rq} (quantile
+#' regression) objects.
 #' @param hide A string. All variables starting with that name are excluded. If \code{NULL} (default),
 #' no variables are omitted.
 #' @param ... Additional parameters that are passed to default \code{\link[texreg]{texreg}} function.
@@ -260,15 +281,25 @@ extract_tvalues <- function(model, hide = NULL) {
 #'
 #' m2 <- lm(y ~ x1)
 #' texreg_tvalues(list(m, m2))
+#'
+#' library(quantreg)
+#' data(stackloss)
+#'
+#' qr25 <- rq(stack.loss ~ stack.x, 0.25)
+#' qr50 <- rq(stack.loss ~ stack.x, 0.50)
+#' qr75 <- rq(stack.loss ~ stack.x, 0.75)
+#' texreg_tvalues(list(qr25, qr50, qr75))
 #' @importFrom texreg texreg
 #' @export
 texreg_tvalues <- function(model, hide = NULL, ...) {
   tvalues <- list()
-  if(class(model) == "lm") {
+
+  if (class(model) == "lm" || class(model) == "rq") {
     tvalues <- extract_tvalues(model, hide = hide)
   } else {
-    tvalues <- lapply(model, extract_tvalues, hide = hide)
+    tvalues <- lapply(model, extract_tvalues, hide)
   }
+
   return(suppressWarnings(texreg(model, override.se = tvalues, ...)))
 }
 
@@ -276,9 +307,10 @@ texreg_tvalues <- function(model, hide = NULL, ...) {
 #' @param model Object of type \code{spikeslab}.
 #' @param standarized A logical value. If \code{TRUE}, standardized coefficient are used (default).
 #' @param exludeNoise A logical value. If \code{TRUE}, non-relevant regressors are excluded (default).
+#' @param ... Further parameters (currently ignore for \code{spikeslab}).
 #' @return Object of type \code{\link[texreg]{texreg}}.
 #' @export
-extract.spikeslab <- function(model, standardized = TRUE, excludeNoise = TRUE, ...) {
+extract_spikeslab <- function(model, standardized = TRUE, excludeNoise = TRUE, ...) {
   # extract information from model object
   coefnames <- model$names
   if (standardized == TRUE) {
@@ -308,6 +340,11 @@ extract.spikeslab <- function(model, standardized = TRUE, excludeNoise = TRUE, .
     se = predictors$inclusionProb
   )
   return(tr)
+}
+
+#' @export
+extract.spikeslab <- function(model, standardized = TRUE, excludeNoise = TRUE, ...) {
+  extract_spikeslab(model, standarized, excludeNoise, ...)
 }
 
 #' @importFrom texreg extract

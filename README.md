@@ -48,7 +48,6 @@ This section shows the basic functionality of how accelerate data science in R. 
 
 ``` r
 library(ResearchGroupTools)
-#> Warning: package 'texreg' was built under R version 3.3.1
 ```
 
 By default, the seed for the random number generator is initialized to 0.
@@ -121,7 +120,6 @@ ceil(3.4)
 
 ``` r
 library(dplyr)
-#> Warning: package 'dplyr' was built under R version 3.3.1
 #> 
 #> Attaching package: 'dplyr'
 #> The following objects are masked from 'package:stats':
@@ -487,9 +485,7 @@ showCoeftest(m_dummies, hide = "x") # leaves only the intercept
 
 ``` r
 library(vars)
-#> Warning: package 'vars' was built under R version 3.3.1
 #> Loading required package: MASS
-#> Warning: package 'MASS' was built under R version 3.3.1
 #> 
 #> Attaching package: 'MASS'
 #> The following object is masked from 'package:dplyr':
@@ -504,7 +500,6 @@ library(vars)
 #>     as.Date, as.Date.numeric
 #> Loading required package: sandwich
 #> Loading required package: urca
-#> Warning: package 'urca' was built under R version 3.3.1
 #> Loading required package: lmtest
 data(Canada)
 
@@ -515,6 +510,22 @@ m <- lm(Prod ~ Lag1, data = production)
 standardizeCoefficients(m)
 #>           Coef  SdChange StandardizedCoef
 #> Lag1 0.2969171 0.2143436        0.2968569
+
+library(quantreg)
+#> Loading required package: SparseM
+#> 
+#> Attaching package: 'SparseM'
+#> The following object is masked from 'package:base':
+#> 
+#>     backsolve
+data(stackloss)
+
+qr <- rq(stack.loss ~ stack.x, 0.25)
+standardizeCoefficients(qr)
+#>                           Coef      SdChange StandardizedCoef
+#> stack.xAir.Flow    5.00000e-01  4.584134e+00     4.506788e-01
+#> stack.xWater.Temp  1.00000e+00  3.160771e+00     3.107441e-01
+#> stack.xAcid.Conc. -4.57967e-16 -2.454049e-15    -2.412642e-16
 ```
 
 -   `extractRegressionStatistics()` extracts key statistics of regression and returns them as a `data.frame` (so that it can later be stacked via row-wise binding).
@@ -617,6 +628,36 @@ texreg_tvalues(list(m, m_dummies))
 #> RMSE        & 1.03         & 0.93         \\
 #> \hline
 #> \multicolumn{3}{l}{\scriptsize{$^{***}p<0.001$, $^{**}p<0.01$, $^*p<0.05$}}
+#> \end{tabular}
+#> \caption{Statistical models}
+#> \label{table:coefficients}
+#> \end{center}
+#> \end{table}
+
+qr25 <- rq(stack.loss ~ stack.x, 0.25)
+qr50 <- rq(stack.loss ~ stack.x, 0.50)
+qr75 <- rq(stack.loss ~ stack.x, 0.75)
+texreg_tvalues(list(qr25, qr50, qr75))
+#> 
+#> \begin{table}
+#> \begin{center}
+#> \begin{tabular}{l c c c }
+#> \hline
+#>  & Model 1 & Model 2 & Model 3 \\
+#> \hline
+#> (Intercept)       & $-36.00^{***}$ & $-39.69^{***}$ & $-54.19^{***}$ \\
+#>                   & $(-1.52)$      & $(-2.82)$      & $(-2.01)$      \\
+#> stack.xAir.Flow   & $0.50^{*}$     & $0.83^{***}$   & $0.87^{***}$   \\
+#>                   & $(1.32)$       & $(3.42)$       & $(2.35)$       \\
+#> stack.xWater.Temp & $1.00^{*}$     & $0.57$         & $0.98^{**}$    \\
+#>                   & $(1.23)$       & $(0.99)$       & $(0.97)$       \\
+#> stack.xAcid.Conc. & $0.00$         & $-0.06$        & $0.00$         \\
+#>                   & $(0.00)$       & $(-0.34)$      & $(0.00)$       \\
+#> \hline
+#> Num. obs.         & 21             & 21             & 21             \\
+#> Percentile        & 0.25           & 0.50           & 0.75           \\
+#> \hline
+#> \multicolumn{4}{l}{\scriptsize{$^{***}p<0.001$, $^{**}p<0.01$, $^*p<0.05$}}
 #> \end{tabular}
 #> \caption{Statistical models}
 #> \label{table:coefficients}
@@ -898,8 +939,8 @@ texreg(m) # intercept would otherwise be "-0.00"
 
 ``` r
 xtable(matrix(1:4, nrow = 2) * -0.000001) # would otherwise return "-0.00"
-#> % latex table generated in R 3.3.0 by xtable 1.8-2 package
-#> % Fri Nov 18 18:28:52 2016
+#> % latex table generated in R 3.3.2 by xtable 1.8-2 package
+#> % Fri Dec 09 20:19:35 2016
 #> \begin{table}[ht]
 #> \centering
 #> \begin{tabular}{rrr}

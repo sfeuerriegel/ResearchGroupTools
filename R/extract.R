@@ -10,7 +10,8 @@
 #'   \item{"StdCoef:"} Returns the standardized coefficent. It is calculated through
 #'   \eqn{\beta var(\beta) / var(y)} where \eqn{y} is independent variable.
 #' }
-#' @param model Model. Supported types are linear models (\code{lm}) or time series
+#' @param model Model. Supported types are linear models (\code{lm}), quantile
+#' regressions (\code{rq} from the \code{quantreg} package) or time series
 #' (\code{varest} or \code{svarest} from the \code{vars} package).
 #' @param hide A string. All variables starting with that name are excluded.
 #' @return Coefficients (with transformations) for model variables. In case of
@@ -33,6 +34,12 @@
 #' standardizeCoefficients(var.2c$varresult$e)
 #' std <- standardizeCoefficients(var.2c)
 #' std$e
+#'
+#' library(quantreg)
+#' data(stackloss)
+#'
+#' qr <- rq(stack.loss ~ stack.x, 0.25)
+#' standardizeCoefficients(qr)
 #' @rdname standardizeCoefficients
 #' @export
 standardizeCoefficients <- function(model, hide = NULL) {
@@ -68,6 +75,13 @@ standardizeCoefficients.lm <- function(model, hide = NULL) {
     idx <- -grep(paste0("^", hide), coefs)
     return(result[idx, ])
   }
+}
+
+#' @rdname standardizeCoefficients
+#' @export
+standardizeCoefficients.rq <- function(model, hide = NULL) {
+  class(model) <- "lm"
+  standardizeCoefficients(model)
 }
 
 #' @rdname standardizeCoefficients

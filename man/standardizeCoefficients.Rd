@@ -3,6 +3,7 @@
 \name{standardizeCoefficients}
 \alias{standardizeCoefficients}
 \alias{standardizeCoefficients.lm}
+\alias{standardizeCoefficients.rq}
 \alias{standardizeCoefficients.svarest}
 \alias{standardizeCoefficients.varest}
 \title{Standardized coefficients}
@@ -11,12 +12,15 @@ standardizeCoefficients(model, hide = NULL)
 
 \method{standardizeCoefficients}{lm}(model, hide = NULL)
 
+\method{standardizeCoefficients}{rq}(model, hide = NULL)
+
 \method{standardizeCoefficients}{varest}(model, hide = NULL)
 
 \method{standardizeCoefficients}{svarest}(model, hide = NULL)
 }
 \arguments{
-\item{model}{Model. Supported types are linear models (\code{lm}) or time series
+\item{model}{Model. Supported types are linear models (\code{lm}), quantile
+regressions (\code{rq} from the \code{quantreg} package) or time series
 (\code{varest} or \code{svarest} from the \code{vars} package).}
 
 \item{hide}{A string. All variables starting with that name are excluded.}
@@ -55,5 +59,11 @@ var.2c <- VAR(Canada, p = 2, type = "none")
 standardizeCoefficients(var.2c$varresult$e)
 std <- standardizeCoefficients(var.2c)
 std$e
+
+library(quantreg)
+data(stackloss)
+
+qr <- rq(stack.loss ~ stack.x, 0.25)
+standardizeCoefficients(qr)
 }
 

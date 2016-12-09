@@ -7,7 +7,8 @@
 texreg_tvalues(model, hide = NULL, ...)
 }
 \arguments{
-\item{model}{Object of type \code{lm} or a \code{list} of \code{lm} objects.}
+\item{model}{Object of type \code{lm} or a \code{list} of \code{lm} and \code{rq} (quantile
+regression) objects.}
 
 \item{hide}{A string. All variables starting with that name are excluded. If \code{NULL} (default),
 no variables are omitted.}
@@ -31,5 +32,13 @@ texreg_tvalues(m, digits = 4)
 
 m2 <- lm(y ~ x1)
 texreg_tvalues(list(m, m2))
+
+library(quantreg)
+data(stackloss)
+
+qr25 <- rq(stack.loss ~ stack.x, 0.25)
+qr50 <- rq(stack.loss ~ stack.x, 0.50)
+qr75 <- rq(stack.loss ~ stack.x, 0.75)
+texreg_tvalues(list(qr25, qr50, qr75))
 }
 
