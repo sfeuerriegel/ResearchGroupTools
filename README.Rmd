@@ -218,6 +218,19 @@ df %>%
 
 ## Descriptive statistics
 
+* `removeOutlierObservations()` trims the dataset with regard to certain variables. It thus removes outliers at the 0.5% level at both ends (or any other threshold defined by the argument `cutoff`).
+
+```{r removeOutlierObservations}
+d <- data.frame(x = rnorm(200), y = rnorm(200))
+
+d_trimmed <- removeOutlierObservations(d)
+dim(d_trimmed)
+
+d_trimmed <- removeOutlierObservations(d, variables = "y", cutoff = 2.0)
+dim(d_trimmed)
+```
+
+
 * `descriptiveStatistics()` produces **pretty** summary statistics. By default, it exports the statistics into a LaTeX file. An optional parameter `filename` can be used to change the filename for the export. 
 
 ```{r descriptives, include=-3}
@@ -300,15 +313,29 @@ makeFormula("y", c("x1", "x2", "x3"), "dummies")
 * `regression()` is a customized, all-in-one routine for ordinary least squares with optional dummy variables. It can filter for a subset of observations, remove outliers at a certain cutoff and remove dummies that are `NA`.
 
 ```{r regression}
-x <- 1:100
+x1 <- 1:100
+x2 <- sin(1:100)
 clusters <- rep(c(1, 2), 50)
 dummies <- model.matrix(~ clusters)
-y <- x + clusters + rnorm(100)
-d <- data.frame(x = x, y = y)
+y <- x1 + x2 + clusters + rnorm(100)
+d <- data.frame(x1 = x1, x2 = x2, y = y)
 
-m_dummies <- regression(formula("y ~ x + dummies"), data = d, subset = 1:90,
+m_dummies <- regression(formula("y ~ x1 + x2 + dummies"), data = d, subset = 1:90,
                         dummies = "dummies", cutoff = 0.5)
 summary(m_dummies)
+```
+
+* `regressionStepwise()` is an extension to iteratively incorporate regressors one by one. The resulting list can then easily be exported.
+
+```{r regressionStepwise}
+models <- regressionStepwise(formula("y ~ x1 + x2 + dummies"), data = d, subset = 1:90,
+                            dummies = "dummies", cutoff = 0.5)
+
+length(models)
+
+library(texreg)
+
+texreg(models, omit.coef = "dummies")
 ```
 
 

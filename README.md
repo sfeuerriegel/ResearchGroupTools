@@ -312,6 +312,22 @@ df %>%
 Descriptive statistics
 ----------------------
 
+-   `removeOutlierObservations()` trims the dataset with regard to certain variables. It thus removes outliers at the 0.5% level at both ends (or any other threshold defined by the argument `cutoff`).
+
+``` r
+d <- data.frame(x = rnorm(200), y = rnorm(200))
+
+d_trimmed <- removeOutlierObservations(d)
+#> Dropping 4 observations, i.e. 0.02 %.
+dim(d_trimmed)
+#> [1] 196   2
+
+d_trimmed <- removeOutlierObservations(d, variables = "y", cutoff = 2.0)
+#> Dropping 8 observations, i.e. 0.04 %.
+dim(d_trimmed)
+#> [1] 192   2
+```
+
 -   `descriptiveStatistics()` produces **pretty** summary statistics. By default, it exports the statistics into a LaTeX file. An optional parameter `filename` can be used to change the filename for the export.
 
 ``` r
@@ -440,13 +456,14 @@ makeFormula("y", c("x1", "x2", "x3"), "dummies")
 -   `regression()` is a customized, all-in-one routine for ordinary least squares with optional dummy variables. It can filter for a subset of observations, remove outliers at a certain cutoff and remove dummies that are `NA`.
 
 ``` r
-x <- 1:100
+x1 <- 1:100
+x2 <- sin(1:100)
 clusters <- rep(c(1, 2), 50)
 dummies <- model.matrix(~ clusters)
-y <- x + clusters + rnorm(100)
-d <- data.frame(x = x, y = y)
+y <- x1 + x2 + clusters + rnorm(100)
+d <- data.frame(x1 = x1, x2 = x2, y = y)
 
-m_dummies <- regression(formula("y ~ x + dummies"), data = d, subset = 1:90,
+m_dummies <- regression(formula("y ~ x1 + x2 + dummies"), data = d, subset = 1:90,
                         dummies = "dummies", cutoff = 0.5)
 #> Removing 2 observations; i.e. 0.02222222 percent.
 #> Dropping 1 coefficients: dummies(Intercept)
@@ -457,19 +474,63 @@ summary(m_dummies)
 #> 
 #> Residuals:
 #>      Min       1Q   Median       3Q      Max 
-#> -2.44887 -0.56382  0.04689  0.66382  1.91157 
+#> -2.28404 -0.76706 -0.04139  0.80065  2.16623 
 #> 
 #> Coefficients:
 #>              Estimate Std. Error t value Pr(>|t|)    
-#> (Intercept) -0.150553   0.360156  -0.418    0.677    
-#> x            1.003736   0.003817 262.979  < 2e-16 ***
-#> dummies      1.038393   0.198100   5.242 1.14e-06 ***
+#> (Intercept) -0.341985   0.392783  -0.871    0.386    
+#> x1           1.004034   0.004148 242.073  < 2e-16 ***
+#> x2           0.956709   0.152754   6.263 1.54e-08 ***
+#> dummies      0.952135   0.217617   4.375 3.46e-05 ***
 #> ---
 #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #> 
-#> Residual standard error: 0.9289 on 85 degrees of freedom
-#> Multiple R-squared:  0.9988, Adjusted R-squared:  0.9987 
-#> F-statistic: 3.46e+04 on 2 and 85 DF,  p-value: < 2.2e-16
+#> Residual standard error: 1.02 on 84 degrees of freedom
+#> Multiple R-squared:  0.9986, Adjusted R-squared:  0.9985 
+#> F-statistic: 1.956e+04 on 3 and 84 DF,  p-value: < 2.2e-16
+```
+
+-   `regressionStepwise()` is an extension to iteratively incorporate regressors one by one. The resulting list can then easily be exported.
+
+``` r
+models <- regressionStepwise(formula("y ~ x1 + x2 + dummies"), data = d, subset = 1:90,
+                            dummies = "dummies", cutoff = 0.5)
+#> Removing 2 observations; i.e. 0.02222222 percent.
+#> Dropping 1 coefficients: dummies(Intercept) 
+#> Removing 2 observations; i.e. 0.02222222 percent.
+#> Dropping 1 coefficients: dummies(Intercept)
+
+length(models)
+#> [1] 2
+
+library(texreg)
+
+texreg(models, omit.coef = "dummies")
+#> 
+#> \begin{table}
+#> \begin{center}
+#> \begin{tabular}{l c c }
+#> \hline
+#>  & Model 1 & Model 2 \\
+#> \hline
+#> (Intercept) & $-0.34$      & $-0.34$      \\
+#>             & $(0.47)$     & $(0.39)$     \\
+#> x1          & $1.00^{***}$ & $1.00^{***}$ \\
+#>             & $(0.00)$     & $(0.00)$     \\
+#> x2          &              & $0.96^{***}$ \\
+#>             &              & $(0.15)$     \\
+#> \hline
+#> R$^2$       & 1.00         & 1.00         \\
+#> Adj. R$^2$  & 1.00         & 1.00         \\
+#> Num. obs.   & 88           & 88           \\
+#> RMSE        & 1.23         & 1.02         \\
+#> \hline
+#> \multicolumn{3}{l}{\scriptsize{$^{***}p<0.001$, $^{**}p<0.01$, $^*p<0.05$}}
+#> \end{tabular}
+#> \caption{Statistical models}
+#> \label{table:coefficients}
+#> \end{center}
+#> \end{table}
 ```
 
 -   `showCoeftest()` shows coefficient tests, but hides (dummy) variables starting with a certain string. Note: this is designed for output in the R console or within Rmarkdown. For exporting, better use **texreg** which has an argument named `omit.coef`.
@@ -477,8 +538,8 @@ summary(m_dummies)
 ``` r
 showCoeftest(m_dummies, hide = "x") # leaves only the intercept
 #>               Estimate Std..Error    t.value     Pr...t.. Stars
-#> (Intercept) -0.1505534   0.360156 -0.4180227 6.769847e-01      
-#> dummies      1.0383927   0.198100  5.2417614 1.142791e-06   ***
+#> (Intercept) -0.3419854  0.3927834 -0.8706716 3.864149e-01      
+#> dummies      0.9521354  0.2176172  4.3752756 3.463915e-05   ***
 ```
 
 -   `standardizeCoefficients()` extracts standardized coefficients and hides (dummy) variables if needed.
@@ -536,10 +597,10 @@ y <- 1 + x + rnorm(10)
 m <- lm(y ~ x)
  
 extractRegressionStatistics(m)
-#>   Observations DegreesFreedom ResidualError Rsquared AdjRsquared      AIC
-#> 1           10              8     0.8742011   0.9303   0.9215875 29.45844
+#>   Observations DegreesFreedom ResidualError  Rsquared AdjRsquared      AIC
+#> 1           10              8     0.9055161 0.9250598   0.9156923 30.16233
 #>        BIC Fstatistic Fsignficance Fstars
-#> 1 30.36619   106.7776 6.641585e-06    ***
+#> 1 31.07009    98.7518 8.895483e-06    ***
 ```
 
 -   `getRowsOutlierRemoval()` helps to remove outliers at the 0.5% level at both ends (or any other threshold defined by the argument `cutoff`).
@@ -563,17 +624,19 @@ texreg_tvalues(m_dummies)
 #> \hline
 #>  & Model 1 \\
 #> \hline
-#> (Intercept) & $-0.15$      \\
-#>             & $(-0.42)$    \\
-#> x           & $1.00^{***}$ \\
-#>             & $(262.98)$   \\
-#> dummies     & $1.04^{***}$ \\
-#>             & $(5.24)$     \\
+#> (Intercept) & $-0.34$      \\
+#>             & $(-0.87)$    \\
+#> x1          & $1.00^{***}$ \\
+#>             & $(242.07)$   \\
+#> x2          & $0.96^{***}$ \\
+#>             & $(6.26)$     \\
+#> dummies     & $0.95^{***}$ \\
+#>             & $(4.38)$     \\
 #> \hline
 #> R$^2$       & 1.00         \\
 #> Adj. R$^2$  & 1.00         \\
 #> Num. obs.   & 88           \\
-#> RMSE        & 0.93         \\
+#> RMSE        & 1.02         \\
 #> \hline
 #> \multicolumn{2}{l}{\scriptsize{$^{***}p<0.001$, $^{**}p<0.01$, $^*p<0.05$}}
 #> \end{tabular}
@@ -589,17 +652,19 @@ texreg_tvalues(m_dummies, hide = "dummies")
 #> \hline
 #>  & Model 1 \\
 #> \hline
-#> (Intercept) & $-0.15$      \\
-#>             & $(0.36)$     \\
-#> x           & $1.00^{***}$ \\
+#> (Intercept) & $-0.34$      \\
+#>             & $(0.39)$     \\
+#> x1          & $1.00^{***}$ \\
 #>             & $(0.00)$     \\
-#> dummies     & $1.04^{***}$ \\
-#>             & $(0.20)$     \\
+#> x2          & $0.96^{***}$ \\
+#>             & $(0.15)$     \\
+#> dummies     & $0.95^{***}$ \\
+#>             & $(0.22)$     \\
 #> \hline
 #> R$^2$       & 1.00         \\
 #> Adj. R$^2$  & 1.00         \\
 #> Num. obs.   & 88           \\
-#> RMSE        & 0.93         \\
+#> RMSE        & 1.02         \\
 #> \hline
 #> \multicolumn{2}{l}{\scriptsize{$^{***}p<0.001$, $^{**}p<0.01$, $^*p<0.05$}}
 #> \end{tabular}
@@ -615,17 +680,21 @@ texreg_tvalues(list(m, m_dummies))
 #> \hline
 #>  & Model 1 & Model 2 \\
 #> \hline
-#> (Intercept) & $0.01$       & $-0.15$      \\
-#>             & $(0.09)$     & $(-0.42)$    \\
-#> x           & $1.00^{***}$ & $1.00^{***}$ \\
-#>             & $(788.40)$   & $(262.98)$   \\
-#> dummies     &              & $1.04^{***}$ \\
-#>             &              & $(5.24)$     \\
+#> (Intercept) & $-0.03$      & $-0.34$      \\
+#>             & $(-0.18)$    & $(-0.87)$    \\
+#> x           & $1.00^{***}$ &              \\
+#>             & $(787.77)$   &              \\
+#> x1          &              & $1.00^{***}$ \\
+#>             &              & $(242.07)$   \\
+#> x2          &              & $0.96^{***}$ \\
+#>             &              & $(6.26)$     \\
+#> dummies     &              & $0.95^{***}$ \\
+#>             &              & $(4.38)$     \\
 #> \hline
 #> R$^2$       & 1.00         & 1.00         \\
 #> Adj. R$^2$  & 1.00         & 1.00         \\
 #> Num. obs.   & 198          & 88           \\
-#> RMSE        & 1.03         & 0.93         \\
+#> RMSE        & 1.04         & 1.02         \\
 #> \hline
 #> \multicolumn{3}{l}{\scriptsize{$^{***}p<0.001$, $^{**}p<0.01$, $^*p<0.05$}}
 #> \end{tabular}
@@ -940,7 +1009,7 @@ texreg(m) # intercept would otherwise be "-0.00"
 ``` r
 xtable(matrix(1:4, nrow = 2) * -0.000001) # would otherwise return "-0.00"
 #> % latex table generated in R 3.3.2 by xtable 1.8-2 package
-#> % Fri Dec 09 20:19:35 2016
+#> % Mon Dec 12 18:33:07 2016
 #> \begin{table}[ht]
 #> \centering
 #> \begin{tabular}{rrr}
