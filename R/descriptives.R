@@ -152,3 +152,39 @@ correlationMatrix <- function(x, y = NULL,
   return(as.data.frame(output_screen))
 }
 
+#' Removes observations with outliers
+#'
+#' Function removes outliers for a given set of variables at a relative
+#' percentage at both ends.
+#' @param df Data frame with input variables
+#' @param variables Variables used for trimming. By default, all variables are
+#' included.
+#' @param cutoff Relative cutoff on each side in percent (default: \code{0.5},
+#' i.e. 0.5\% at each end).
+#' @return Returns vector with indices of the observations to be removed.
+#' @examples
+#' d <- data.frame(x = rnorm(200), y = rnorm(200))
+#'
+#' d_trimmed <- removeOutlierObservations(d)
+#' dim(d_trimmed)
+#'
+#' d_trimmed <- removeOutlierObservations(d, variables = "y", cutoff = 2.0)
+#' dim(d_trimmed)
+#' @importFrom stats quantile
+#' @export
+removeOutlierObservations <- function(df, variables = colnames(df), cutoff = 0.5) {
+  if (cutoff <= 0 || cutoff >= 100) {
+    stop("Argument 'cutoff' must be in the range 0 .. 100 (in %).")
+  }
+
+  idx_remove <- unique(unlist(lapply(variables,
+                                     function(v) {
+                                       qt <- quantile(df[, v], probs = c(cutoff/100, 1 - cutoff/100))
+                                       idx_remove <- which(df[, v] < qt[1] | df[, v] > qt[2])
+                                     })))
+
+  cat("Dropping", length(idx_remove), "observations, i.e.", length(idx_remove)/nrow(df), "%.")
+
+  return(df[-idx_remove, ])
+}
+

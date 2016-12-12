@@ -423,9 +423,76 @@ testDiagnostics <- function(model, alpha = 0.05){
   return(output)
 }
 
+#' Step-wise regression
+#'
+#' Function performs default regression via ordinary least squares in step-wise fashion.
+#' That is, it iteratively includes an additional regressor one-by-one. It also supports dummy
+#' variables which are not included in the dataset \code{data}, but in a global variable
+#' attached to a formula. With this input, this function can filter for a subset, remove
+#' outliers at a certain cutoff and remove dummies that are NA.
+#' @param formula of type \code{formula}.
+#' @param data An optional data frame contain the variables in the model (excluding the
+#' dummy variables).
+#' @param subset Vector of integers or booleans defining the subset of observations to be
+#' used.
+#' @param dummies String denoting the name of the variable (i.e. matrix or data frame)
+#' containing all dummy variables.
+#' @param cutoff Relative cutoff on each side in percent (default: \code{NULL}). Values
+#' are given in percient, e.g. \code{0.5} represents 0.5\%
+#' at each end).
+#' @param rmDummyNA Boolean indicating whether to remove dummy variables with NA
+#' coefficient (default: removal).
+#' @return Returns a list with different, estimated models.
+#' @note The dummy term is included in all regressions (if present).
+#' @examples
+#' x1 <- 1:100
+#' x2 <- sin(1:100)
+#' clusters <- rep(c(1, 2), 50)
+#' dummies <- model.matrix(~ clusters)
+#' y <- x1 + x2 + clusters + rnorm(100)
+#' d <- data.frame(x1 = x1, x2 = x2, y = y)
+#'
+#' models <- regressionStepwise(formula("y ~ x1 + x2 + dummies"), data = d, subset = 1:90,
+#'                              dummies = "dummies", cutoff = 0.5)
+#'
+#' length(models)
+#'
+#' library(texreg)
+#' texreg(models, omit.coef = "dummies")
+#' @export
+regressionStepwise <- function(formula, data = NULL, subset = NULL, dummies = NULL,
+                               cutoff = NULL, rmDummyNA = TRUE) {
+  formula_string <- toString(formula)
+
+  independent_var <- strsplit(formula_string, ",")[[1]][2]
+  dependent_vars <- strsplit(formula_string, ",")[[1]][3]
+  dependent_vars <- trimws(strsplit(dependent_vars, fixed = TRUE, "+")[[1]])
+  dependent_vars <- setdiff(dependent_vars, dummies)
+
+  dummy_var <- ifelse(is.null(dummies), NULL, paste0("+ ", dummies))
+
+  new_formula <- paste(independent_var, "~", dependent_vars[1], dummy_var)
+  formula_list <- formula(new_formula)
+
+  for (i in 2:length(dependent_vars)) {
+    new_formula <- paste(new_formula, "+", dependent_vars[i], dummy_var)
+    formula_list <- c(formula_list, formula(new_formula))
+  }
+
+  formula_list <- lapply(formula_list,
+                         function (x) {
+                           attr(x, ".Environment") <- attr(formula, ".Environment")
+                           return(x)
+                         })
+
+  model_list <- lapply(formula_list,
+                       regression,
+                       data = data, subset = subset, dummies = dummies,
+                       cutoff = cutoff, rmDummyNA = rmDummyNA)
+
+  return(model_list)
+}
 
 # TODO: ivreg
 
-# TODO: stepwise regression
-
-# TODO: standardized coefficients
+# TODO: clustered regression

@@ -2,6 +2,10 @@
 
 # Development version
 
+* Added removeOutlierObservations()
+
+* Added regressionStepwise()
+
 * Added extract_tvalues.rq()
 
 * Added standarizeCoefficients.rq()
