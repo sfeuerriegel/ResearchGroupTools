@@ -23,12 +23,15 @@ Function removes outliers for a given set of variables at a relative
 percentage at both ends.
 }
 \examples{
-d <- data.frame(x = rnorm(200), y = rnorm(200))
+d <- data.frame(x1 = rnorm(200), x2 = rnorm(200), y = rnorm(200))
 
 d_trimmed <- removeOutlierObservations(d)
 dim(d_trimmed)
 
 d_trimmed <- removeOutlierObservations(d, variables = "y", cutoff = 2.0)
+dim(d_trimmed)
+
+d_trimmed <- removeOutlierObservations(d, variables = c("x1", "x2"), cutoff = 2.0)
 dim(d_trimmed)
 }
 

@@ -707,6 +707,9 @@ qr25 <- rq(stack.loss ~ stack.x, 0.25)
 qr50 <- rq(stack.loss ~ stack.x, 0.50)
 qr75 <- rq(stack.loss ~ stack.x, 0.75)
 texreg_tvalues(list(qr25, qr50, qr75))
+#> Warning in summary.rq(model, se = se): 1 non-positive fis
+
+#> Warning in summary.rq(model, se = se): 1 non-positive fis
 #> 
 #> \begin{table}
 #> \begin{center}
@@ -715,13 +718,13 @@ texreg_tvalues(list(qr25, qr50, qr75))
 #>  & Model 1 & Model 2 & Model 3 \\
 #> \hline
 #> (Intercept)       & $-36.00^{***}$ & $-39.69^{***}$ & $-54.19^{***}$ \\
-#>                   & $(-1.52)$      & $(-2.82)$      & $(-2.01)$      \\
+#>                   & $(-7.70)$      & $(-5.56)$      & $(-5.78)$      \\
 #> stack.xAir.Flow   & $0.50^{*}$     & $0.83^{***}$   & $0.87^{***}$   \\
-#>                   & $(1.32)$       & $(3.42)$       & $(2.35)$       \\
+#>                   & $(2.70)$       & $(6.55)$       & $(6.96)$       \\
 #> stack.xWater.Temp & $1.00^{*}$     & $0.57$         & $0.98^{**}$    \\
-#>                   & $(1.23)$       & $(0.99)$       & $(0.97)$       \\
+#>                   & $(2.46)$       & $(1.68)$       & $(3.08)$       \\
 #> stack.xAcid.Conc. & $0.00$         & $-0.06$        & $0.00$         \\
-#>                   & $(0.00)$       & $(-0.34)$      & $(0.00)$       \\
+#>                   & $(0.00)$       & $(-1.01)$      & $(0.00)$       \\
 #> \hline
 #> Num. obs.         & 21             & 21             & 21             \\
 #> Percentile        & 0.25           & 0.50           & 0.75           \\
@@ -1009,7 +1012,7 @@ texreg(m) # intercept would otherwise be "-0.00"
 ``` r
 xtable(matrix(1:4, nrow = 2) * -0.000001) # would otherwise return "-0.00"
 #> % latex table generated in R 3.3.2 by xtable 1.8-2 package
-#> % Mon Dec 12 18:33:07 2016
+#> % Mon Jan 02 12:33:13 2017
 #> \begin{table}[ht]
 #> \centering
 #> \begin{tabular}{rrr}

@@ -215,6 +215,7 @@ regression <- function(formula, data = NULL, subset = NULL, dummies = NULL, cuto
 #' @param model Object of type \code{lm}.
 #' @param hide A string. All variables starting with that name are excluded. If \code{NULL} (default),
 #' no variables are omitted.
+#' @param se Computation scheme for standard errors in case of a quantile regression.
 #' @return Vector of type \code{numeric}.
 #' @examples
 #' \dontrun{
@@ -227,17 +228,18 @@ regression <- function(formula, data = NULL, subset = NULL, dummies = NULL, cuto
 #'
 #' qr <- rq(y ~ x1 + x2)
 #' extract_tvalues(m)
+#' extract_tvalues(m, se = "ker")
 #' }
 #' @importFrom stats lm
 #' @export
 #' @rdname extract_tvalues
-extract_tvalues <- function(model, hide = NULL) {
+extract_tvalues <- function(model, hide = NULL, se = "nid") {
   UseMethod("extract_tvalues", model)
 }
 
 #' @export
 #' @rdname extract_tvalues
-extract_tvalues.lm <- function(model, hide = NULL) {
+extract_tvalues.lm <- function(model, hide = NULL, se = "nid") {
   if (is.null(hide)) {
     idx <- 1:length(coef(model))
   } else {
@@ -250,7 +252,7 @@ extract_tvalues.lm <- function(model, hide = NULL) {
 
 #' @export
 #' @rdname extract_tvalues
-extract_tvalues.rq <- function(model, hide = NULL) {
+extract_tvalues.rq <- function(model, hide = NULL, se = "nid") {
   if (is.null(hide)) {
     idx <- 1:length(coef(model))
   } else {
@@ -258,7 +260,7 @@ extract_tvalues.rq <- function(model, hide = NULL) {
     idx <- -grep(paste0("^", hide), names(coef(model)))
   }
 
-  return(summary(model, se = "ker")$coefficients[idx, "t value"])
+  return(summary(model, se = se)$coefficients[idx, "t value"])
 }
 
 #' texreg output with t-values

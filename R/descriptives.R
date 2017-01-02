@@ -163,12 +163,15 @@ correlationMatrix <- function(x, y = NULL,
 #' i.e. 0.5\% at each end).
 #' @return Returns vector with indices of the observations to be removed.
 #' @examples
-#' d <- data.frame(x = rnorm(200), y = rnorm(200))
+#' d <- data.frame(x1 = rnorm(200), x2 = rnorm(200), y = rnorm(200))
 #'
 #' d_trimmed <- removeOutlierObservations(d)
 #' dim(d_trimmed)
 #'
 #' d_trimmed <- removeOutlierObservations(d, variables = "y", cutoff = 2.0)
+#' dim(d_trimmed)
+#'
+#' d_trimmed <- removeOutlierObservations(d, variables = c("x1", "x2"), cutoff = 2.0)
 #' dim(d_trimmed)
 #' @importFrom stats quantile
 #' @export

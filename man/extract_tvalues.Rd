@@ -6,17 +6,19 @@
 \alias{extract_tvalues.rq}
 \title{Extract t-values from lm object}
 \usage{
-extract_tvalues(model, hide = NULL)
+extract_tvalues(model, hide = NULL, se = "nid")
 
-\method{extract_tvalues}{lm}(model, hide = NULL)
+\method{extract_tvalues}{lm}(model, hide = NULL, se = "nid")
 
-\method{extract_tvalues}{rq}(model, hide = NULL)
+\method{extract_tvalues}{rq}(model, hide = NULL, se = "nid")
 }
 \arguments{
 \item{model}{Object of type \code{lm}.}
 
 \item{hide}{A string. All variables starting with that name are excluded. If \code{NULL} (default),
 no variables are omitted.}
+
+\item{se}{Computation scheme for standard errors in case of a quantile regression.}
 }
 \value{
 Vector of type \code{numeric}.
@@ -35,6 +37,7 @@ extract_tvalues(m)
 
 qr <- rq(y ~ x1 + x2)
 extract_tvalues(m)
+extract_tvalues(m, se = "ker")
 }
 }
 
