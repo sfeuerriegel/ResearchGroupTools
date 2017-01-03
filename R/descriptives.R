@@ -184,6 +184,7 @@ removeOutlierObservations <- function(df, variables = colnames(df), cutoff = 0.5
                                      function(v) {
                                        qt <- quantile(df[, v], probs = c(cutoff/100, 1 - cutoff/100))
                                        idx_remove <- which(df[, v] < qt[1] | df[, v] > qt[2])
+                                       return(idx_remove)
                                      })))
 
   cat("Dropping", length(idx_remove), "observations, i.e.", length(idx_remove)/nrow(df), "%.")

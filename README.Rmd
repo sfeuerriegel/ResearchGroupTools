@@ -221,12 +221,15 @@ df %>%
 * `removeOutlierObservations()` trims the dataset with regard to certain variables. It thus removes outliers at the 0.5% level at both ends (or any other threshold defined by the argument `cutoff`).
 
 ```{r removeOutlierObservations}
-d <- data.frame(x = rnorm(200), y = rnorm(200))
+d <- data.frame(x1 = rnorm(200), x2 = rnorm(200), y = rnorm(200))
 
 d_trimmed <- removeOutlierObservations(d)
 dim(d_trimmed)
 
 d_trimmed <- removeOutlierObservations(d, variables = "y", cutoff = 2.0)
+dim(d_trimmed)
+
+d_trimmed <- removeOutlierObservations(d, variables = c("x1", "x2"), cutoff = 2.0)
 dim(d_trimmed)
 ```
 
