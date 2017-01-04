@@ -1017,7 +1017,7 @@ texreg(m) # intercept would otherwise be "-0.00"
 ``` r
 xtable(matrix(1:4, nrow = 2) * -0.000001) # would otherwise return "-0.00"
 #> % latex table generated in R 3.3.2 by xtable 1.8-2 package
-#> % Tue Jan 03 10:50:46 2017
+#> % Wed Jan 04 00:44:15 2017
 #> \begin{table}[ht]
 #> \centering
 #> \begin{tabular}{rrr}

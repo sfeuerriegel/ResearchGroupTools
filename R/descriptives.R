@@ -156,7 +156,7 @@ correlationMatrix <- function(x, y = NULL,
 #'
 #' Function removes outliers for a given set of variables at a relative
 #' percentage at both ends.
-#' @param df Data frame with input variables
+#' @param df Data frame, matrix or tibble with input variables
 #' @param variables Variables used for trimming. By default, all variables are
 #' included.
 #' @param cutoff Relative cutoff on each side in percent (default: \code{0.5},
@@ -180,12 +180,23 @@ removeOutlierObservations <- function(df, variables = colnames(df), cutoff = 0.5
     stop("Argument 'cutoff' must be in the range 0 .. 100 (in %).")
   }
 
-  idx_remove <- unique(unlist(lapply(variables,
-                                     function(v) {
-                                       qt <- quantile(df[, v], probs = c(cutoff/100, 1 - cutoff/100))
-                                       idx_remove <- which(df[, v] < qt[1] | df[, v] > qt[2])
-                                       return(idx_remove)
-                                     })))
+  if (inherits(df, "tbl") || inherits(df, "tbl_df")) {
+    idx_remove <- unique(unlist(lapply(variables,
+                                       function(v) {
+                                         qt <- quantile(pull_string(df, v), probs = c(cutoff/100, 1 - cutoff/100))
+                                         idx_remove <- which(df[, v] < qt[1] | df[, v] > qt[2])
+                                         return(idx_remove)
+                                       })))
+  } else if (inherits(df, "data.frame") || inherits(df, "matrix")) {
+    idx_remove <- unique(unlist(lapply(variables,
+                                       function(v) {
+                                         qt <- quantile(df[, v], probs = c(cutoff/100, 1 - cutoff/100))
+                                         idx_remove <- which(df[, v] < qt[1] | df[, v] > qt[2])
+                                         return(idx_remove)
+                                       })))
+  } else {
+    stop("Class for argument 'df' is not supported. Expected are tbl, data.frame or matrix.")
+  }
 
   cat("Dropping", length(idx_remove), "observations, i.e.", length(idx_remove)/nrow(df), "%.")
 

@@ -7,7 +7,7 @@
 removeOutlierObservations(df, variables = colnames(df), cutoff = 0.5)
 }
 \arguments{
-\item{df}{Data frame with input variables}
+\item{df}{Data frame, matrix or tibble with input variables}
 
 \item{variables}{Variables used for trimming. By default, all variables are
 included.}
