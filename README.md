@@ -136,7 +136,7 @@ cumsd(df$x)
 
 df %>%
   mutate_all(funs("mean" = cummean, "sd" = cumsd))
-#> # A tibble: 10 x 6
+#> # A tibble: 10 × 6
 #>        x            y x_mean    y_mean      x_sd      y_sd
 #>    <int>        <dbl>  <dbl>     <dbl>     <dbl>     <dbl>
 #> 1      1  1.262954285    1.0 1.2629543        NA        NA
@@ -302,7 +302,7 @@ df %>%
   summarize_each(funs(last_non_NA)) %>%
   ungroup() %>%
   head()
-#> # A tibble: 2 x 11
+#> # A tibble: 2 × 11
 #>    Year    V1    V2    V3    V4    V5    V6    V7    V8    V9   V10
 #>   <dbl> <int> <int> <int> <int> <int> <int> <int> <int> <int> <int>
 #> 1  2000     5    15    25    35    45    55    65    74    85    95
@@ -458,7 +458,7 @@ makeFormula("y", c("x1", "x2", "x3"), "dummies")
 #> y ~ x1 + x2 + x3 + dummies
 ```
 
--   `regression()` is a customized, all-in-one routine for ordinary least squares with optional dummy variables. It can filter for a subset of observations, remove outliers at a certain cutoff and remove dummies that are `NA`.
+-   `regression()` is a customized, all-in-one routine for ordinary least squares with optional dummy variables. It can filter for a subset of observations, remove outliers at a certain cutoff and remove dummies that are `NA`. It also changes to covariance matrix internally if desired (note: this requires a different estimator from `sandwich`).
 
 ``` r
 x1 <- 1:100
@@ -493,9 +493,38 @@ summary(m_dummies)
 #> Residual standard error: 1.001 on 84 degrees of freedom
 #> Multiple R-squared:  0.9986, Adjusted R-squared:  0.9985 
 #> F-statistic: 1.979e+04 on 3 and 84 DF,  p-value: < 2.2e-16
+
+library(sandwich)
+
+m_dummies <- regression(formula("y ~ x1 + x2 + dummies"), data = d, subset = 1:90,
+                        dummies = "dummies", cutoff = 0.5, vcov = NeweyWest)
+#> Removing 2 observations; i.e. 0.02222222 percent.
+#> Dropping 1 coefficients: dummies(Intercept) 
+#> Overriding internal attributes to use non-OLS covariance matrix.
+summary(m_dummies)
+#> 
+#> Call:
+#> lm(formula = formula, data = data)
+#> 
+#> Residuals:
+#>      Min       1Q   Median       3Q      Max 
+#> -2.04179 -0.76100  0.00665  0.54697  2.30934 
+#> 
+#> Coefficients:
+#>             Estimate Std. Error t value Pr(>|t|)    
+#> (Intercept) 0.267773   0.424562   0.631 0.529946    
+#> x1          0.998245   0.003324 300.360  < 2e-16 ***
+#> x2          1.154176   0.147325   7.834  1.3e-11 ***
+#> dummies     0.881494   0.253195   3.481 0.000794 ***
+#> ---
+#> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#> 
+#> Residual standard error: 1.001 on 84 degrees of freedom
+#> Multiple R-squared:  0.9986, Adjusted R-squared:  0.9985 
+#> F-statistic: 1.979e+04 on 3 and 84 DF,  p-value: < 2.2e-16
 ```
 
--   `regressionStepwise()` is an extension to iteratively incorporate regressors one by one. The resulting list can then easily be exported.
+-   `regressionStepwise()` is an extension to iteratively incorporate regressors one by one. The resulting list can then easily be exported. It also changes to covariance matrix internally if desired (note: this requires a different estimator from `sandwich`).
 
 ``` r
 models <- regressionStepwise(formula("y ~ x1 + x2 + dummies"), data = d, subset = 1:90,
@@ -536,6 +565,41 @@ texreg(models, omit.coef = "dummies")
 #> \label{table:coefficients}
 #> \end{center}
 #> \end{table}
+
+models <- regressionStepwise(formula("y ~ x1 + x2 + dummies"), data = d, subset = 1:90,
+                            dummies = "dummies", cutoff = 0.5, vcov = NeweyWest)
+#> Removing 2 observations; i.e. 0.02222222 percent.
+#> Dropping 1 coefficients: dummies(Intercept) 
+#> Overriding internal attributes to use non-OLS covariance matrix.
+#> Removing 2 observations; i.e. 0.02222222 percent.
+#> Dropping 1 coefficients: dummies(Intercept) 
+#> Overriding internal attributes to use non-OLS covariance matrix.
+texreg(models, omit.coef = "dummies")
+#> 
+#> \begin{table}
+#> \begin{center}
+#> \begin{tabular}{l c c }
+#> \hline
+#>  & Model 1 & Model 2 \\
+#> \hline
+#> (Intercept) & $0.53$       & $0.27$       \\
+#>             & $(0.50)$     & $(0.38)$     \\
+#> x1          & $0.99^{***}$ & $1.00^{***}$ \\
+#>             & $(0.01)$     & $(0.00)$     \\
+#> x2          &              & $1.15^{***}$ \\
+#>             &              & $(0.15)$     \\
+#> \hline
+#> R$^2$       & 1.00         & 1.00         \\
+#> Adj. R$^2$  & 1.00         & 1.00         \\
+#> Num. obs.   & 88           & 88           \\
+#> RMSE        & 1.28         & 1.00         \\
+#> \hline
+#> \multicolumn{3}{l}{\scriptsize{$^{***}p<0.001$, $^{**}p<0.01$, $^*p<0.05$}}
+#> \end{tabular}
+#> \caption{Statistical models}
+#> \label{table:coefficients}
+#> \end{center}
+#> \end{table}
 ```
 
 -   `showCoeftest()` shows coefficient tests, but hides (dummy) variables starting with a certain string. Note: this is designed for output in the R console or within Rmarkdown. For exporting, better use **texreg** which has an argument named `omit.coef`.
@@ -543,8 +607,8 @@ texreg(models, omit.coef = "dummies")
 ``` r
 showCoeftest(m_dummies, hide = "x") # leaves only the intercept
 #>              Estimate Std..Error   t.value     Pr...t.. Stars
-#> (Intercept) 0.2677732  0.3829488 0.6992402 4.863336e-01      
-#> dummies     0.8814936  0.2135208 4.1283726 8.575514e-05   ***
+#> (Intercept) 0.2677732  0.4245619 0.6307047 0.5299458851      
+#> dummies     0.8814936  0.2531952 3.4814776 0.0007937735   ***
 ```
 
 -   `standardizeCoefficients()` extracts standardized coefficients and hides (dummy) variables if needed.
@@ -558,15 +622,7 @@ library(vars)
 #> 
 #>     select
 #> Loading required package: strucchange
-#> Loading required package: zoo
-#> 
-#> Attaching package: 'zoo'
-#> The following objects are masked from 'package:base':
-#> 
-#>     as.Date, as.Date.numeric
-#> Loading required package: sandwich
 #> Loading required package: urca
-#> Loading required package: lmtest
 data(Canada)
 
 prod <- differences(as.numeric(Canada[, 2]))
@@ -630,13 +686,13 @@ texreg_tvalues(m_dummies)
 #>  & Model 1 \\
 #> \hline
 #> (Intercept) & $0.27$       \\
-#>             & $(0.70)$     \\
+#>             & $(0.63)$     \\
 #> x1          & $1.00^{***}$ \\
-#>             & $(243.47)$   \\
+#>             & $(300.36)$   \\
 #> x2          & $1.15^{***}$ \\
-#>             & $(7.68)$     \\
+#>             & $(7.83)$     \\
 #> dummies     & $0.88^{***}$ \\
-#>             & $(4.13)$     \\
+#>             & $(3.48)$     \\
 #> \hline
 #> R$^2$       & 1.00         \\
 #> Adj. R$^2$  & 1.00         \\
@@ -686,15 +742,15 @@ texreg_tvalues(list(m, m_dummies))
 #>  & Model 1 & Model 2 \\
 #> \hline
 #> (Intercept) & $0.11$       & $0.27$       \\
-#>             & $(0.77)$     & $(0.70)$     \\
+#>             & $(0.77)$     & $(0.63)$     \\
 #> x           & $1.00^{***}$ &              \\
 #>             & $(809.74)$   &              \\
 #> x1          &              & $1.00^{***}$ \\
-#>             &              & $(243.47)$   \\
+#>             &              & $(300.36)$   \\
 #> x2          &              & $1.15^{***}$ \\
-#>             &              & $(7.68)$     \\
+#>             &              & $(7.83)$     \\
 #> dummies     &              & $0.88^{***}$ \\
-#>             &              & $(4.13)$     \\
+#>             &              & $(3.48)$     \\
 #> \hline
 #> R$^2$       & 1.00         & 1.00         \\
 #> Adj. R$^2$  & 1.00         & 1.00         \\
@@ -1017,7 +1073,7 @@ texreg(m) # intercept would otherwise be "-0.00"
 ``` r
 xtable(matrix(1:4, nrow = 2) * -0.000001) # would otherwise return "-0.00"
 #> % latex table generated in R 3.3.2 by xtable 1.8-2 package
-#> % Wed Jan 04 00:44:15 2017
+#> % Fri Feb 03 18:21:03 2017
 #> \begin{table}[ht]
 #> \centering
 #> \begin{tabular}{rrr}

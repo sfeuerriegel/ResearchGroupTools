@@ -5,7 +5,7 @@
 \title{Step-wise regression}
 \usage{
 regressionStepwise(formula, data = NULL, subset = NULL, dummies = NULL,
-  cutoff = NULL, rmDummyNA = TRUE)
+  cutoff = NULL, rmDummyNA = TRUE, vcov = NULL)
 }
 \arguments{
 \item{formula}{of type \code{formula}.}
@@ -25,6 +25,10 @@ at each end).}
 
 \item{rmDummyNA}{Boolean indicating whether to remove dummy variables with NA
 coefficient (default: removal).}
+
+\item{vcov}{Estimator used for computing the covariance matrix. Default is \code{NULL}
+which results in to the ordinary least squares estimator. Alternatives, are, for
+instance, \code{NeweyWest} from the \code{sandwich} package.}
 }
 \value{
 Returns a list with different, estimated models.
@@ -53,6 +57,12 @@ models <- regressionStepwise(formula("y ~ x1 + x2 + dummies"), data = d, subset 
 length(models)
 
 library(texreg)
+texreg(models, omit.coef = "dummies")
+
+library(sandwich)
+
+models <- regressionStepwise(formula("y ~ x1 + x2 + dummies"), data = d, subset = 1:90,
+                             dummies = "dummies", cutoff = 0.5, vcov = NeweyWest)
 texreg(models, omit.coef = "dummies")
 }
 

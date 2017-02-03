@@ -2,6 +2,8 @@
 
 # Development version
 
+* Added support for vcov in regression() and regressionStepwise()
+
 * Added removeOutlierObservations()
 
 * Added regressionStepwise()

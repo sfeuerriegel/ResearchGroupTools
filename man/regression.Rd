@@ -5,7 +5,7 @@
 \title{Customized all-in-one regression function}
 \usage{
 regression(formula, data = NULL, subset = NULL, dummies = NULL,
-  cutoff = NULL, rmDummyNA = TRUE)
+  cutoff = NULL, rmDummyNA = TRUE, vcov = NULL)
 }
 \arguments{
 \item{formula}{of type \code{formula}.}
@@ -25,6 +25,10 @@ at each end).}
 
 \item{rmDummyNA}{Boolean indicating whether to remove dummy variables with NA
 coefficient (default: removal).}
+
+\item{vcov}{Estimator used for computing the covariance matrix. Default is \code{NULL}
+which results in to the ordinary least squares estimator. Alternatives, are, for
+instance, \code{NeweyWest} from the \code{sandwich} package.}
 }
 \description{
 Function performs default regression via ordinary least squares. It also supports dummy
@@ -41,6 +45,11 @@ d <- data.frame(x = x, y = y)
 
 m <- regression(formula("y ~ x + dummies"), data = d, subset = 1:90,
                 dummies = "dummies", cutoff = 0.5)
+summary(m)
+
+library(sandwich)
+m <- regression(formula("y ~ x + dummies"), data = d, subset = 1:90,
+                dummies = "dummies", cutoff = 0.5, vcov = NeweyWest)
 summary(m)
 }
 

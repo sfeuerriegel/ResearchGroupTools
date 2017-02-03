@@ -16,7 +16,9 @@ BugReports: https://github.com/sfeuerriegel/ResearchGroupTools/issues
 Depends:
     R (>= 2.10),
     texreg,
-    xtable
+    xtable,
+    stats,
+    lmtest
 Imports:
     magrittr,
     ggplot2,
@@ -24,12 +26,12 @@ Imports:
     Hmisc,
     plyr,
     dplyr,
-    lmtest,
     urca,
     vars,
     Rcpp,
     car,
-    quantreg
+    quantreg,
+    sandwich
 LinkingTo:
     Rcpp
 Suggests:

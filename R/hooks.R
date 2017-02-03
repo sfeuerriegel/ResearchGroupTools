@@ -56,4 +56,41 @@
   assignInNamespace("sanitize.numbers", sanitize_numbers_fixed, ns="xtable", envir=as.environment("package:xtable"))
   assign("sanitize.numbers", sanitize_numbers_fixed, as.environment("package:xtable"))
   lockBinding("sanitize.numbers", as.environment("package:xtable"))
+
+  packageStartupMessage("ResearchGroupTools: Changing summary.lm to work with custom covariance estimators'.")
+
+  summary_lm_internal <- stats::summary.lm
+  summary_lm_fixed <- function(object, correlation = FALSE, symbolic.cor = FALSE, ...) {
+    s <- summary_lm_internal(object, correlation, symbolic.cor, ...)
+
+    if ("RGT" %in% class(object)) {
+      coef_col_names <- colnames(s$coefficients)
+      coef_row_names <- rownames(s$coefficients)
+
+      s$coefficients <- unclass(lmtest::coeftest(object, vcov. = object$vcov))
+      colnames(s$coefficients) <- coef_col_names
+      rownames(s$coefficients) <- coef_row_names
+    }
+
+    return(s)
+  }
+
+  unlockBinding("summary.lm", as.environment("package:stats"))
+#  assignInNamespace("summary.lm", summary_lm_fixed, ns="stats", envir=as.environment("package:stats"))
+  assign("summary.lm", summary_lm_fixed, as.environment("package:stats"))
+  lockBinding("summary.lm", as.environment("package:stats"))
+
+  coeftest_internal <- lmtest::coeftest.default
+  coeftest_fixed <- function(x, vcov. = NULL, df = NULL, ...) {
+    if ("RGT" %in% class(x)) {
+      return(coeftest_internal(x, vcov. = x$vcov, df = df))
+    } else {
+      return(coeftest_internal(x, vcov. = vcov., df = df))
+    }
+  }
+
+  unlockBinding("coeftest.default", as.environment("package:lmtest"))
+  assignInNamespace("coeftest.default", coeftest_fixed, ns="lmtest", envir=as.environment("package:lmtest"))
+  assign("coeftest.default", coeftest_fixed, as.environment("package:lmtest"))
+  lockBinding("coeftest.default", as.environment("package:lmtest"))
 }

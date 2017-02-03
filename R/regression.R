@@ -138,6 +138,9 @@ getRowsOutlierRemoval <- function(model, cutoff = 0.5) {
 #' at each end).
 #' @param rmDummyNA Boolean indicating whether to remove dummy variables with NA
 #' coefficient (default: removal).
+#' @param vcov Estimator used for computing the covariance matrix. Default is \code{NULL}
+#' which results in to the ordinary least squares estimator. Alternatives, are, for
+#' instance, \code{NeweyWest} from the \code{sandwich} package.
 #' @examples
 #' x <- 1:100
 #' clusters <- rep(c(1, 2), 50)
@@ -148,9 +151,15 @@ getRowsOutlierRemoval <- function(model, cutoff = 0.5) {
 #' m <- regression(formula("y ~ x + dummies"), data = d, subset = 1:90,
 #'                 dummies = "dummies", cutoff = 0.5)
 #' summary(m)
+#'
+#' library(sandwich)
+#' m <- regression(formula("y ~ x + dummies"), data = d, subset = 1:90,
+#'                 dummies = "dummies", cutoff = 0.5, vcov = NeweyWest)
+#' summary(m)
 #' @importFrom stats coef lm
 #' @export
-regression <- function(formula, data = NULL, subset = NULL, dummies = NULL, cutoff = NULL, rmDummyNA = TRUE) {
+regression <- function(formula, data = NULL, subset = NULL, dummies = NULL, cutoff = NULL, rmDummyNA = TRUE,
+                       vcov = NULL) {
   dummies_copy <- NULL
   if (!is.null(dummies)) {
     dummies_copy <- get(dummies, envir = attr(formula, ".Environment"))
@@ -199,6 +208,12 @@ regression <- function(formula, data = NULL, subset = NULL, dummies = NULL, cuto
     assign(dummies, dummies_local, envir = attr(formula, ".Environment"))
 
     m <- lm(formula, data)
+
+    if (!is.null(vcov)) {
+      cat("Overriding internal attributes to use non-OLS covariance matrix.\n")
+      m$vcov <- vcov
+      class(m) <- c(class(m), "RGT")
+    }
   }
 
   if (!is.null(dummies_copy)) {
@@ -444,6 +459,9 @@ testDiagnostics <- function(model, alpha = 0.05){
 #' at each end).
 #' @param rmDummyNA Boolean indicating whether to remove dummy variables with NA
 #' coefficient (default: removal).
+#' @param vcov Estimator used for computing the covariance matrix. Default is \code{NULL}
+#' which results in to the ordinary least squares estimator. Alternatives, are, for
+#' instance, \code{NeweyWest} from the \code{sandwich} package.
 #' @return Returns a list with different, estimated models.
 #' @note The dummy term is included in all regressions (if present).
 #' @examples
@@ -461,9 +479,15 @@ testDiagnostics <- function(model, alpha = 0.05){
 #'
 #' library(texreg)
 #' texreg(models, omit.coef = "dummies")
+#'
+#' library(sandwich)
+#'
+#' models <- regressionStepwise(formula("y ~ x1 + x2 + dummies"), data = d, subset = 1:90,
+#'                              dummies = "dummies", cutoff = 0.5, vcov = NeweyWest)
+#' texreg(models, omit.coef = "dummies")
 #' @export
 regressionStepwise <- function(formula, data = NULL, subset = NULL, dummies = NULL,
-                               cutoff = NULL, rmDummyNA = TRUE) {
+                               cutoff = NULL, rmDummyNA = TRUE, vcov = NULL) {
   formula_string <- toString(formula)
 
   independent_var <- strsplit(formula_string, ",")[[1]][2]
@@ -490,7 +514,7 @@ regressionStepwise <- function(formula, data = NULL, subset = NULL, dummies = NU
   model_list <- lapply(formula_list,
                        regression,
                        data = data, subset = subset, dummies = dummies,
-                       cutoff = cutoff, rmDummyNA = rmDummyNA)
+                       cutoff = cutoff, rmDummyNA = rmDummyNA, vcov = vcov)
 
   return(model_list)
 }

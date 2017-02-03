@@ -313,7 +313,7 @@ makeFormula("y", c("x1", "x2", "x3"))
 makeFormula("y", c("x1", "x2", "x3"), "dummies")
 ```
 
-* `regression()` is a customized, all-in-one routine for ordinary least squares with optional dummy variables. It can filter for a subset of observations, remove outliers at a certain cutoff and remove dummies that are `NA`.
+* `regression()` is a customized, all-in-one routine for ordinary least squares with optional dummy variables. It can filter for a subset of observations, remove outliers at a certain cutoff and remove dummies that are `NA`. It also changes to covariance matrix internally if desired (note: this requires a different estimator from `sandwich`).
 
 ```{r regression}
 x1 <- 1:100
@@ -326,9 +326,15 @@ d <- data.frame(x1 = x1, x2 = x2, y = y)
 m_dummies <- regression(formula("y ~ x1 + x2 + dummies"), data = d, subset = 1:90,
                         dummies = "dummies", cutoff = 0.5)
 summary(m_dummies)
+
+library(sandwich)
+
+m_dummies <- regression(formula("y ~ x1 + x2 + dummies"), data = d, subset = 1:90,
+                        dummies = "dummies", cutoff = 0.5, vcov = NeweyWest)
+summary(m_dummies)
 ```
 
-* `regressionStepwise()` is an extension to iteratively incorporate regressors one by one. The resulting list can then easily be exported.
+* `regressionStepwise()` is an extension to iteratively incorporate regressors one by one. The resulting list can then easily be exported. It also changes to covariance matrix internally if desired (note: this requires a different estimator from `sandwich`).
 
 ```{r regressionStepwise}
 models <- regressionStepwise(formula("y ~ x1 + x2 + dummies"), data = d, subset = 1:90,
@@ -338,6 +344,10 @@ length(models)
 
 library(texreg)
 
+texreg(models, omit.coef = "dummies")
+
+models <- regressionStepwise(formula("y ~ x1 + x2 + dummies"), data = d, subset = 1:90,
+                            dummies = "dummies", cutoff = 0.5, vcov = NeweyWest)
 texreg(models, omit.coef = "dummies")
 ```
 
